@@ -122,3 +122,7 @@ img { border: none;}
 .yuejuan_div { width: 250px; padding: 20px; background: #FFF; border: 1px  #999 solid; position: absolute; display: none;}
 .yuejuan_div h3, .yuejuan_div p { font-size: 12px; line-height: 30px;}
 .yj_x { position: absolute; top: 5px; right: 5px; cursor: pointer; font-size: 16px;}
+
+/* 提示弹出层*/
+.tishi_tab {width: 288px; height: 82px; padding:30px 10px 10px 10px; background: url(/assets/tishi_tab_bg.png) no-repeat; position: absolute; display: none;z-index: 9999;}
+.tishi_tab p  { text-align: center; line-height: 24px; font-size: 14px; font-family:"微软雅黑"; color: #ffffff;}
