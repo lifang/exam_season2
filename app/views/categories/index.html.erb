@@ -1,24 +1,26 @@
 
   <div class="main_title">
-    <div class="m_t_btn"><button>新建科目</button></div>
+    <div class="m_t_btn"><button onclick="window.location.href='/categories/new'">新建科目</button></div>
   </div>
   <div class="text_box">
-    <% @web_params.each_value do |p| %>
+    <% @categories.each do |category| %>
       <div class="kemu_box">
-        <h1><%= p[:name] %></h1>
-        <div><%= p[:price] %>元</div>
-        <div>管理员：<% p[:manages].each do |manage| %><% unless manage[0].nil? %><span class="bj_span"><%= manage[0] %><a href="/categories/<%= manage[1] %>/delete_manage" onclick="javascript:return confirm('你确认删除该管理员么？');"><font color="red">[X]</font></a></span><% else %>暂无<% end %><%  end %> </div>
+        <h1><%= category.name %></h1>
+        <div><%= category.price %>元</div>
+        <div>管理员：<% category.category_manages.each do |cm| %><span class="bj_span"><%= cm.user.email %><a href="/categories/<%= cm.id %>/delete_manage" onclick="javascript:return confirm('你确认删除该管理员么？');"><font color="red">[X]</font></a></span><%  end %> </div>
         <div>
-          <%= form_for :create ,:url=>"/categories/#{p[:id]}/add_manage", :html=>{:onsubmit=>"javascript:return validate_add_manage(#{p[:id]});"} do |f| %>
-            <input name="email" id="add_manage_email_textfield_<%= p[:id] %>" type="text"/>
+          <%= form_for :create ,:url=>"/categories/#{category.id}/add_manage", :html=>{:onsubmit=>"javascript:return validate_add_manage(#{category.id});"} do |f| %>
+            <input name="email" id="add_manage_email_textfield_<%= category.id %>" type="text"/>
+            <input name="category_name" type="hidden" value="<%= category.name %>"/>
             <input type="submit" value="添加管理员" class="t_btn"></input>
           <% end %>
         </div>
-        <div class="km_a"><a href="#">管理</a><a href="/categories/<%= p[:id] %>/edit">修改</a></div>
+        <div class="km_a"><a href="#">管理</a><a href="/categories/<%= category.id %>/edit">修改</a></div>
       </div>
     <% end %>
     <div class="clear space20"></div>
-    <div class="sabrosus" style="display:none;"><span class="disabled"> &lt; </span><span class="current">1</span><a href="#?page=2">2</a><a href="#?page=3">3</a><a href="#?page=4">4</a><a href="#?page=5">5</a><a href="#?page=6">6</a><a href="#?page=7">7</a>...<a href="#?page=199">199</a><a href="#?page=200">200</a><a href="#?page=2"> &gt; </a></div>
+      <%=will_paginate @papers ,:previous_label=>" &lt;", :next_label=>" &gt;", :inner_window => 1 %>
+
   </div>
 
 

@@ -83,6 +83,9 @@ GEM
     rake (0.9.2.2)
     rdoc (3.11)
       json (~> 1.4)
+    ruby-ole (1.2.11.2)
+    spreadsheet (0.6.5.5)
+      ruby-ole (>= 1.0)
     sprockets (2.1.2)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -108,6 +111,7 @@ DEPENDENCIES
   jquery-rails
   mysql2 (= 0.3.10)
   rails (= 3.1.2)
+  spreadsheet (= 0.6.5.5)
   turn (= 0.8.2)
   uglifier (>= 1.0.3)
   will_paginate (= 3.0.pre2)
