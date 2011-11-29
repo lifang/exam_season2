@@ -23,23 +23,13 @@ module Constant
     :e263 => ['http://www.263.net','263']
   }
 
+
+  
   PUBLIC_PATH = "#{Rails.root}/public"
-  #前台项目文件目录
-  FRONT_PUBLIC_PATH = "f:/gankao/public"
-  #试卷生成路径
-  PAPER_PATH = "#{PUBLIC_PATH}/papers"
-  #试卷服务器访问路径
-  PAPER_URL_PATH = SERVER_PATH + "/papers"
-  #客户端访问试卷
-  PAPER_CLIENT_PATH = SERVER_PATH + "/paperjs"
-  #客户端访问答卷
-  ANSWER_CLIENT_PATH = SERVER_PATH + "/result"
-  #导出未确认名单路径
 
 
   COLLECTION_PATH = "/collections"
   #txt文件路径
-  TXTS_PATH = SERVER_PATH + "/txts"
   #统计信息路径
   LOG_PATH = "/count_log"
   #下载LOG
@@ -59,7 +49,7 @@ module Constant
   }
 
   #运营数据目录
-  DIR_ROOT="/DATA"
+  DIR_ROOT="/data"
   #大赛考试
   EXAMINATION_ID = 21
  
