@@ -1,7 +1,7 @@
 RailsTest3::Application.routes.draw do
   
   resources :categories
-
+  resources :users
 
   resources :sessions do
     collection do
