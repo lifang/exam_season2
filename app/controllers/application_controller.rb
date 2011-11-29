@@ -1,7 +1,11 @@
 # encoding: utf-8
 class ApplicationController < ActionController::Base
   protect_from_forgery
-
+  include ApplicationHelper
+  include UserRoleHelper
+  include RemotePaginateHelper
+  include Constant
+  
   def proof_code(len)
     #    chars = ('A'..'Z').to_a + ('a'..'z').to_a
     chars = (1..9).to_a
@@ -10,7 +14,5 @@ class ApplicationController < ActionController::Base
     return code_array.join("")
   end
 
-  include ApplicationHelper
-  include UserRoleHelper
-  
+
 end

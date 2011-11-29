@@ -3,6 +3,7 @@ class SessionsController < ApplicationController
   layout "login"
   def new
     @title="赶考-登录"
+    
   end
   
   def login_from
