@@ -1,6 +1,8 @@
 # encoding: utf-8
 class StatisticsController < ApplicationController
   require 'spreadsheet'
+
+  
   def index
     @register=Statistic.register_num
     @action=Statistic.action_num
@@ -118,13 +120,13 @@ class StatisticsController < ApplicationController
             types="英语六级"
           end
           num +=buyer.ids
-          sheet.row(index+1).concat ["#{types}","#{buyer.ids*36}"]
+          sheet.row(index+1).concat ["#{types}","#{(buyer.ids*36).to_s}"]
         end
-        sheet.row(buyers.size+1).concat ["小计", "#{num*36}"]
+        sheet.row(buyers.size+1).concat ["小计", "#{(num*36).to_s}"]
         next_line=buyers.size+1
         fees=ActionLog.find_by_sql("select count(*) ids from competes #{competes_expr}")
-        sheet.row(next_line+2).concat ["模考统计", "#{fees[0].ids*10}"]
-        sheet.row(next_line+3).concat ["总计", "#{fees[0].ids*10+num*36}"]
+        sheet.row(next_line+2).concat ["模考统计", "#{(fees[0].ids*10).to_s}"]
+        sheet.row(next_line+3).concat ["总计", "#{(fees[0].ids*10+num*36).to_s}"]
       end
       book.write file_url
     end
