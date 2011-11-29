@@ -3,8 +3,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title><% if @title != nil %><%= @title %><% else %>赶考<% end %></title>
-    <%= stylesheet_link_tag    "style" %>
+    <%= stylesheet_link_tag "style" %>
     <%= javascript_include_tag "application" %>
+    <%= javascript_include_tag "login_jquery" %>
     <%= javascript_include_tag "categories.js" %>
     <%= csrf_meta_tags %>
     <!--[if IE 6]>
@@ -25,7 +26,7 @@
       <div class="main">
         <div class="nav">
           <ul>
-            <li><a href="#" class="hover">科&nbsp;&nbsp;目</a></li>
+            <li><a href="/categories" <%  if controller.controller_name =="categories" %> class="hover" <% end %> >科&nbsp;&nbsp;目</a></li>
             <li><a href="#">用&nbsp;&nbsp;户</a></li>
             <li><a href="#">运营数据</a></li>
             <li><a href="#">大学英语四级</a></li>
@@ -36,5 +37,6 @@
         <div class="main_bottom"></div>
       </div>
     </div>
+    <%= render :partial => "/common/flash_div" %>
   </body>
 </html>

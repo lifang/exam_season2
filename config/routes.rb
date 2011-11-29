@@ -5,10 +5,14 @@ RailsTest3::Application.routes.draw do
       get :user_info,:action_info,:buyer_info,:fee_info
     end
   end
+  resources :users
   resources :categories do
     member do
       post :edit_post , :add_manage
       get :delete_manage
+    end
+    collection do
+      post :new_post
     end
   end
 
