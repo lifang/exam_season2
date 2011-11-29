@@ -5,6 +5,7 @@
     <title><% if @title != nil %><%= @title %><% else %>赶考<% end %></title>
     <%= stylesheet_link_tag "style" %>
     <%= javascript_include_tag "application" %>
+    <%= javascript_include_tag "categories.js" %>
     <%= csrf_meta_tags %>
     <!--[if IE 6]>
     <script src="js/DD_belatedPNG_0.0.8a-min.js"></script>
@@ -21,7 +22,19 @@
   <body>
     <div class="wrap">
       <div class="logo"><img src="/assets/login_logo.png" /></div>
-      <%= yield %>
+      <div class="main">
+        <div class="nav">
+          <ul>
+            <li><a href="#" class="hover">科&nbsp;&nbsp;目</a></li>
+            <li><a href="#">用&nbsp;&nbsp;户</a></li>
+            <li><a href="#">运营数据</a></li>
+            <li><a href="#">大学英语四级</a></li>
+          </ul>
+        </div>
+        <div class="nav_list"> </div>
+        <%= yield %>
+        <div class="main_bottom"></div>
+      </div>
     </div>
   </body>
 </html>

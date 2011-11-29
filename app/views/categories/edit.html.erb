@@ -1,2 +1,27 @@
-<h1>Categories#edit</h1>
-<p>Find me in app/views/categories/edit.html.erb</p>
+<div class="main">
+  <div class="nav">
+    <ul>
+      <li><a href="/categories" class="hover">科&nbsp;&nbsp;目</a></li>
+      <li><a href="#">用&nbsp;&nbsp;户</a></li>
+      <li><a href="#">运营数据</a></li>
+      <li><a href="#">大学英语四级</a></li>
+    </ul>
+  </div>
+  <div class="nav_list">
+
+  </div>
+  <div class="main_title">
+    <div class="m_t_h">编辑科目</div>
+  </div>
+
+  <div class="text_box">
+    <div class="bianji_ny">
+      <%= form_for :edit,:url=>"/categories/#{params[:id]}/edit_post",:html=>{:onsubmit=>""} do |f| %>
+       <div>科目名称 <input name="name" type="text" value="<%= @category.name %>"/></div>
+        <div>付费标准 <input name="price" type="text" value="<%= @category.price %>"/></div>
+        <div><button class="t_btn">完成</button></div>
+      <% end %>
+    </div>
+  </div>
+  <div class="main_bottom"></div>
+</div>

@@ -1,8 +1,9 @@
 #encoding: utf-8
 class Category < ActiveRecord::Base
-  has_many :problems
-  has_many :papers
-  has_many :examinations
+#  has_many :problems
+#  has_many :papers
+#  has_many :examinations
+  has_many :category_manages
   #判断分类是否存在
   FAURTH = 2
   SIXTH = 3
