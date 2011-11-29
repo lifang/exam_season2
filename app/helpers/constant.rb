@@ -23,34 +23,8 @@ module Constant
     :e263 => ['http://www.263.net','263']
   }
 
-
-  
   PUBLIC_PATH = "#{Rails.root}/public"
-
-
-  COLLECTION_PATH = "/collections"
-  #txt文件路径
-  #统计信息路径
-  LOG_PATH = "/count_log"
-  #下载LOG
-  LOG_PASSWORD = "gankao2011"
-  RIGHTS = {
-    :english_fourth_level => ["英语四级",1],
-    :english_sixth_level => ["英语六级",2]
-  }
-  PROOF_CHECK="jameswang@comdosoft.com"
-  #综合训练音频文件播放次数
-  CANPLAYTIME={
-    :practice_2=>3,
-    :practice_3=>1,
-    :practice_4=>3,
-    :practice_5=>3,
-    :practice_6=>3,
-  }
-
   #运营数据目录
   DIR_ROOT="/data"
-  #大赛考试
-  EXAMINATION_ID = 21
- 
+
 end
