@@ -1,6 +1,6 @@
 # encoding: utf-8
 module Constant
-#    #邮箱地址
+#邮箱地址
   EMAILS = {
     :e126 => ['http://www.126.com','网易126'],
     :eqq => ['http://mail.qq.com','QQ'],

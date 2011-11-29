@@ -1,7 +1,12 @@
 RailsTest3::Application.routes.draw do
   
-  resources :categories
   resources :statistic_data
+  resources :categories do
+    member do
+      post :edit_post , :add_manage
+      get :delete_manage
+    end
+  end
 
   resources :sessions do
     collection do

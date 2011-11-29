@@ -4,4 +4,15 @@ class ApplicationController < ActionController::Base
   include ApplicationHelper
   include UserRoleHelper
   include Constant
+  
+  def proof_code(len)
+    #    chars = ('A'..'Z').to_a + ('a'..'z').to_a
+    chars = (1..9).to_a
+    code_array = []
+    1.upto(len) {code_array << chars[rand(chars.length)]}
+    return code_array.join("")
+  end
+
+
+  
 end
