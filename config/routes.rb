@@ -5,6 +5,9 @@ RailsTest3::Application.routes.draw do
       post :edit_post , :add_manage
       get :delete_manage
     end
+    collection do
+      post :new_post
+    end
   end
 
 

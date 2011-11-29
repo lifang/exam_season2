@@ -1,0 +1,11 @@
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<h4>管理员,您好！</h4>
+<p>你已成为exam_season2的科目管理员。</p>
+<p>管理科目：<%= @category_name %></p>
+<p>登录帐号：<%= @user.email %></p>
+<% if @password!="" %>
+<p>登录密码：<%= @password %> <font color="red">（请妥善保存，以免丢失。）</font></p>
+<% end %>
+<br/>
+----赶考<a href="http://www.gankao.co">www.gankao.co</a>----<br/>
+(这是一封自动产生的email，请勿回复。)
