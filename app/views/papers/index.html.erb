@@ -1,0 +1,38 @@
+
+<div class="main_title">
+  <div class="m_t_btn"><button>新建试卷</button></div>
+  <div class="m_t_h">试卷列表</div>
+  <div class="m_t_select">
+    <select name="" size="1" onchange="javascript:select_checked(this,<%= params['category'] %>);">
+      <option value="全部">全部</option>
+      <option value="未审核">未审核</option>
+      <option value="已审核">已审核</option>
+    </select>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function select_checked(dom){
+    if(dom.options[dom.selectedIndex].value=="全部"){
+      window.location.href="/papers";
+    }
+    alert(dom.options[dom.selectedIndex].value);
+  }
+</script>
+
+
+<div class="text_box">
+  <% @papers.each do |paper| %>
+    <div class="t_list">
+      <div class="text_btn">
+        <button class="t_btn">编辑</button>
+        <button class="t_btn">审核</button>
+        <button class="t_btn">预览</button>
+      </div>
+      <h2><%= paper.title %></h2>
+      <span><%= paper.paper_url.nil? ? "未审核" : "已审核" %></span>
+    </div>
+  <% end %>
+  <%=will_paginate @papers ,:previous_label=>" &lt;", :next_label=>" &gt;", :inner_window => 1 %>
+
+</div>

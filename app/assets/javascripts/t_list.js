@@ -31,3 +31,16 @@ $(function(){
 		$(".yuejuan_div").css("display","none");
 	})
 })
+
+//提示框弹出层
+function show_flash_div() {
+    (function(){
+        generate_flash_div(".tishi_tab");
+        setTimeout(function(){
+            jQuery('.tishi_tab').fadeTo("slow",0);
+        }, 2500);
+        setTimeout(function(){
+            jQuery('.tishi_tab').css('display','none');
+        }, 3000);
+    })(jQuery)
+}
