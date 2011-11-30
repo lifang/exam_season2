@@ -1,0 +1,41 @@
+<div class="nav_list">
+  <ul>
+    <li><a href="#">试题</a></li>
+    <li>|</li>
+    <li><a href="#">真题</a></li>
+    <li>|</li>
+    <li><a href="#">模拟考试</a></li>
+    <li>|</li>
+    <li><a href="#">微课</a></li>
+    <li>|</li>
+    <li><a href="#">讨论</a></li>
+  </ul>
+</div>
+<div class="main_title">
+  <div class="m_t_btn"><button>新建试卷</button></div>
+  <div class="m_t_h">试卷列表</div>
+  <div class="m_t_select">
+    <select name="" size="1">
+      <option>全部</option>
+      <option>未审核</option>
+      <option>已审核</option>
+    </select>
+  </div>
+
+</div>
+
+<div class="text_box">
+  <% @papers.each do |paper| %>
+  <div class="t_list">
+    <div class="text_btn">
+      <button class="t_btn">编辑</button>
+      <button class="t_btn">审核</button>
+      <button class="t_btn">预览</button>
+    </div>
+    <h2><%= paper.title %></h2>
+    <span>未审核</span>
+  </div>
+  <% end %>
+ <%=will_paginate @papers ,:previous_label=>" &lt;", :next_label=>" &gt;", :inner_window => 1 %>
+
+</div>

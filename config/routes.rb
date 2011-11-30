@@ -1,5 +1,7 @@
 RailsTest3::Application.routes.draw do
   
+  resources :papers
+
   resources :categories
   resources :users
   resources :statistic_data
