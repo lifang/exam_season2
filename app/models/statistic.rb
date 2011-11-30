@@ -1,5 +1,5 @@
 # encoding: utf-8
-class StatisticData< ActiveRecord::Base
+class Statistic< ActiveRecord::Base
   TIME_EXPRESSION=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1"
 
   def self.register_num

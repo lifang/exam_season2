@@ -1,10 +1,17 @@
 RailsTest3::Application.routes.draw do
   
+
   resources :papers
 
   resources :categories
+
+  resources :statistics do
+    collection do
+      get :user_info,:action_info,:buyer_info,:fee_info
+    end
+  end
+  
   resources :users
-  resources :statistic_data
   resources :categories do
     member do
       post :edit_post , :add_manage
