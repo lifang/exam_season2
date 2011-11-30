@@ -3,59 +3,25 @@
   <div class="m_t_h">真题列表</div>
   <div class="m_t_select">
     <select name="" size="1">
-      <option>全部</option>
-      <option>未审核</option>
-      <option>已审核</option>
+      <option value="-1">全部</option>
+      <option value="">免费</option>
+      <option>收费</option>
     </select>
   </div>
 
 </div>
 
 <div class="text_box">
-  <div class="t_list tl_hover">
+  <% @similarities.each do |similarity| %>
+  <div class="t_list">
     <div class="text_btn">
       <button class="t_btn">编辑</button>
       <button class="t_btn">统计</button>
     </div>
-    <h2>2011年12月</h2>
-    <span>免费 2011年12月A卷</span>
+    <h2><%= similarity.title %></h2>
+    <span><%= similarity.is_free ? "免费" : "收费" %> <%= @exam_papers[similarity.id].join(" ") %></span>
   </div>
-
-  <div class="t_list">
-    <div class="text_btn" style="display: none;">
-      <button class="t_btn">编辑</button>
-      <button class="t_btn">统计</button>
-    </div>
-    <h2>2011年12月</h2>
-    <span>未审核</span>
-  </div>
-
-  <div class="t_list">
-    <div class="text_btn" style="display: none;">
-      <button class="t_btn">编辑</button>
-      <button class="t_btn">统计</button>
-    </div>
-    <h2>2011年12月</h2>
-    <span>未审核</span>
-  </div>
-
-  <div class="t_list">
-    <div class="text_btn" style="display: none;">
-      <button class="t_btn">编辑</button>
-      <button class="t_btn">统计</button>
-    </div>
-    <h2>2011年12月</h2>
-    <span>未审核</span>
-  </div>
-
-  <div class="t_list">
-    <div class="text_btn" style="display: none;">
-      <button class="t_btn">编辑</button>
-      <button class="t_btn">统计</button>
-    </div>
-    <h2>2011年12月</h2>
-    <span>未审核</span>
-  </div>
+  <% end %>
 
   <div class="sabrosus"><span class="disabled"> < </span><span class="current">1</span><a href="#?page=2">2</a><a href="#?page=3">3</a><a href="#?page=4">4</a><a href="#?page=5">5</a><a href="#?page=6">6</a><a href="#?page=7">7</a>...<a href="#?page=199">199</a><a href="#?page=200">200</a><a href="#?page=2"> > </a></div>
 
