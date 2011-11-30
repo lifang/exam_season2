@@ -3,7 +3,7 @@ $(function(){
         var name=$("#user_name").val().length;
         var password=$("#user_password").val().length;
         if(name<=0||name>50||password<=0||password>20){
-            alert("用户名或密码不能为空");
+            tishi_alert("用户名或密码不能为空");
         }else{
             $("form").submit();
         }
@@ -32,4 +32,34 @@ function show_flash_div() {
             jQuery('.tishi_tab').css('display','none');
         }, 3000);
     })(jQuery)
+}
+
+
+function create_element(element, name, id, class_name, type, ele_flag) {
+    var ele = document.createElement("" + element);
+    if (name != null)
+        ele.name = name;
+    if (id != null)
+        ele.id = id;
+    if (class_name != null)
+        ele.className = class_name;
+    if (type != null)
+        ele.type = type;
+    if (ele_flag == "innerHTML") {
+        ele.innerHTML = "";
+    } else {
+        ele.value = "";
+    }
+    return ele;
+}
+
+
+function tishi_alert(str){
+    var div=create_element("div",null,"flash_notice","tishi_tab",null,null);
+    var p=create_element("p","","","","innerHTML");
+    p.innerHTML=str;
+    div.appendChild(p);
+    var body=jQuery("body")
+    body.append(div);
+    show_flash_div();
 }
