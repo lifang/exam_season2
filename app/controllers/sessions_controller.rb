@@ -15,7 +15,15 @@ class SessionsController < ApplicationController
       cookies[:user_id]={:value =>@user.id, :path => "/", :secure  => false}
       cookies[:user_name]={:value =>@user.name, :path => "/", :secure  => false}
       cookie_role(cookies[:user_id])
-      redirect_to "/categories"
+      if is_admin? || is_paper_creater?
+        redirect_to "/categories"
+      else
+        cookies.delete(:user_id)
+        cookies.delete(:user_name)
+        cookies.delete(:user_roles)
+        flash[:error] = "抱歉，你没有访问权限"
+        redirect_to request.referer
+      end
     end
   end
 

@@ -1,9 +1,29 @@
 # encoding: utf-8
 class CategoriesController < ApplicationController
   
+  before_filter :access?
   #[get][collection]科目列表页面
   def index
-    @categories=Category.where("id>1").paginate(:per_page=>4,:page=>params[:page])
+    if is_admin?
+      @categories=Category.paginate(:per_page=>4,:page=>params[:page])
+    else
+      if is_paper_creater?
+        @categories=Category.paginate_by_sql("select c.* from categories c inner join category_manages cm on cm.category_id=c.id where cm.user_id=#{cookies[:user_id]} order by c.id asc",:per_page=>4,:page=>params[:page])
+      end
+    end
+    unless @categories.blank?
+      category_ids = []
+      @categories.collect { |c| category_ids << c.id }
+      category_manages = CategoryManage.find_by_sql(["select cm.category_id, u.email, cm.id cm_id
+        from category_manages cm inner join users u on cm.user_id = u.id
+        where cm.category_id in (?)#", category_ids])
+      @category_manages={}
+      category_manages.each do |cm|
+        @category_manages[cm.category_id]=[] if @category_manages[cm.category_id].nil?
+        @category_manages[cm.category_id]<<[cm.email,cm.cm_id]
+      end
+    end
+
   end
 
   
