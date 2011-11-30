@@ -49,8 +49,8 @@ img { border: none;}
 	border: none;
 	background: url(/assets/a_hover.png) no-repeat;
 }
-.nav_list { height: 50px; line-height: 50px; background: #139dd3; padding-left: 50px;}
-.nav_list li { float: left; display: inline; font-size: 12px; padding: 0 6px; color: #FFF;}
+.nav_list {background: #139dd3; padding: 5px 0 5px 50px; overflow: hidden;}
+.nav_list li { float: left; display: inline; font-size: 12px; padding: 6px; color: #FFF;}
 .nav_list li a {color: #FFF;}
 .nav_list li a:hover { text-decoration: underline;}
 
