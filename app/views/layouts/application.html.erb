@@ -40,7 +40,7 @@
         <% if !params['category'].nil? %>
           <div class="nav_list">
             <ul>
-              <li><a href="#">试题</a></li>
+              <li><a href="/papers?category=<%= params['category'] %>">试卷</a></li>
               <li>|</li>
               <li><a href="/similarities?category=<%= params['category'] %>">真题</a></li>
               <li>|</li>
@@ -51,10 +51,12 @@
               <li><a href="#">讨论</a></li>
             </ul>
           </div>
+        <% else %>
+          <div class="nav_list"> </div>
         <% end %>
-        
+
         <%= yield %>
-        
+
         <div class="main_bottom"></div>
       </div>
     </div>

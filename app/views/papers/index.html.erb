@@ -1,6 +1,6 @@
 
 <div class="main_title">
-  <div class="m_t_btn"><button>新建试卷</button></div>
+  <div class="m_t_btn"><button onclick="javascript:window.location.href='/papers/new?category=<%= params['category'] %>'">新建试卷</button></div>
   <div class="m_t_h">试卷列表</div>
   <div class="m_t_select">
     <select name="" onchange="javascript:select_checked(this,<%= params['category'] %>);">

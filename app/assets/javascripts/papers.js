@@ -1,5 +1,5 @@
 
-//试卷筛选，页面跳转   注意其中  1 = Paper::CHECKED[:YES]    0 = Paper::CHECKED[:NO]    2 = Paper::CHECKED[:ALL]
+//试卷筛选   注意其中  1 = Paper::CHECKED[:YES]    0 = Paper::CHECKED[:NO]    2 = Paper::CHECKED[:ALL]
   function select_checked(dom,category_id){
     if(dom.options[dom.selectedIndex].value=="2"){
       window.location.href="/papers?category="+category_id;
