@@ -29,14 +29,31 @@
             <li><a href="/categories" <%  if controller.controller_name =="categories" %> class="hover" <% end %> >科&nbsp;&nbsp;目</a></li>
             <li><a href="#">用&nbsp;&nbsp;户</a></li>
             <li><a href="#">运营数据</a></li>
-            <%  if !params['category'].nil? %>
+            <% if !params['category'].nil? %>
               <li><a href="#" class="hover"><%= Category.find(params['category']).name %></a></li>
             <% end %>
           </ul>
         </div>
       </div>
       <div class="main">
+        <% if !params['category'].nil? %>
+          <div class="nav_list">
+            <ul>
+              <li><a href="#">试题</a></li>
+              <li>|</li>
+              <li><a href="#">真题</a></li>
+              <li>|</li>
+              <li><a href="#">模拟考试</a></li>
+              <li>|</li>
+              <li><a href="#">微课</a></li>
+              <li>|</li>
+              <li><a href="#">讨论</a></li>
+            </ul>
+          </div>
+        <% end %>
+        
         <%= yield %>
+        
         <div class="main_bottom"></div>
       </div>
     </div>

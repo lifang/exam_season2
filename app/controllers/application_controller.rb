@@ -5,7 +5,11 @@ class ApplicationController < ActionController::Base
   include UserRoleHelper
   include RemotePaginateHelper
   include Constant
-  
+
+  def access?
+    deny_access unless signed_in?
+  end
+
   def proof_code(len)
     #    chars = ('A'..'Z').to_a + ('a'..'z').to_a
     chars = (1..9).to_a

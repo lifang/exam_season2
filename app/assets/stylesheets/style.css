@@ -243,3 +243,7 @@ img { border: none;}
 .part_info table { background: #CCC;}
 .part_info table td { background: #FFF; padding: 5px;}
 .part_info table textarea { width: 315px; height: 100px;}
+
+/* 提示弹出层*/
+.tishi_tab {width: 288px; height: 82px; padding:30px 10px 10px 10px; background: url(/assets/tishi_tab_bg.png) no-repeat; position: fixed; display: none;z-index: 9999;}
+.tishi_tab p  { text-align: center; line-height: 24px; font-size: 14px; font-family:"微软雅黑"; color: #ffffff;}
