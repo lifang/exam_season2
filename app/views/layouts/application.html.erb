@@ -22,17 +22,20 @@
 
   <body>
     <div class="wrap">
-      <div class="logo"><img src="/assets/login_logo.png" /></div>
-      <div class="main">
+      <div class="head">
+        <div class="logo" style="height:200;"><img src="/assets/login_logo.png" /></div>
         <div class="nav">
           <ul>
             <li><a href="/categories" <%  if controller.controller_name =="categories" %> class="hover" <% end %> >科&nbsp;&nbsp;目</a></li>
             <li><a href="#">用&nbsp;&nbsp;户</a></li>
             <li><a href="#">运营数据</a></li>
-            <li><a href="#">大学英语四级</a></li>
+            <%  if !params['category'].nil? %>
+              <li><a href="#" class="hover"><%= Category.find(params['category']).name %></a></li>
+            <% end %>
           </ul>
         </div>
-        <div class="nav_list"> </div>
+      </div>
+      <div class="main">
         <%= yield %>
         <div class="main_bottom"></div>
       </div>

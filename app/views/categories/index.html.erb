@@ -1,4 +1,4 @@
-
+<div class="nav_list"> </div>
   <div class="main_title">
     <div class="m_t_btn"><button onclick="window.location.href='/categories/new'">新建科目</button></div>
   </div>
@@ -15,11 +15,11 @@
             <input type="submit" value="添加管理员" class="t_btn"></input>
           <% end %>
         </div>
-        <div class="km_a"><a href="#">管理</a><a href="/categories/<%= category.id %>/edit">修改</a></div>
+        <div class="km_a"><a href="/papers?category=<%= category.id %>">管理</a><a href="/categories/<%= category.id %>/edit">修改</a></div>
       </div>
     <% end %>
     <div class="clear space20"></div>
-      <%=will_paginate @papers ,:previous_label=>" &lt;", :next_label=>" &gt;", :inner_window => 1 %>
+      <%=will_paginate @categories ,:previous_label=>" &lt;", :next_label=>" &gt;", :inner_window => 1 %>
 
   </div>
 

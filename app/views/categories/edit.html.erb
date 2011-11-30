@@ -1,12 +1,12 @@
-
+  <div class="nav_list"> </div>
   <div class="main_title">
     <div class="m_t_h">编辑科目</div>
   </div>
   <div class="text_box">
     <div class="bianji_ny">
-      <%= form_for :edit,:url=>"/categories/#{params[:id]}/edit_post",:html=>{:onsubmit=>""} do |f| %>
-       <div>科目名称 <input name="name" type="text" value="<%= @category.name %>"/></div>
-        <div>付费标准 <input name="price" type="text" value="<%= @category.price %>"/></div>
+      <%= form_for :edit,:url=>"/categories/#{params[:id]}/edit_post",:html=>{:onsubmit=>"return validate_category_form('edit')"} do |f| %>
+       <div>科目名称 <input name="name" id="category_name" type="text" value="<%= @category.name %>"/></div>
+        <div>付费标准 <input name="price" id="category_price" type="text" value="<%= @category.price %>"/></div>
         <div><button class="t_btn">完成</button></div>
       <% end %>
     </div>

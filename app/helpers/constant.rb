@@ -22,7 +22,7 @@ module Constant
     :ewo => ['http://mail.wo.com.cn','联通手机'],
     :e263 => ['http://www.263.net','263']
   }
-
+  SERVER_PATH = "http://localhost:3000"
   PUBLIC_PATH = "#{Rails.root}/public"
   #运营数据目录
   DIR_ROOT="/data"

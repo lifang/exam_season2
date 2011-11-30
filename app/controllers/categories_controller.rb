@@ -6,10 +6,12 @@ class CategoriesController < ApplicationController
     @categories=Category.where("id>1").paginate(:per_page=>4,:page=>params[:page])
   end
 
+  
   #[get][member]科目的编辑页面
   def edit
     @category=Category.find(params[:id])
   end
+
 
   #[post][member]编辑科目基本信息，名称和价格
   def edit_post
@@ -21,15 +23,19 @@ class CategoriesController < ApplicationController
 
   #[get][member]科目的新建页面
   def new
+    
   end
 
+  
   def new_post
-    @category=Category.new(:name=>params["name"],:price=>params["price"])
+    price = params["price"].nil? ? 0 : params["price"].to_i
+    @category=Category.new(:name=>params["name"],:price=>price)
     puts params["name"]+"  "+params["price"]
     flash[:notice]="新建科目出错" unless @category.save
     redirect_to "/categories"
   end
 
+  
   #[post][member]添加管理员。填写邮箱地址，生成默认密码，并发送邮件通知。
   def add_manage
     password=proof_code(6)
@@ -55,6 +61,7 @@ class CategoriesController < ApplicationController
     redirect_to request.referer
   end
 
+
   # 插入记录 category_manage表 （来源：add_manage）
   def insert_into_categorymanage_table(user,category_id,password,category_name)
     UserMailer.notice_manage(user,category_name,password).deliver
@@ -62,9 +69,11 @@ class CategoriesController < ApplicationController
     puts "数据库保存错误，来源于 insert_into_categorymanage_table (categories_controller.rb)"  unless @category.save
   end
 
+  
   #[get][member]删除管理员。直接点击邮箱后的红叉[X]
   def delete_manage
     CategoryManage.delete(params[:id])
     redirect_to request.referer
   end
+  
 end
