@@ -16,7 +16,7 @@ group :assets do
   gem 'coffee-rails', '~> 3.1.1'
   gem 'uglifier', '>= 1.0.3'
 end
-
+gem 'gchartrb', '0.8'
 gem 'jquery-rails'
 
 # To use ActiveModel has_secure_password

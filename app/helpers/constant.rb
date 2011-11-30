@@ -1,6 +1,6 @@
 # encoding: utf-8
 module Constant
-#邮箱地址
+  #邮箱地址
   EMAILS = {
     :e126 => ['http://www.126.com','网易126'],
     :eqq => ['http://mail.qq.com','QQ'],
@@ -26,5 +26,18 @@ module Constant
   PUBLIC_PATH = "#{Rails.root}/public"
   #运营数据目录
   DIR_ROOT="/data"
+
+  #运营数据操作类型
+  ACTION_TYPES={:action1=>1,:action2=>2,:action3=>3,:action4=>4}
+  
+  #考试类型
+  EXAM_TYPES={:forth_level=>1,:sixth_level=>2}
+
+  #考试价格
+  EXAM_PRICE={:vip=>36,:competes=>10}
+
+
+
+
 
 end

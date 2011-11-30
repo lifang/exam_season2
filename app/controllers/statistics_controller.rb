@@ -1,6 +1,7 @@
 # encoding: utf-8
 class StatisticsController < ApplicationController
   require 'spreadsheet'
+
   def index
     @register=Statistic.register_num
     @action=Statistic.action_num
@@ -95,36 +96,29 @@ class StatisticsController < ApplicationController
       sheet = book.create_worksheet
       if params[:action_types].to_i==1 ||params[:action_types].to_i==2
         sheet.row(0).concat %w{购买类型 购买人数}
-        buyers =ActionLog.find_by_sql("select count(*) ids,types from orders #{order_expr} group by types")
+        buyers =ActionLog.find_by_sql("select count(*) ids,ca.name from orders o inner join categories ca on ca.id=o.category_id #{order_expr} group by category_id")
+        total_num=0
         buyers.each_with_index do |buyer, index|
-          if buyer.types.to_i==1
-            types="英语四级"
-          elsif buyer.types.to_i==2
-            types="英语六级"
-          end
-          sheet.row(index+1).concat ["#{types}","#{buyer.ids}"]
+          total_num +=buyer.ids
+          sheet.row(index+1).concat ["#{buyer.name}","#{buyer.ids}"]
         end
         next_line=buyers.size+1
         fees=ActionLog.find_by_sql("select count(*) ids from competes #{competes_expr}")
         sheet.row(next_line+1).concat ["模考统计", "#{fees[0].ids}"]
+        sheet.row(next_line+3).concat ["人数总计","#{total_num+fees[0].ids}"]
       elsif params[:action_types].to_i==3 ||params[:action_types].to_i==4
-        sheet.row(0).concat %w{购买类型 购买金额}
-        buyers =ActionLog.find_by_sql("select count(*) ids,types from orders #{order_expr} group by types")
+        sheet.row(0).concat %w{fee_types total_price}
+        buyers =ActionLog.find_by_sql("select sum(o.total_price) total_prices,ca.name from orders o inner join categories ca on ca.id=o.category_id #{order_expr} group by category_id")
         num=0
         buyers.each_with_index do |buyer, index|
-          if buyer.types.to_i==1
-            types="英语四级"
-          elsif buyer.types.to_i==2
-            types="英语六级"
-          end
-          num +=buyer.ids
-          sheet.row(index+1).concat ["#{types}","#{buyer.ids*36}"]
+          sheet.row(index+1).concat ["#{buyer.name}","#{buyer.total_prices}"]
+          num +=buyer.total_prices
         end
-        sheet.row(buyers.size+1).concat ["小计", "#{num*36}"]
+        sheet.row(buyers.size+1).concat ["小计", "#{num}"]
         next_line=buyers.size+1
-        fees=ActionLog.find_by_sql("select count(*) ids from competes #{competes_expr}")
-        sheet.row(next_line+2).concat ["模考统计", "#{fees[0].ids*10}"]
-        sheet.row(next_line+3).concat ["总计", "#{fees[0].ids*10+num*36}"]
+        fees=ActionLog.find_by_sql("select sum(price) prices from competes #{competes_expr}")
+        sheet.row(next_line+2).concat ["模考统计", "#{fees[0].prices}"]
+        sheet.row(next_line+3).concat ["总计", "#{num+fees[0].prices}"]
       end
       book.write file_url
     end
