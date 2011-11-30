@@ -12,6 +12,11 @@ RailsTest3::Application.routes.draw do
   end
   
   resources :users
+  resources :similarities do
+    member do
+      get :statistics
+    end
+  end
   resources :categories do
     member do
       post :edit_post , :add_manage
