@@ -225,14 +225,14 @@ img { border: none;}
 .qa_h { padding: 5px 10px;}
 .qa_input { width: 250px; margin-left: 10px;}
 .qa_textarea { width: 250px; height: 50px; margin-left: 10px;}
-
-.add_label { width: 300px; padding: 10px; background: #FFF; border: 1px #CCC solid; position: absolute;}
+/*弹出层----------*/
+.add_label { width: 300px; padding: 10px; background: #FFF; border: 3px #CCC solid; position: absolute;}
 .add_label div { line-height: 24px; margin: 5px 0;}
 .add_word_box { width: 298px; height: 100px; border: 1px #CCC solid; margin: 2px 0;}
 .add_word_box li { float: left; margin: 5px; font-size: 16px;}
 .add_word_box li a { padding-left: 5px;}
 
-.part_info { width: 400px; padding: 10px; background: #FFF; border: 1px #CCC solid; position: absolute;}
+.part_info { width: 400px; padding: 10px; background: #FFF; border: 3px #CCC solid; position: absolute;}
 .part_info table { background: #CCC;}
 .part_info table td { background: #FFF; padding: 5px;}
 .part_info table textarea { width: 315px; height: 100px;}
@@ -255,7 +255,7 @@ img { border: none;}
 .yy_text h3 { font-size: 16px; color: #333; line-height: 24px;}
 .yy_text div { height: 24px; line-height: 24px;}
 .yy_text div a { margin-left: 10px;}
-.yy_img { width: 700px; float: left;}
+.yy_img { width: 700px; height: 100px; float: left;}
 
 /*词汇*/
 .word_text {}
@@ -268,3 +268,17 @@ img { border: none;}
 .word_search { float: left; margin: 8px 0 0 50px;}
 div.word_list { border: 1px #CCC solid; width: 800px; height: 400px; margin: 20px auto;}
 .word_list li { width:200px; float: left; height: 30px; line-height: 32px; text-align: center; font-size: 16px;}
+
+/*添加试卷弹出层*/
+
+.add_exPaper { width: 400px; padding: 20px; border: 3px #CCC solid; background: #FFF; position: absolute;}
+.add_ep_top { border-bottom: 1px #CCC solid; padding: 10px 0;}
+.add_ep_top h3 { font-size: 14px; line-height: 32px; height: 32px;}
+.add_ep_top div { height: 32px; line-height: 32px;}
+.exPaper_list { border-bottom: 1px #CCC dashed;}
+.exPaper_list a { margin: 0 10px;}
+
+.add_ep_div {padding: 10px 0;}
+.se_ep_list { height: 32px; line-height: 32px;}
+.se_ep_list span { float: right; color: #999;}
+.add_ep_btn { margin-top: 10px;}
