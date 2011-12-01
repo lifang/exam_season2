@@ -1,28 +1,34 @@
+<%= javascript_include_tag "similarities" %>
 <div class="main_title">
-  <div class="m_t_btn"><button>新建试卷</button></div>
+  <div class="m_t_btn">
+    <button onclick="javascript:window.location.href='/similarities/new?category=<%= params[:category] %>';">新建真题</button>
+  </div>
   <div class="m_t_h">真题列表</div>
   <div class="m_t_select">
-    <select name="" size="1">
-      <option value="-1">全部</option>
-      <option value="">免费</option>
-      <option>收费</option>
+    <select name="category_type" id="category_type"
+            onchange="javascript:search_similarity(<%= params[:category] %>)" size="1">
+      <option <%= "selected" if params[:category_type].nil? %> value="-1">全部</option>
+      <option <%= "selected" if params[:category_type] == Examination::IS_FREE[:YES].to_s %>
+        value="<%= Examination::IS_FREE[:YES] %>">免费</option>
+      <option <%= "selected" if params[:category_type] == Examination::IS_FREE[:NO].to_s %>
+        value="<%= Examination::IS_FREE[:NO] %>">收费</option>
     </select>
   </div>
-
 </div>
-
 <div class="text_box">
-  <% @similarities.each do |similarity| %>
-  <div class="t_list">
-    <div class="text_btn">
-      <button class="t_btn">编辑</button>
-      <button class="t_btn">统计</button>
-    </div>
-    <h2><%= similarity.title %></h2>
-    <span><%= similarity.is_free ? "免费" : "收费" %> <%= @exam_papers[similarity.id].join(" ") %></span>
-  </div>
+  <% if @similarities.blank? %>
+    <div class="t_list">暂无真题，您可以在 <a href="/similarities/new?category=<%= params[:category] %>">这里</a> 添加</div>
+  <% else %>
+    <% @similarities.each do |similarity| %>
+      <div class="t_list">
+        <div class="text_btn">
+          <button class="t_btn">编辑</button>
+          <button class="t_btn">统计</button>
+        </div>
+        <h2><%= similarity.title %></h2>
+        <span><%= similarity.is_free ? "免费" : "收费" %> <%= @exam_papers[similarity.id].join(" ") %></span>
+      </div>
+    <% end %>
   <% end %>
-
-  <div class="sabrosus"><span class="disabled"> < </span><span class="current">1</span><a href="#?page=2">2</a><a href="#?page=3">3</a><a href="#?page=4">4</a><a href="#?page=5">5</a><a href="#?page=6">6</a><a href="#?page=7">7</a>...<a href="#?page=199">199</a><a href="#?page=200">200</a><a href="#?page=2"> > </a></div>
-
+  <%=  will_paginate @similarities ,:previous_label=>" &lt;", :next_label=>" &gt;" %>
 </div>

@@ -3,8 +3,14 @@ class SimilaritiesController < ApplicationController
   #真题列表
   def index
     category_id = params[:category].to_i
-    @similarities = Examination.paginate_by_sql(["select e.id, e.title, e.is_free from examinations e
-        where e.category_id = ? and e.types = ?", category_id, Examination::TYPES[:OLD_EXAM]],
+    sql = "select e.id, e.title, e.is_free from examinations e
+        where e.category_id = #{category_id} and e.types = #{Examination::TYPES[:OLD_EXAM]}"
+    if !params[:category_type].nil? and params[:category_type] == Examination::IS_FREE[:YES].to_s
+      sql += " and e.is_free = #{Examination::IS_FREE[:YES]}"
+    elsif !params[:category_type].nil? and params[:category_type] == Examination::IS_FREE[:NO].to_s
+      sql += " and (e.is_free = #{Examination::IS_FREE[:NO]} or e.is_free is null)"
+    end
+    @similarities = Examination.paginate_by_sql(sql,
       :per_page => 5, :page => params[:page])
     @exam_papers = {}
     examination_ids = []
@@ -18,6 +24,10 @@ class SimilaritiesController < ApplicationController
         @exam_papers[paper.examination_id] << paper
       end
     end unless papers.blank?
+  end
+
+  def new
+    
   end
   
 end
