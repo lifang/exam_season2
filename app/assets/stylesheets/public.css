@@ -1,7 +1,4 @@
 /*CSS sabrosus style pagination*/
-.pagination a:active {border: #c1c1c1 1px solid; color: #000; background: #d0e7ee;}
-
-
 .pagination { padding: 6px; margin: 6px; text-align: center; font-size: 14px;}
 .pagination a { border: #c1c1c1 1px solid; padding: 6px 10px; color: #2e6ab1; margin-right: 4px; text-decoration: none;}
 .pagination a:hover { border: #289FDB 1px solid; color: #289FDB; background: #d0e7ee;}
