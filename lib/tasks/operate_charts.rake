@@ -35,7 +35,7 @@ namespace :operate do
       xy_axis_labels[i]=num
     end
     (0..3).each do |index|
-      lc = GoogleChart::LineChart.new('540x150', "", true)
+      lc = GoogleChart::LineChart.new('700x100', "", true)
       lc.data "charts", xy_axis_labels[index], '458B00'
       big_data=[]
       xy_axis_labels[index].each do |number|
@@ -60,7 +60,7 @@ namespace :operate do
       lc.show_legend = false
       write_img(URI.escape(lc.to_url({:chm => "o,0066FF,0,-1,6"})),index)
     end
-    puts "图表生成成功"
+    puts "Chart success generated"
   end
 
   def write_img(url,index)  #上传图片
@@ -70,14 +70,16 @@ namespace :operate do
     unless File.directory?(all_dir)
       Dir.mkdir(all_dir)
     end
+    file_url="#{all_dir}#{file_name}"
     open(url) do |fin|
-      File.open("#{all_dir}#{file_name}", "wb+") do |fout|
+      File.open(file_url, "wb+") do |fout|
         while buf = fin.read(1024) do
           fout.write buf
         end
       end
     end
-
+    Chart.create(:created_at=>Time.now.strftime("%Y%m%d").to_s,:types=>index,:image_url=>file_url) if File.exists?(file_url)
   end
+
 end
 

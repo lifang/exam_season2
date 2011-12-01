@@ -1,7 +1,7 @@
 # encoding: utf-8
 class CategoriesController < ApplicationController
-  
   before_filter :access?
+
   #[get][collection]科目列表页面
   def index
     if is_admin?

@@ -6,6 +6,7 @@
     <%= stylesheet_link_tag "style" %>
     <%= javascript_include_tag "application" %>
     <%= javascript_include_tag "login_jquery" %>
+    <%= javascript_include_tag "papers" %>
     <%= javascript_include_tag "categories" %>
     <%= csrf_meta_tags %>
     <!--[if IE 6]>
@@ -28,7 +29,7 @@
           <ul>
             <li><a href="/categories" <%  if controller.controller_name =="categories" %> class="hover" <% end %> >科&nbsp;&nbsp;目</a></li>
             <li><a href="#">用&nbsp;&nbsp;户</a></li>
-            <li><a href="#">运营数据</a></li>
+            <li><a href="/statistics" <%  if controller.controller_name =="statistics" %> class="hover" <% end %> >运营数据</a></li>
             <% if !params['category'].nil? %>
               <li><a href="#" class="hover"><%= Category.find(params['category']).name %></a></li>
             <% end %>
@@ -39,7 +40,7 @@
         <% if !params['category'].nil? %>
           <div class="nav_list">
             <ul>
-              <li><a href="#">试题</a></li>
+              <li><a href="/papers?category=<%= params['category'] %>">试卷</a></li>
               <li>|</li>
               <li><a href="/similarities?category=<%= params['category'] %>">真题</a></li>
               <li>|</li>
@@ -50,10 +51,12 @@
               <li><a href="#">讨论</a></li>
             </ul>
           </div>
+        <% else %>
+          <div class="nav_list"> </div>
         <% end %>
-        
+
         <%= yield %>
-        
+
         <div class="main_bottom"></div>
       </div>
     </div>

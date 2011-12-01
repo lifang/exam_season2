@@ -21,7 +21,7 @@ img { border: none;}
 	border: none;
 	cursor: pointer;
 }
-.t_se_input { height: 25px; line-height: 25px; float: left;}
+.t_se_input { height: 25px; line-height: 25px; float: left; color: #999;}
 
 /*登录*/
 .login_logo { margin-left: 120px; padding-top: 25px;}
@@ -106,13 +106,6 @@ img { border: none;}
 .pagination a:active {border: #c1c1c1 1px solid; color: #000; background: #d0e7ee;}
 .sabrosus span.current { border: #289FDB 1px solid;  padding: 6px 10px; font-weight: bold; color: #289FDB; margin-right: 4px; background: #d0e7ee;}
 .sabrosus span.disabled { border: #c1c1c1 1px solid; padding: 6px 10px; color: #929292; margin-right: 4px;}
-
-.pagination { padding: 6px; margin: 6px; text-align: center; font-size: 14px;}
-.pagination a { border: #c1c1c1 1px solid; padding: 6px 10px; color: #2e6ab1; margin-right: 4px; text-decoration: none;}
-.pagination a:hover { border: #289FDB 1px solid; color: #289FDB; background: #d0e7ee;}
-.pagination a:active {border: #c1c1c1 1px solid; color: #000; background: #d0e7ee;}
-.pagination em { border: #289FDB 1px solid;  padding: 6px 10px; font-weight: bold; color: #289FDB; margin-right: 4px; background: #d0e7ee;}
-.pagination span.disabled { border: #c1c1c1 1px solid; padding: 6px 10px; color: #929292; margin-right: 4px;}
 
 /*编辑真题------------*/
 .bianji_ny { padding: 10px 20px;}
@@ -232,18 +225,60 @@ img { border: none;}
 .qa_h { padding: 5px 10px;}
 .qa_input { width: 250px; margin-left: 10px;}
 .qa_textarea { width: 250px; height: 50px; margin-left: 10px;}
-
-.add_label { width: 300px; padding: 10px; background: #FFF; border: 1px #CCC solid; position: absolute;}
+/*弹出层----------*/
+.add_label { width: 300px; padding: 10px; background: #FFF; border: 3px #CCC solid; position: absolute;}
 .add_label div { line-height: 24px; margin: 5px 0;}
 .add_word_box { width: 298px; height: 100px; border: 1px #CCC solid; margin: 2px 0;}
 .add_word_box li { float: left; margin: 5px; font-size: 16px;}
 .add_word_box li a { padding-left: 5px;}
 
-.part_info { width: 400px; padding: 10px; background: #FFF; border: 1px #CCC solid; position: absolute;}
+.part_info { width: 400px; padding: 10px; background: #FFF; border: 3px #CCC solid; position: absolute;}
 .part_info table { background: #CCC;}
 .part_info table td { background: #FFF; padding: 5px;}
 .part_info table textarea { width: 315px; height: 100px;}
 
-/* 提示弹出层*/
-.tishi_tab {width: 288px; height: 82px; padding:30px 10px 10px 10px; background: url(/assets/tishi_tab_bg.png) no-repeat; position: fixed; display: none;z-index: 9999;}
-.tishi_tab p  { text-align: center; line-height: 24px; font-size: 14px; font-family:"微软雅黑"; color: #ffffff;}
+
+/*用户列表*/
+.user_search { float: right; margin: 6px 20px 0 0;}
+.user_list {}
+.user_tb { background: #CCC; font-size: 16px;}
+.user_tb tr { background: #FFF;}
+.user_tb td { height: 24px; line-height: 24px; padding: 5px; text-align: center;}
+.tr_bg { background: #333; color: #FFF;}
+.tr_bg a { color: #FFF;}
+
+/*用户详细*/
+.user_xx_box { width: 309px; float: left; font-size: 14px;}
+/*运营数据*/
+.yy_div { border-bottom: 1px #CCC solid; overflow: hidden; padding: 10px 0; margin: 10px 0;}
+.yy_text { width: 200px; float: left; padding-left: 20px;}
+.yy_text h3 { font-size: 16px; color: #333; line-height: 24px;}
+.yy_text div { height: 24px; line-height: 24px;}
+.yy_text div a { margin-left: 10px;}
+.yy_img { width: 700px; height: 100px; float: left;}
+
+/*词汇*/
+.word_text {}
+.word_text div { line-height: 24px; margin: 5px 0; clear: both; overflow: hidden;}
+.word_text div label { display: inline-block; width: 80px; text-align: right;}
+.word_text div input, .word_text div select {margin-top: 4px;}
+.word_text div textarea { width: 400px; height: 60px; margin-top: 4px;}
+.gl_add_a { margin-left: 20px;}
+.gl_add_span { margin: 0 5px;}
+.word_search { float: left; margin: 8px 0 0 50px;}
+div.word_list { border: 1px #CCC solid; width: 800px; height: 400px; margin: 20px auto;}
+.word_list li { width:200px; float: left; height: 30px; line-height: 32px; text-align: center; font-size: 16px;}
+
+/*添加试卷弹出层*/
+
+.add_exPaper { width: 400px; padding: 20px; border: 3px #CCC solid; background: #FFF; position: absolute;}
+.add_ep_top { border-bottom: 1px #CCC solid; padding: 10px 0;}
+.add_ep_top h3 { font-size: 14px; line-height: 32px; height: 32px;}
+.add_ep_top div { height: 32px; line-height: 32px;}
+.exPaper_list { border-bottom: 1px #CCC dashed;}
+.exPaper_list a { margin: 0 10px;}
+
+.add_ep_div {padding: 10px 0;}
+.se_ep_list { height: 32px; line-height: 32px;}
+.se_ep_list span { float: right; color: #999;}
+.add_ep_btn { margin-top: 10px;}
