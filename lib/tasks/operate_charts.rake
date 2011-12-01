@@ -78,7 +78,9 @@ namespace :operate do
         end
       end
     end
-    Chart.create(:created_at=>Time.now.strftime("%Y%m%d").to_s,:types=>index,:image_url=>file_url) if File.exists?(file_url)
+    image_url="/charts/#{Time.now.strftime("%Y%m%d").to_s}/#{file_name}"
+    Chart.create(:created_at=>Time.now.strftime("%Y-%m-%d").to_s,:types=>index,:image_url=>image_url) unless Chart.find(:first,:conditions =>"created_at=#{Time.now.strftime("%Y-%m-%d")} and image_url='#{image_url}'") if File.exists?(file_url)
+      puts "Chart #{index} success generated"
   end
 
 end
