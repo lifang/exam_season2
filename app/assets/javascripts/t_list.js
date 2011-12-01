@@ -32,6 +32,17 @@ $(function(){
 	})
 })
 
+function generate_flash_div(style) {
+    var scolltop = document.body.scrollTop|document.documentElement.scrollTop;
+    var win_height = document.documentElement.clientHeight;//jQuery(document).height();
+    var win_width = jQuery(window).width();
+    var z_layer_height = jQuery(style).height();
+    var z_layer_width = jQuery(style).width();
+    jQuery(style).css('top',(win_height-z_layer_height)/2 + scolltop);
+    jQuery(style).css('left',(win_width-z_layer_width)/2);
+    jQuery(style).css('display','block');
+}
+
 //提示框弹出层
 function show_flash_div() {
     (function(){
@@ -43,4 +54,48 @@ function show_flash_div() {
             jQuery('.tishi_tab').css('display','none');
         }, 3000);
     })(jQuery)
+}
+
+
+function create_element(element, name, id, class_name, type, ele_flag) {
+    var ele = document.createElement("" + element);
+    if (name != null)
+        ele.name = name;
+    if (id != null)
+        ele.id = id;
+    if (class_name != null)
+        ele.className = class_name;
+    if (type != null)
+        ele.type = type;
+    if (ele_flag == "innerHTML") {
+        ele.innerHTML = "";
+    } else {
+        ele.value = "";
+    }
+    return ele;
+}
+
+
+function tishi_alert(str){
+    var div = create_element("div",null,"flash_notice","tishi_tab",null,null);
+    var p = create_element("p","","","","innerHTML");
+    p.innerHTML = str;
+    div.appendChild(p);
+    var body = jQuery("body");
+    body.append(div);
+    show_flash_div();
+
+}
+
+//判断是否空或者全部是空格
+function checkspace(checkstr){
+    var str = '';
+    for(var i = 0; i < checkstr.length; i++) {
+        str = str + ' ';
+    }
+    if (str == checkstr){
+        return true;
+    } else{
+        return false;
+    }
 }
