@@ -5,7 +5,7 @@
       <div>历史累计：<%= @count_num[0] %> <a onclick="javascript:window.open('/statistics/user_info?action_types=1')" href="#">导出</a></div>
       <div>前30日累计：<%= @count_num[1] %> <a onclick="javascript:window.open('/statistics/user_info?action_types=2')" href="#">导出</a></div>
     </div>
-    <div class="yy_img"><img src="/charts/<%= Time.now.strftime("%Y%m%d").to_s %>/<%=Time.now.strftime("%Y%m%d").to_s  %>_0.jpg" /></div>
+    <div class="yy_img"><img src="<%= @chart_url[0] %>" /></div>
   </div>
   <div class="yy_div">
     <div class="yy_text">
@@ -13,7 +13,7 @@
       <div>历史累计：<%= @count_num[2] %> <a onclick="window.open('/statistics/action_info?action_types=1')" href="#">导出</a></div>
       <div>前30日累计：<%= @count_num[3] %> <a onclick="javascript:window.open('/statistics/action_info?action_types=2')" href="#">导出</a></div>
     </div>
-    <div class="yy_img"><img src="/charts/<%= Time.now.strftime("%Y%m%d").to_s %>/<%=Time.now.strftime("%Y%m%d").to_s  %>_1.jpg" /></div>
+    <div class="yy_img"><img src="<%= @chart_url[1] %>" /></div>
   </div>
   <div class="yy_div">
     <div class="yy_text">
@@ -21,7 +21,7 @@
       <div>历史累计：<%= @count_num[4]+@count_num[8] %> <a onclick="javascript:window.open('/statistics/buyer_info?action_types=1')" href="#">导出</a></div>
       <div>前30日累计：<%= @count_num[5]+@count_num[9] %> <a onclick="javascript:window.open('/statistics/buyer_info?action_types=2')" href="#">导出</a></div>
     </div>
-    <div class="yy_img"><img src="/charts/<%= Time.now.strftime("%Y%m%d").to_s %>/<%=Time.now.strftime("%Y%m%d").to_s  %>_2.jpg" /></div>
+    <div class="yy_img"><img src="<%= @chart_url[2] %>" /></div>
   </div>
   <div class="yy_div">
     <div class="yy_text">
@@ -29,7 +29,7 @@
       <div>历史累计：<%= @count_num[6]+@count_num[8]*10 %> <a onclick="javascript:window.open('/statistics/buyer_info?action_types=3')" href="#">导出</a></div>
       <div>前30日累计：<%= @count_num[7]+@count_num[9]*10 %> <a onclick="javascript:window.open('/statistics/buyer_info?action_types=4')" href="#">导出</a></div>
     </div>
-    <div class="yy_img"><img src="/charts/<%= Time.now.strftime("%Y%m%d").to_s %>/<%=Time.now.strftime("%Y%m%d").to_s  %>_3.jpg" /></div>
+    <div class="yy_img"><img src="<%= @chart_url[3] %>" /></div>
   </div>
 </div>
 

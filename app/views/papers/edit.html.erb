@@ -1,0 +1,146 @@
+<div class="main_title">
+  <span class="yl_bc"><a href="#">预览</a> | <a href="#">保存</a></span>
+  <div class="m_t_h">试卷信息</div>
+</div>
+<div class="text_box">
+  <div class="bj_info">
+    <div class="bj_info_left">
+      <ul>
+        <% @xml.elements['blocks'].each_element do |block|%>
+          <li id="blocks_li" class="blocks_li">
+            <a href="javascript:void(0);"><%= block.elements['base_info/title'].text %></a>
+            <span><img title="编辑" alt="icon_bi" src="/assets/icon_bi.png" /></span>
+          </li>
+        <% end %>
+      </ul>
+      <a href="#" class="add_a">添加部分</a>
+    </div>
+    <script type="text/javascript" >
+      // 控制"block"模块的显示/隐藏，默认显示第一个模块
+
+      $(function(){
+        $(".blocks_li").bind("click",function(){      
+          $(".blocks_li").removeClass("hover");
+          $(this).addClass("hover");
+          $(".bj_info_right").css("display","none");
+          $(".bj_info_right")[$(".blocks_li").index(this)].style.display="block";
+        })
+        $("#blocks_li").trigger("click");
+      })
+    </script>
+
+    <%  @xml.elements['blocks'].each_element do |block| ; block_id=block.attributes["id"] %>
+      <div class="bj_info_right" style="display:none;">
+        <div class="bj_info_top">
+          <div class="info_Box">
+            <div class="prev">&lt;</div>
+            <div class="info_show">
+              <ul class="info_ul">
+                <% problem_index = 0;
+                block.elements["problems"].each_element do |problem|
+                  problem_index += 1 %>
+                  <li><a href="javascript:void(0);" id="problems_li_<%= block_id %>" class="problems_li_<%= block_id %>"><%= problem_index %></a></li>
+                <% end %>
+              </ul>
+            </div>
+            <div class="next">&gt;</div>
+          </div>
+          <a href="#" class="add_a left_float">添加问题</a>
+        </div>
+
+        <script type="text/javascript" >
+          // 控制"problem"模块的显示/隐藏，同样默认显示第一个模块
+          
+          $(function(){
+            $(".problems_li_<%= block_id %>").bind("click",function(){
+              $(".problems_li_<%= block_id %>").removeClass("hover");
+              $(this).addClass("hover");
+              $(".bj_info_box_<%= block_id %>").css("display","none");
+              $(".bj_info_box_<%= block_id %>")[$(".problems_li_<%= block_id %>").index(this)].style.display="block";
+            })
+            $("#problems_li_<%= block_id %>").trigger("click"); //显示第一题
+          })
+
+        </script>
+
+        <% block.elements["problems"].each_element do |problem| %>
+          <div class="bj_info_box bj_info_box_<%= block_id %>" style="display:none;" >
+            <div class="question_content">
+              <div class="qc_h">说明 </div>
+              <div><textarea cols="" rows=""  class="qc_textarea1"><%= problem.elements["description"].text unless problem.elements["description"].nil? %></textarea></div>
+              <div class="qc_h"><span class="yl_bc"><a href="#">插入标记</a> | <a href="#">插入录音</a> | <a href="#">插入图片</a></span>题目内容</div>
+              <div><textarea cols="" rows=""  class="qc_textarea2"><%= problem.elements["title"].text unless problem.elements["title"].nil? %></textarea></div>
+            </div>
+
+            <div class="question_bianji">
+              <div class="qu_tab">
+                <ul class="q_tab_ul">
+                  <li class="hover">在题面中插入小题</li>
+                  <li>在题面后追加小题</li>
+                </ul>
+                <div class="q_tab_div">
+                  <div>
+                    <ul>
+                      <li><a href="#">单选题</a></li>
+                      <li><a href="#">填空题</a></li>
+                      <li><a href="#">拖拽题</a></li>
+                    </ul>
+                  </div>
+                  <div style="display: none;">
+                    <ul>
+                      <li><a href="#">单选题</a></li>
+                      <li><a href="#">多选题</a></li>
+                      <li><a href="#">简答题</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="clear"></div>
+              <div class="question_list_box">
+
+
+                <% problem.elements["questions"].each_element do |question| %>
+                  <div class="question_list">
+                    <div class="q_l_text">
+                      <div class="q_l_word"><p class="q_w_p">some/any/Some</p><p class="q_w_img"><img alt="icon_shu"   src="/assets/icon_shu.png"/></p></div>
+                      <div class="q_l_word"><p class="q_w_p"><em>限定词的用法</em></p><p>分值：<span class="red"><%= question.attributes["score"] unless question.attributes["score"].nil? %></span></p></div>
+                    </div>
+                    <div class="q_l_answer">
+                      <div class="qa_h"><span class="yl_bc"><input name="" type="checkbox" value=""/> 自动批改</span>答案</div>
+                      <input name="" type="text" value="<%= question.elements["answer"].text unless question.elements["answer"].nil? %>" class="qa_input"/>
+                      <div class="qa_h">解析</div>
+                      <textarea name="" cols="" rows="" class="qa_textarea"><%= question.elements["analysis"].text unless question.elements["analysis"].nil? %></textarea>
+                      <div class="clear"></div>
+                      <div class="q_label">
+                        <div><strong>知识点标签</strong></div>
+                        <div>限定词<a href="#" class="q_re_a">X</a></div>
+                        <a href="#">添加标签</a>
+                      </div>
+                      <div class="q_label">
+                        <div><strong>词汇</strong></div>
+                        <div>限定词<a href="#" class="q_re_a">X</a></div>
+                        <a href="#">添加词汇</a>
+                      </div>
+                      <div class="clear"></div>
+                      <div class="qa_h">分值 <input name="" type="text" value="<%= question.attributes["score"] unless question.attributes["score"].nil? %>" /></div>
+                      <div class="qa_h">
+                        &nbsp;&nbsp;&nbsp;&nbsp;<button class="t_btn">保存</button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<button class="t_btn">删除</button>
+                      </div>
+                    </div>
+                  </div>
+                <% end #questions循环结束 %>
+
+              </div>
+            </div>
+          </div>
+        <% end #problems循环结束 %>
+
+
+      </div>
+    <% end #blocks循环结束 %>
+
+
+    <div class="clear"></div>
+  </div>
+</div>

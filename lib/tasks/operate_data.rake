@@ -10,7 +10,12 @@ namespace :operate do
     buyers=web_buyer+competes_buyer
     fee_num=web_buyer*36+competes_buyer*10
     puts Statistic.find_by_created_at(1.day.ago.strftime("%Y-%m-%d"))
-    Statistic.create(:register_num=>register_num,:action_num=>action_num,:pay_num=>buyers,:money_num=>fee_num,:created_at=>1.day.ago.strftime("%Y-%m-%d"))  unless Statistic.find_by_created_at(1.day.ago.strftime("%Y-%m-%d"))
+    attrs={:register_num=>register_num,:action_num=>action_num,:pay_num=>buyers,:money_num=>fee_num,:created_at=>1.day.ago.strftime("%Y-%m-%d")}
+    unless Statistic.find_by_created_at(1.day.ago.strftime("%Y-%m-%d"))
+      Statistic.create(attrs)
+    else
+      Statistic.update_attributes(attrs)
+    end
   end
 end
 

@@ -2,6 +2,7 @@
 class User < ActiveRecord::Base
   has_many :user_role_relations,:dependent=>:destroy
   has_many :roles,:through=>:user_role_relations,:foreign_key=>"role_id"
+  has_many :category_manages,:dependent=>:destroy
   has_one :user_action_log
   attr_accessor :password
   validates:password, :confirmation=>true,:length=>{:within=>6..20}, :allow_nil => true
