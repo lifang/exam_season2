@@ -22,16 +22,47 @@ class SimilaritiesController < ApplicationController
       if @exam_papers[paper.examination_id].nil?
         @exam_papers[paper.examination_id] = [paper.p_title]
       else
-        @exam_papers[paper.examination_id] << paper
+        @exam_papers[paper.examination_id] << paper.p_title
       end
     end unless papers.blank?
   end
 
   def create
-    
+    unless params[:title].empty? or params[:paper_id].empty?
+      papers = Paper.find(params[:paper_id].split(","))
+      is_free = (params[:is_free].to_i ==  Examination::IS_FREE[:YES]) ?
+        Examination::IS_FREE[:YES] : Examination::IS_FREE[:NO]
+      similarity = Examination.create!(:title => params[:title].strip, :creater_id => cookies[:user_id].to_i,
+        :is_published => true, :category_id => params[:category_id],
+        :is_free => is_free, :types => Examination::TYPES[:OLD_EXAM])
+      similarity.update_paper("create", papers.to_a)
+      redirect_to "/similarities?category=#{params[:category_id]}"
+    else
+      flash[:error] = "请你填写试卷标题以及选择真题对应的试卷。"
+      redirect_to request.referer
+    end
   end
 
   def edit
+    @similarity = Examination.find(params[:id].to_i)
+    @papers = @similarity.papers
+    @paper_ids = []
+    @papers.collect { |p| @paper_ids << p.id  }
+  end
+
+  def update
+    unless params[:title].empty? or params[:paper_id].empty?
+      papers = Paper.find(params[:paper_id].split(","))
+      similarity = Examination.find(params[:id].to_i)
+      is_free = (params[:is_free].to_i ==  Examination::IS_FREE[:YES]) ?
+        Examination::IS_FREE[:YES] : Examination::IS_FREE[:NO]
+      similarity.update_attributes(:title => params[:title].strip, :is_free => is_free)
+      similarity.update_paper("update", papers.to_a)
+      redirect_to "/similarities?category=#{params[:category_id]}"
+    else
+      flash[:error] = "请你填写试卷标题以及选择真题对应的试卷。"
+      redirect_to request.referer
+    end
     
   end
 
@@ -53,7 +84,7 @@ class SimilaritiesController < ApplicationController
     sql += " and created_at <= '#{session[:maxtime]}'" unless session[:maxtime].nil? or session[:maxtime] == ""
     sql += " and title like '%#{session[:exam_title]}%'" unless (session[:exam_title].nil? or session[:exam_title].strip == "")
     sql += " order by created_at desc"
-    @papers = Paper.paginate_by_sql(sql, :per_page =>1, :page => params[:page])
+    @papers = Paper.paginate_by_sql(sql, :per_page =>3, :page => params[:page])
     respond_with (@papers) do |format|
       format.js
     end
@@ -61,7 +92,14 @@ class SimilaritiesController < ApplicationController
 
   #设置试卷
   def set_paper
-    
+    @paper_ids = params[:paper_ids]
+    unless @paper_ids.empty?
+      @papers = Paper.find(@paper_ids.split(","))
+      respond_with (@papers) do |format|
+        format.js
+      end
+    end
   end
+
   
 end

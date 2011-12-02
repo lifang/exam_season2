@@ -109,7 +109,7 @@ img { border: none;}
 
 /*编辑真题------------*/
 .bianji_ny { padding: 10px 20px;}
-.bianji_ny div { height: 30px; line-height: 30px; margin: 10px 0;}
+.bianji_ny div { line-height: 30px; margin: 10px 0;}
 .bj_h { padding: 10px 0; font-size: 16px; border-bottom: 1px #CCC solid; border-top: 1px #CCC solid;}
 .bj_span { margin-left: 10px; font-size: 12px;}
 

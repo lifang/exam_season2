@@ -65,7 +65,7 @@ module RemotePaginateHelper
       links.push    page_link_remote_or_span(entries.next_page,     'disabled', options.delete(:next_label), param, update, url)
 
       last_links = content_tag(:div, links.join(options.delete(:separator)), options)
-      return last_links.gsub("&lt;", "<").gsub("&gt;", ">").gsub("&quot;", "\"").gsub("&amp;amp;", "\&")
+      return last_links.gsub("&lt;", "<").gsub("&gt;", ">").gsub("&quot;", "\"").gsub("&amp;amp;", "\&").html_safe
     end
   end
   protected
@@ -74,7 +74,7 @@ module RemotePaginateHelper
       content_tag(:span, text, :class => span_class)
     else
       #link_to_remote text, :update => update, :url => "#{url}?#{param.to_sym}=#{page}", :method=>:get
-      link_to "#{text}", "#{url}&#{param.to_sym}=#{page}", :update => update, :remote => true
+      link_to "#{text}", "#{url}&#{param.to_sym}=#{page}", :remote => true
     end
   end
 end
