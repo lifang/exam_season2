@@ -1,0 +1,68 @@
+<%= javascript_include_tag "login_jquery" %>
+<div class="main_title">
+  <div class="m_t_btn">
+    <button onclick="javascript:window.location.href='/simulations/new?category=<%= params[:category]%>';">新建模考试卷</button>
+  </div>
+  <div class="m_t_h">模考列表</div>
+  <div class="m_t_select">
+    <select onchange="javascript:redirect_to(<%= params[:category] %>)" size="1">
+      <option <%= "selected" if params[:category_type].nil? %> value="-1">全部</option>
+      <option <%= "selected" if params[:category_type] == Examination::IS_FREE[:YES].to_s %>
+        value="<%= Examination::IS_FREE[:YES] %>">免费</option>
+      <option <%= "selected" if params[:category_type] == Examination::IS_FREE[:NO].to_s %>
+        value="<%= Examination::IS_FREE[:NO] %>">收费</option>
+      <option <%= "selected" if params[:category_type] == "2"%>
+        value="2">单独收费</option>
+    </select>
+  </div>
+</div>
+
+<div class="text_box">
+  <% if @simulations.blank? %>
+    <div class="t_list">暂无真题，您可以在 <a href="/simulations/new?category=<%= params[:category] %>">这里</a> 添加</div>
+  <% else %>
+    <% @simulations.each do |simulation| %>
+   
+      <div class="t_list">
+        <div class="text_btn">
+          <button class="t_btn">编辑</button>
+          <button class="t_btn yuejuan_btn" id="yuejuan_btn_<%=simulation.id  %>">阅卷</button>
+          <button class="t_btn">统计</button>
+          <button class="t_btn">暂停</button>
+        </div>
+        <h2>
+          <%= simulation.title %></h2>
+        <span><% if simulation.is_free.nil? or simulation.is_free==true and simulation.price.nil? %>
+            <%= "免费" %>
+          <% elsif simulation.is_free==false and simulation.price.nil?  %>
+            <%= "收费" %>
+          <% elsif simulation.is_free==false && !simulation.price.nil? %>
+            <%= "单独收费  金额：#{simulation.price}" %>
+          <% end %>
+          <%= @exam_papers[simulation.id].join(" ") %></span>
+      </div>
+      <div class="yuejuan_div" id="yuejuan_div_<%=simulation.id %>">
+        <h3>填入阅卷老师的E-mail</h3>
+        <p><input name="" type="text" /><button class="t_btn" id="t_btn_<%=simulation.id %>">添加</button></p>
+        <%  unless @exam_raters[simulation.id].nil? %>
+          <h3>阅卷老师列表</h3>
+          <% @exam_raters[simulation.id].each do |rater_email|%>
+            <p>
+              <%= rater_email %><a href="#"> [删除]</a>
+            </p>
+          <% end  %>
+        <% else %>
+          <%= "暂无阅卷老师，可再上方添加" %>
+        <% end %>
+        <span class="yj_x" id="yj_x_<%=simulation.id  %>"><img src="/assets/x.gif" /></span>
+      </div>
+     <script type="text/javascript">
+      show_rater(<%= simulation.id %>);
+    </script>
+    <% end %>
+  <% end %>
+  <%=  will_paginate @simulations ,:previous_label=>" &lt;", :next_label=>" &gt;" %>
+</div>
+
+
+

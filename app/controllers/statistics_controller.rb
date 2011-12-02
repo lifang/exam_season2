@@ -6,9 +6,7 @@ class StatisticsController < ApplicationController
     @count_num=Statistic.count_num
     charts=Chart.find_by_sql("select max(created_at), image_url,types from charts group by types")
     @chart_url={}
-    charts.each do |chart|
-      @chart_url[chart.types]=chart.image_url
-    end
+    charts.collect {|chart| @chart_url[chart.types]=chart.image_url }
   end
 
   def user_info
