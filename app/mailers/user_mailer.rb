@@ -6,6 +6,6 @@ class UserMailer < ActionMailer::Base
     @user=user
     @category_name=category_name
     @password=password
-    mail(:to => user.email, :subject =>"注意，你成为#{category_name}科目管理员" )
+    mail(:to => user.email, :subject =>"赶考网提醒您，你已成为“#{category_name}”的科目管理员" )
   end
 end

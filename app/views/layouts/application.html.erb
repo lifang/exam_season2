@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title><% if @title != nil %><%= @title %><% else %>赶考<% end %></title>
-    <%= stylesheet_link_tag "style" %>
+    <%= stylesheet_link_tag "application" %>
     <%= javascript_include_tag "application" %>
     <%= javascript_include_tag "login_jquery" %>
     <%= javascript_include_tag "papers" %>
@@ -29,7 +29,7 @@
           <ul>
             <li><a href="/categories" <%  if controller.controller_name =="categories" %> class="hover" <% end %> >科&nbsp;&nbsp;目</a></li>
             <li><a href="#">用&nbsp;&nbsp;户</a></li>
-            <li><a href="#">运营数据</a></li>
+            <li><a href="/statistics" <%  if controller.controller_name =="statistics" %> class="hover" <% end %> >运营数据</a></li>
             <% if !params['category'].nil? %>
               <li><a href="#" class="hover"><%= Category.find(params['category']).name %></a></li>
             <% end %>

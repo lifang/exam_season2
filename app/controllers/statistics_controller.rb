@@ -3,14 +3,12 @@ class StatisticsController < ApplicationController
   require 'spreadsheet'
 
   def index
-    @register=Statistic.register_num
-    @action=Statistic.action_num
-    web_buyer=Statistic.web_buyer_num
-    competes_buyer=Statistic.competes_buyer_num
-    @buyers_30=web_buyer["0"][0].ids+competes_buyer["0"][0].ids
-    @fee_30=web_buyer["0"][0].ids*36+competes_buyer["0"][0].ids*10
-    @buyers_all=web_buyer["1"][0].ids+competes_buyer["1"][0].ids
-    @fee_all=web_buyer["1"][0].ids*36+competes_buyer["1"][0].ids*10
+    @count_num=Statistic.count_num
+    charts=Chart.find_by_sql("select max(created_at), image_url,types from charts group by types")
+    @chart_url={}
+    charts.each do |chart|
+      @chart_url[chart.types]=chart.image_url
+    end
   end
 
   def user_info

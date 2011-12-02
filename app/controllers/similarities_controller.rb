@@ -26,7 +26,11 @@ class SimilaritiesController < ApplicationController
     end unless papers.blank?
   end
 
-  def new
+  def create
+    
+  end
+
+  def edit
     
   end
   

@@ -1,12 +1,18 @@
+<%= javascript_include_tag "similarities" %>
 <div class="main_title">
   <div class="m_t_h">新建真题</div>
 </div>
-
+<%= form_for :similarity ,:url=>"/similarities", :method => "post",
+    :html => {:onsubmit => "return new_similarity_form()"} do |f|%>
 <div class="text_box">
   <div class="bianji_ny">
-    <div>名称 <input name="" type="text" /></div>
-    <div>试卷：<a href="#">添加试卷</a></div>
-    <div><input name="" type="checkbox" value="" /> 免费使用</div>
-    <div><button class="t_btn">创建</button></div>
+    <input type="hidden" name="category_id" id="category_id" value="<%= params[:category] %>" />
+    <div>名称 <input name="title" id="title" type="text" size="50" /></div>
+    <input type="hidden" name="paper_id" id="paper_id" value="" />
+    <div>试卷：<a href="javascript:void(0);" onclick="javascript:add_paper();">添加试卷</a></div>
+    <div><input name="is_free" id="is_free" type="checkbox" value="1" /> 免费使用</div>
+    <div><button type="submit" class="t_btn">创建</button></div>
   </div>
 </div>
+<% end %>
+<%= render :partial => "/common/add_expaper" %>
