@@ -16,6 +16,10 @@ RailsTest3::Application.routes.draw do
     member do
       get :statistics
     end
+    collection do
+      get :paper_list
+      post :get_papers, :set_paper
+    end
   end
   resources :simulations do
     member do

@@ -1,5 +1,6 @@
 # encoding: utf-8
 class SimilaritiesController < ApplicationController
+  respond_to :html, :xml, :json
   #真题列表
   def index
     category_id = params[:category].to_i
@@ -31,6 +32,35 @@ class SimilaritiesController < ApplicationController
   end
 
   def edit
+    
+  end
+
+  #挑选试卷
+  def get_papers
+    session[:mintime] = nil
+    session[:maxtime] = nil
+    session[:exam_title] = nil
+    session[:category] = params[:category]
+    session[:mintime] = params[:mintime]
+    session[:maxtime] = params[:maxtime]
+    session[:exam_title] = params[:exam_title]
+    redirect_to paper_list_similarities_path
+  end
+
+  def paper_list
+    sql = "select * from papers where category_id = #{session[:category]} and paper_url is not null"
+    sql += " and created_at >= '#{session[:mintime]}'" unless session[:mintime].nil? or session[:mintime] == ""
+    sql += " and created_at <= '#{session[:maxtime]}'" unless session[:maxtime].nil? or session[:maxtime] == ""
+    sql += " and title like '%#{session[:exam_title]}%'" unless (session[:exam_title].nil? or session[:exam_title].strip == "")
+    sql += " order by created_at desc"
+    @papers = Paper.paginate_by_sql(sql, :per_page =>1, :page => params[:page])
+    respond_with (@papers) do |format|
+      format.js
+    end
+  end
+
+  #设置试卷
+  def set_paper
     
   end
   
