@@ -1,0 +1,18 @@
+<% if @papers.blank? %>
+  <div class="se_ep_list">
+    查询无结果，您可以更改您的查询条件重新查询试卷
+  </div>
+<% else %>
+  <%= form_for :set_paper_form, :url => "/similarities/set_paper", :remote => true,
+    :html => {:onsubmit => "return check_p_sel()"} do |f| -%>
+    <input type="hidden" name="paper_ids" id="paper_ids" value="" />
+    <% @papers.each do |paper| %>
+      <div class="se_ep_list">
+        <span><%= paper.created_at.strftime("%Y-%m-%d") %></span>
+        <input name="select_paper" type="checkbox" value="<%= paper.id %>" onclick="javascript:create_exam('check_b');"/>&nbsp;
+        <%= paper.title %></div>
+    <% end  %>
+    <%=  will_paginate_remote(@papers , "category=#{session[:category]}" ,{:url => "/similarities/paper_list"}) %>
+    <div class="add_ep_btn"><button>指定为本场考试试卷</button></div>
+  <% end %>
+<% end %>

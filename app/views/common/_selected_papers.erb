@@ -1,0 +1,8 @@
+<% @papers.each do |paper| %>
+  <div class="bj_h">
+    <%= paper.title %>
+    <span class="bj_span">
+      <a href="javascript:void(0);" onclick="javascript:remove_paper(this, <%= paper.id %>);" >[删除]</a>
+    </span>
+  </div>
+<% end %>

@@ -109,7 +109,7 @@ img { border: none;}
 
 /*编辑真题------------*/
 .bianji_ny { padding: 10px 20px;}
-.bianji_ny div { height: 30px; line-height: 30px; margin: 10px 0;}
+.bianji_ny div { line-height: 30px; margin: 10px 0;}
 .bj_h { padding: 10px 0; font-size: 16px; border-bottom: 1px #CCC solid; border-top: 1px #CCC solid;}
 .bj_span { margin-left: 10px; font-size: 12px;}
 
@@ -300,7 +300,7 @@ div.word_xx { width: 800px; margin: 20px auto;}
 
 /*添加试卷弹出层*/
 
-.add_exPaper { width: 400px; padding: 20px; border: 3px #999 solid; background: #FFF; position: fixed; z-index:999;}
+.add_exPaper { width: 400px; padding: 20px; border: 3px #CCC solid; background: #FFF; position: fixed;z-index: 999;}
 .add_ep_top { border-bottom: 1px #CCC solid; padding: 10px 0;}
 .add_ep_top h3 { font-size: 14px; line-height: 32px; height: 32px;}
 .add_ep_top div { height: 32px; line-height: 32px;}

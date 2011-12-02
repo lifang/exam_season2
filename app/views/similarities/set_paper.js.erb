@@ -1,0 +1,7 @@
+<% unless @papers.blank? %>
+  $(".add_exPaper").css("display", "none");
+  $("#paper_id").attr("value", "<%= @paper_ids %>");
+  $('#selected_papers').html("<%= escape_javascript(render :partial => "/common/selected_papers") %>");
+<% else %>
+  tishi_alert("请选中作为当前真题的试卷。");
+<% end %>
