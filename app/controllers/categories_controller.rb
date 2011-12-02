@@ -41,12 +41,12 @@ class CategoriesController < ApplicationController
   end
 
 
-  #[get][member]科目的新建页面
+  #[get][member]新建页面
   def new
     
   end
 
-  
+  #[post][collection]新建科目
   def new_post
     price = params["price"].nil? ? 0 : params["price"].to_i
     @category=Category.new(:name=>params["name"],:price=>price)
@@ -66,16 +66,16 @@ class CategoriesController < ApplicationController
       @user.encrypt_password
       if @user.save
         flash[:notice]="管理员添加成功！"
-        set_role(@user.id,Role::TYPES[:TEACHER])
-        insert_into_categorymanage_table(@user,params[:id],password,category_name)
+        set_role(@user.id,Role::TYPES[:TEACHER])  #设置用户的身份为“老师”
+        insert_into_categorymanage_table(@user,params[:id],password,category_name)  #建立用户和科目的关联
       else
         flash[:notice]="管理员添加失败！(保存数据库失败)"
       end
     else
       if CategoryManage.find_by_user_id_and_category_id(@user.id,params[:id]).nil?
         flash[:notice]="管理员添加成功！"
-        set_role(@user.id,Role::TYPES[:TEACHER])
-        insert_into_categorymanage_table(@user,params[:id],"",category_name)
+        set_role(@user.id,Role::TYPES[:TEACHER]) #设置用户的身份为“老师”
+        insert_into_categorymanage_table(@user,params[:id],"",category_name) #建立用户和科目的关联
       else
         flash[:notice]="该用户已经是管理员，请勿重复添加!"
       end
@@ -95,7 +95,7 @@ class CategoriesController < ApplicationController
     UserRoleRelation.create(:user_id=>user_id,:role_id=>role) if UserRoleRelation.find_by_sql("select id from user_role_relations where user_id=#{user_id} and role_id=#{role}").blank?
   end
   
-  #[get][member]删除管理员。直接点击邮箱后的红叉[X]
+  #[get][member]删除科目管理员。
   def delete_manage
     CategoryManage.delete(params[:id])
     redirect_to request.referer
