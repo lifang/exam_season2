@@ -1,4 +1,4 @@
-<%= javascript_include_tag "login_jquery" %>
+<%= javascript_include_tag "simulation_new" %>
 <div class="main_title">
   <div class="m_t_btn">
     <button onclick="javascript:window.location.href='/simulations/new?category=<%= params[:category]%>';">新建模考试卷</button>
@@ -43,12 +43,12 @@
       </div>
       <div class="yuejuan_div" id="yuejuan_div_<%=simulation.id %>">
         <h3>填入阅卷老师的E-mail</h3>
-        <p><input name="" type="text" /><button class="t_btn" id="t_btn_<%=simulation.id %>">添加</button></p>
+        <p><input name="" type="text" id="email_<%= simulation.id %>" /><button class="t_btn" onclick="javascript:valid_email(<%= simulation.id %>)" >添加</button></p>
         <%  unless @exam_raters[simulation.id].nil? %>
           <h3>阅卷老师列表</h3>
           <% @exam_raters[simulation.id].each do |rater_email|%>
             <p>
-              <%= rater_email %><a href="#"> [删除]</a>
+              <%= rater_email %><a onclick="javascript:delete_rater('<%= rater_email %>')"> [删除]</a>
             </p>
           <% end  %>
         <% else %>

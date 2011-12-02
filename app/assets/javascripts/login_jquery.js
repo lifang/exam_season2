@@ -11,15 +11,7 @@ $(function(){
 })   //验证登陆，符合格式要求则提交表单
 
 
-//选择收费，免费和单独收费
-function redirect_to(category_id) {
-    var option_value = $("select option:selected").attr("value");
-    if (option_value == "-1") {
-        window.location.href = "simulations?category=" + category_id;
-    } else {
-        window.location.href = "simulations?category="+ category_id +"&category_type=" + option_value;
-    }
-}
+
 
 //无法固定div的位置
 //$(function(){
