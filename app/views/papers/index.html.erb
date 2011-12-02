@@ -15,12 +15,12 @@
   <% @papers.each do |paper| %>
     <div class="t_list">
       <div class="text_btn">
-        <button class="t_btn">编辑</button>
+        <button class="t_btn" onclick="javascript:window.location.href='/papers/<%= paper.id %>/edit?category=<%= params["category"] %>'">编辑</button>
         <button class="t_btn">审核</button>
         <button class="t_btn">预览</button>
       </div>
       <h2><%= paper.title %></h2>
-      <span><%= paper.paper_url.nil? ? "未审核" : "已审核" %></span>
+      <span><%= paper.paper_js_url.nil? ? "未审核" : "已审核" %></span>
     </div>
   <% end %>
   <%=will_paginate @papers ,:previous_label=>" &lt;", :next_label=>" &gt;", :inner_window => 1 %>

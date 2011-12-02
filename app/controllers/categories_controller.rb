@@ -56,7 +56,7 @@ class CategoriesController < ApplicationController
   end
 
   
-  #[post][member]添加管理员。填写邮箱地址，生成默认密码，并发送邮件通知。
+  #[post][member]添加管理员。填写邮箱地址，生成默认密码，并发送邮件通知，默认设置teacher权限，。
   def add_manage
     password=proof_code(6)
     category_name=params["category_name"]
@@ -66,6 +66,7 @@ class CategoriesController < ApplicationController
       @user.encrypt_password
       if @user.save
         flash[:notice]="管理员添加成功！"
+        set_role(@user.id,Role::TYPES[:TEACHER])
         insert_into_categorymanage_table(@user,params[:id],password,category_name)
       else
         flash[:notice]="管理员添加失败！(保存数据库失败)"
@@ -73,6 +74,7 @@ class CategoriesController < ApplicationController
     else
       if CategoryManage.find_by_user_id_and_category_id(@user.id,params[:id]).nil?
         flash[:notice]="管理员添加成功！"
+        set_role(@user.id,Role::TYPES[:TEACHER])
         insert_into_categorymanage_table(@user,params[:id],"",category_name)
       else
         flash[:notice]="该用户已经是管理员，请勿重复添加!"
@@ -82,13 +84,16 @@ class CategoriesController < ApplicationController
   end
 
 
-  # 插入记录 category_manage表 （来源：add_manage）
+  # 设置用户和科目的关联 category_manage表 （用处：add_manage）
   def insert_into_categorymanage_table(user,category_id,password,category_name)
     UserMailer.notice_manage(user,category_name,password).deliver
-    @category = CategoryManage.new(:user_id=>@user.id,:category_id=>category_id.to_i)
-    puts "数据库保存错误，来源于 insert_into_categorymanage_table (categories_controller.rb)"  unless @category.save
+    @category = CategoryManage.create(:user_id=>user.id,:category_id=>category_id.to_i)
   end
 
+  # 设置用户的身份 （用处：add_manage）
+  def set_role(user_id,role)
+    UserRoleRelation.create(:user_id=>user_id,:role_id=>role) if UserRoleRelation.find_by_sql("select id from user_role_relations where user_id=#{user_id} and role_id=#{role}").blank?
+  end
   
   #[get][member]删除管理员。直接点击邮箱后的红叉[X]
   def delete_manage
