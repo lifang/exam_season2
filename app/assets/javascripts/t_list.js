@@ -99,3 +99,7 @@ function checkspace(checkstr){
         return false;
     }
 }
+
+function pop_window_closed(tab) {
+    tab.parentNode.parentNode.style.display = "none";
+}

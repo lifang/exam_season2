@@ -271,7 +271,7 @@ div.word_list { border: 1px #CCC solid; width: 800px; height: 400px; margin: 20p
 
 /*添加试卷弹出层*/
 
-.add_exPaper { width: 400px; padding: 20px; border: 3px #CCC solid; background: #FFF; position: absolute;}
+.add_exPaper { width: 400px; padding: 20px; border: 3px #CCC solid; background: #FFF; position: fixed;z-index: 999;}
 .add_ep_top { border-bottom: 1px #CCC solid; padding: 10px 0;}
 .add_ep_top h3 { font-size: 14px; line-height: 32px; height: 32px;}
 .add_ep_top div { height: 32px; line-height: 32px;}
