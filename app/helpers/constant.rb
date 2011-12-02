@@ -24,6 +24,7 @@ module Constant
   }
   SERVER_PATH = "http://localhost:3000"
   PUBLIC_PATH = "#{Rails.root}/public"
+  PAPER_XML_PATH = "#{Rails.root}/public/paper_xml"
   #运营数据目录
   DIR_ROOT="/data"
 
