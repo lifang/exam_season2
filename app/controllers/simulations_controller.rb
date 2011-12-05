@@ -1,5 +1,6 @@
 # encoding: utf-8
 class SimulationsController < ApplicationController
+  respond_to :html, :xml, :json
   #模考列表
   
   def index
@@ -37,6 +38,18 @@ class SimulationsController < ApplicationController
         @exam_papers[paper.examination_id] << paper
       end
     end unless papers.blank?
+  end
+
+
+
+  def add_rater
+    @examination=params[:examination_id]
+    ExamRater.create(:email=>params[:email],:examination_id=>@examination,:author_code => proof_code(6)) unless ExamRater.where("email=#{params[:email]} and examination_id=#{@examination}")
+    @exam_rater=ExamRater.find_by_sql("select er.examination_id, er.email from exam_raters er where er.examination_id = #{@examination}")
+    respond_to do |format|
+      format.js
+    end
+
   end
 
   def create

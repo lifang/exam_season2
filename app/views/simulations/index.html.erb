@@ -43,7 +43,7 @@
       </div>
       <div class="yuejuan_div" id="yuejuan_div_<%=simulation.id %>">
         <h3>填入阅卷老师的E-mail</h3>
-        <p><input name="" type="text" id="email_<%= simulation.id %>" /><button class="t_btn" onclick="javascript:valid_email(<%= simulation.id %>)" >添加</button></p>
+        <p><input name="" type="text" id="email_<%= simulation.id %>" /><button class="t_btn" onclick="javascript:valid_email(<%= simulation.id %>)">添加</button></p>
         <%  unless @exam_raters[simulation.id].nil? %>
           <h3>阅卷老师列表</h3>
           <% @exam_raters[simulation.id].each do |rater_email|%>

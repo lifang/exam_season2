@@ -23,6 +23,10 @@ RailsTest3::Application.routes.draw do
   end
   resources :simulations do
     member do
+      
+    end
+    collection do
+      post :add_rater
     end
   end
   resources :categories do
