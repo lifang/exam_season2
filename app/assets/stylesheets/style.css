@@ -245,7 +245,7 @@ img { border: none;}
 .add_word_box li { float: left; margin: 5px; font-size: 16px;}
 .add_word_box li a { padding-left: 5px;}
 
-.part_info { width: 400px; padding: 10px; background: #FFF; border: 3px #999 solid; position: absolute;}
+.part_info { width: 400px; padding: 10px; background: #FFF; border: 3px #999 solid; position: fixed ;z-index :1000;}
 .part_info table { background: #CCC;}
 .part_info table td { background: #FFF; padding: 5px;}
 .part_info table textarea { width: 315px; height: 100px;}
@@ -311,3 +311,6 @@ div.word_xx { width: 800px; margin: 20px auto;}
 .se_ep_list { height: 32px; line-height: 32px;}
 .se_ep_list span { float: right; color: #999;}
 .add_ep_btn { margin-top: 10px;}
+
+/*备考弹出层--------------------*/
+.zhezhao { width:100%; left:0; position:absolute; z-index: 99; top:0; background:#000000; opacity:0.5; filter:alpha(opacity=50); z-index:888; display: none;}

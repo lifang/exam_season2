@@ -1,7 +1,11 @@
 RailsTest3::Application.routes.draw do
   
 
-  resources :papers
+  resources :papers do
+    member do
+      post :form_block_baseinfo
+    end
+  end
 
   resources :categories
 
