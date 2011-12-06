@@ -98,22 +98,34 @@
               <div class="clear"></div>
               <div class="question_list_box">
 
-
                 <% problem.elements["questions"].each_element do |question| %>
+                  <% answer = question.elements["answer"].text %><% correct_type = question.attributes["correct_type"].to_i %>
+                  <input type="hidden" value="<%= correct_type %>" class="correct_type" id="correct_type" />
+
                   <div class="question_list">
                     <div class="q_l_text">
                       <div class="q_l_word"><p class="q_w_p">some/any/Some</p><p class="q_w_img"><img alt="icon_shu"   src="/assets/icon_shu.png"/></p></div>
                       <div class="q_l_word"><p class="q_w_p"><em>限定词的用法</em></p><p>分值：<span class="red"><%= question.attributes["score"] unless question.attributes["score"].nil? %></span></p></div>
                     </div>
                     <div class="q_l_answer">
+                      <div class="qa_h">小题描述<textarea name="" cols="" rows="" class="qa_textarea"><%= question.elements["description"].text unless question.elements["description"].nil? %></textarea></div>
                       <div class="qa_h"><span class="yl_bc"><input name="" type="checkbox" value=""/> 自动批改</span>答案</div>
-                      <input name="" type="text" value="<%= question.elements["answer"].text unless question.elements["answer"].nil? %>" class="qa_input"/>
+                      <% if correct_type == Problem::QUESTION_TYPE[:SINGLE_CALK] %>
+                        <input name="" type="text" value="<%= answer unless answer.nil? %>" class="qa_input"/>
+                      <% elsif correct_type == Problem::QUESTION_TYPE[:SINGLE_CHOSE] %>
+                        <ul><% question.elements["questionattrs"].text.split(";-;").each do |attr| %><li><input name="" type="radio" value="" <% if answer.split(";|;").include?(attr) %>checked="true"<% end %> /><input name="" type="text" value="<%= attr %>" /><a href="#">[删除]</a></li><% end %></ul>
+                      <% elsif correct_type == Problem::QUESTION_TYPE[:MORE_CHOSE] %>
+                        <ul><% question.elements["questionattrs"].text.split(";-;").each do |attr| %><li><input name="" type="checkbox" value="" <% if answer.split(";|;").include?(attr) %>checked="true"<% end %> /><input name="" type="text" value="<%= attr %>" /><a href="#">[删除]</a></li><% end %></ul>
+                      <% elsif correct_type == Problem::QUESTION_TYPE[:JUDGE] %>
+                        <ul><li><input name="" type="radio" value="" <% if answer=="1" %>checked="true"<% end %> /> 是/对</li><li><input name="" type="radio" value="" <% if answer=="0" %>checked="true"<% end %> /> 否/错</li></ul>
+                      <% end #小题分类显示结束 %>
+
                       <div class="qa_h">解析</div>
                       <textarea name="" cols="" rows="" class="qa_textarea"><%= question.elements["analysis"].text unless question.elements["analysis"].nil? %></textarea>
                       <div class="clear"></div>
                       <div class="q_label">
-                        <div><strong>知识点标签</strong></div>
-                        <div>限定词<a href="#" class="q_re_a">X</a></div>
+                        <div><strong>知识点标签</strong> </div>
+                        <div><% unless question.elements["tags"].nil? %><%= question.elements["tags"].text %><a href="#" class="q_re_a">X</a><% end %></div>
                         <a href="#">添加标签</a>
                       </div>
                       <div class="q_label">
@@ -130,6 +142,7 @@
                     </div>
                   </div>
                 <% end #questions循环结束 %>
+
 
               </div>
             </div>

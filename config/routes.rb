@@ -26,6 +26,14 @@ RailsTest3::Application.routes.draw do
       post :get_papers, :set_paper
     end
   end
+  resources :simulations do
+    member do
+      post :update_rater
+    end
+    collection do
+      post :add_rater,:delete_rater
+    end
+  end
   resources :categories do
     member do
       post :edit_post , :add_manage

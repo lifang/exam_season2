@@ -42,6 +42,7 @@ class UsersController < ApplicationController
       :conditions => ["user_id = ? and types = ?", params[:id].to_i, ActionLog::TYPES[:LOGIN]],
       :order => "updated_at desc")
     @user_action_logs = UserActionLog.find_by_user_id(params[:id].to_i)
+
     @user_actions = ActionLog.paginate_by_sql(["select * from action_logs a
       where a.user_id = ? order by a.created_at desc", params[:id].to_i], :per_page => 10, :page => params[:page])
   end

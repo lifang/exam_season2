@@ -39,7 +39,7 @@ function add_paper() {
 
 //检查试卷是否被选中
 function check_p_sel() {
-    var eles = $("input:checked");
+    var eles = $(".se_ep_list input:checked");
     if (eles.length == 0) {
         tishi_alert("请选中作为当前真题的试卷。");
         return false;

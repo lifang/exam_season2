@@ -38,9 +38,7 @@ namespace :operate do
       lc = GoogleChart::LineChart.new('700x100', "", true)
       lc.data "charts", xy_axis_labels[index], '458B00'
       big_data=[]
-      xy_axis_labels[index].each do |number|
-        big_data << number[1]
-      end
+      xy_axis_labels[index].collect { |number| big_data << number[1]}
       num=big_data.max
       n=(num/100.0 +0.5).floor
       if  n==(num/100.0).floor && n*100<num

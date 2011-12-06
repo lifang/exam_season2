@@ -16,7 +16,16 @@ class Statistic< ActiveRecord::Base
     return num
   end
 
-
+  def self.exam_user_count(id)
+    count_num=[]
+    one_expr=" TO_DAYS(NOW())-TO_DAYS(created_at)=1 and examination_id=#{id}"
+    count_num << ExamUser.count(:id, :conditions =>one_expr)
+    three_expr="TO_DAYS(NOW())-TO_DAYS(created_at)<=3 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1 and examination_id=#{id}"
+    count_num << ExamUser.count(:id, :conditions =>three_expr)
+    all_expr="examination_id=#{id}"
+    count_num << ExamUser.count(:id, :conditions =>all_expr)
+    return count_num
+  end
   
 
 
