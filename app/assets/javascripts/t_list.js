@@ -105,7 +105,6 @@ $(function(){
         }
     })
 
-
     $('div.prev').click(function(){
         //alert(0)
         var $parent = $(this).parents('div.info_Box');
@@ -153,7 +152,7 @@ function show_flash_div() {
     });
 }
 
-
+//创建元素
 function create_element(element, name, id, class_name, type, ele_flag) {
     var ele = document.createElement("" + element);
     if (name != null)
@@ -172,7 +171,7 @@ function create_element(element, name, id, class_name, type, ele_flag) {
     return ele;
 }
 
-
+//弹出错误提示框
 function tishi_alert(str){
     var div = create_element("div",null,"flash_notice","tishi_tab",null,null);
     var p = create_element("p","","","","innerHTML");
@@ -197,6 +196,16 @@ function checkspace(checkstr){
     }
 }
 
+//关闭弹出框
 function pop_window_closed(tab) {
     tab.parentNode.parentNode.style.display = "none";
 }
+
+/*用户消费记录切换-----*/
+ $(function() {
+	 $('.user_tab_ul li').bind('click',function(){
+	   		$(this).addClass('hover').siblings().removeClass('hover');
+			var index = $('.user_tab_ul li').index(this);
+			$('div.user_tab_box > div').eq(index).show().siblings().hide();
+	});
+ })
