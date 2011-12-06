@@ -52,10 +52,10 @@ class Examination < ActiveRecord::Base
         i.set_paper_used!
       end
     else
-      if papers.size > 1
-        papers.each { |i| self.papers.delete(i) }
-      else
-        self.papers.delete(papers)
+      self.papers = []
+      papers.each do |i|
+        self.papers << i
+        i.set_paper_used!
       end
     end
   end

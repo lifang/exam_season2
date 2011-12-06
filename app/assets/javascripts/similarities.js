@@ -36,9 +36,10 @@ function add_paper() {
     $(".add_exPaper").css('left',(win_width-z_layer_width)/2);
     $(".add_exPaper").css('display','block');
 }
+
 //检查试卷是否被选中
 function check_p_sel() {
-    var eles = $("input:checked");
+    var eles = $(".se_ep_list input:checked");
     if (eles.length == 0) {
         tishi_alert("请选中作为当前真题的试卷。");
         return false;
@@ -50,10 +51,23 @@ function check_p_sel() {
             paper_ids += ",";
         }
     }
-    alert($("#paper_ids").attr("value"));
-    $("#paper_ids").value(paper_ids);
-    alert($("#paper_ids").attr("value"));
-    
+    $("#paper_ids").attr("value", paper_ids);
+    return true;
+}
+
+//删除已经选择的试卷
+function remove_paper(item, paper_id) {
+    var parent = item.parentNode.parentNode.parentNode;
+    var paper_ids = $("#paper_id").attr("value");
+    if (paper_ids != null || paper_ids != "") {
+        $("#paper_id").attr("value", paper_ids.replace(","+paper_id, "").replace(paper_id+",", "").replace(paper_id, ""));
+    }
+    parent.removeChild(item.parentNode.parentNode);
+    if ($("#selected_papers div").length == 0) {
+        var div = create_element("div",null,null,"bj_h",null,null);
+        div.innerHTML = "试卷：<a href='javascript:void(0);' onclick='javascript:add_paper();'>添加试卷</a>";
+        $("#selected_papers").html(div);
+    }
 }
 
 //, :html => {:onsubmit => "return search()"}

@@ -70,5 +70,10 @@ class Paper < ActiveRecord::Base
     XML
     return content
   end
+
+  #置试卷的使用状态
+  def set_paper_used!
+    self.toggle!(:is_used)
+  end
   
 end

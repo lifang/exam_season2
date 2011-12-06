@@ -1,0 +1,17 @@
+<% exam_id=@exam_rater.pop(1) %>
+  <h3>填入阅卷老师的E-mail</h3>
+  <p><input name="" type="text" id="email_<%= exam_id[0] %>" /><button class="t_btn" onclick="javascript:valid_email(<%= exam_id[0] %>)">添加</button><%= image_tag "ajax-loader.gif", :id => "spinner_add_#{exam_id[0]}", :style => "display:none" %></p>
+  <%  unless @exam_rater.nil? %>
+    <h3>阅卷老师列表</h3>
+    <% @exam_rater.each do |rater|%>
+      <p>
+        <%= rater.email %><a onclick="javascript:delete_rater(<%= exam_id[0] %>,'<%= rater.email %>')"> [删除]<%= image_tag "ajax-loader.gif", :id => "spinner_delete_#{exam_id[0]}", :style => "display:none" %></a>
+      </p>
+    <% end  %>
+  <% else %>
+    <%= "暂无阅卷老师，可再上方添加" %>
+  <% end %>
+  <span class="yj_x" id="yj_x_<%=exam_id[0]  %>"><img src="/assets/x.gif" /></span>
+     <script type="text/javascript">
+      show_rater(<%= exam_id[0] %>);
+    </script>

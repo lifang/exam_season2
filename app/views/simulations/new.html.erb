@@ -1,4 +1,5 @@
 <script type="text/javascript" src="/assets/My97DatePicker/WdatePicker.js" ></script>
+<%= javascript_include_tag "similarities" %>
 <%= javascript_include_tag "simulation_new" %>
 <div class="main_title">
   <div class="m_t_h">新建模拟考试</div>
@@ -6,15 +7,20 @@
 <div class="text_box">
   <div class="bianji_ny">
     <%= form_for :exam_info ,:url=>"/simulations",:html=>{:id=>"exam_info"} do %>
-      <div>名称 <input name="" type="text" /></div>
-      <div>日期 <input name="" type="text" onclick="javascript:WdatePicker();" /> 至 <input name="" type="text"  onClick="WdatePicker();" /></div>
-      <div>试卷：<a href="#">添加试卷</a></div>
+
+      <div>名称 <input name="title" type="text" id="title" /></div>
+      <div>日期 <input name="from_date"  id="from_date" type="text" onClick="WdatePicker();" /> 至 <input name="end_date" id="end_date" type="text"  onClick="WdatePicker();" /></div>
+      <div id="selected_papers">
+        <div class="bj_h">试卷：<a href="javascript:void(0);" onclick="javascript:add_paper();">添加试卷</a></div>
+      </div>
       <div class="bj_sfei">收费方式：<span class="bj_span"><input name="fee" type="radio" value="1" />免费</span>
         <span class="bj_span"><input name="fee" type="radio" value="0" />收费</span>
-        <span class="bj_span"><input name="fee" type="radio" value="2" />单独收费，金额 <input name="" size="10" type="text" /></span>
+        <span class="bj_span"><input name="fee" type="radio" value="2" />单独收费，金额 <input name="total_price" size="10" type="text" /></span>
       </div>
+      <input type="hidden" name="category_id" id="category_id" value="<%= params[:category] %>" />
+      <input type="hidden" name="paper_id" id="paper_id" value="" />
     <% end %>
     <div><button class="t_btn">创建</button></div>
   </div>
 </div>
-
+<%= render :partial => "/common/add_expaper" %>

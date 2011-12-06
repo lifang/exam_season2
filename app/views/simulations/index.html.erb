@@ -22,10 +22,10 @@
     <div class="t_list">暂无真题，您可以在 <a href="/simulations/new?category=<%= params[:category] %>">这里</a> 添加</div>
   <% else %>
     <% @simulations.each do |simulation| %>
-   
+
       <div class="t_list">
         <div class="text_btn">
-          <button class="t_btn">编辑</button>
+          <button class="t_btn" onclick="javascript:window.location.href='/simulations/<%= simulation.id %>/edit?category=<%= params[:category] %>'">编辑</button>
           <button class="t_btn yuejuan_btn" id="yuejuan_btn_<%=simulation.id  %>">阅卷</button>
           <button class="t_btn">统计</button>
           <button class="t_btn">暂停</button>
@@ -40,15 +40,22 @@
             <%= "单独收费  金额：#{simulation.price}" %>
           <% end %>
           <%= @exam_papers[simulation.id].join(" ") %></span>
+        <% time_status=0 %>
+        <% if Time.now>simulation.start_at_time.to_datetime && Time.now<simulation.start_end_time.to_datetime %>
+          <% time_status=1 %>
+        <% elsif Time.now<simulation.start_at_time.to_datetime %>
+          <% time_status=2 %>
+        <% end %>
+        <span <% if time_status==1 %>class="mk_span_h"<%elsif time_status==2%>class="mk_span_w"<%end%>><%= "#{simulation.start_at_time.strftime("%Y/%m/%d")}-#{simulation.start_end_time.strftime("%Y/%m/%d")}" %></span>
       </div>
       <div class="yuejuan_div" id="yuejuan_div_<%=simulation.id %>">
         <h3>填入阅卷老师的E-mail</h3>
-        <p><input name="" type="text" id="email_<%= simulation.id %>" /><button class="t_btn" onclick="javascript:valid_email(<%= simulation.id %>)">添加</button></p>
+        <p><input name="" type="text" id="email_<%= simulation.id %>" /><button class="t_btn" id="button_<%= simulation.id %>"onclick="javascript:valid_email(<%= simulation.id %>)">添加</button><%= image_tag "ajax-loader.gif", :id => "spinner_add_#{simulation.id}", :style => "display:none" %></p>
         <%  unless @exam_raters[simulation.id].nil? %>
           <h3>阅卷老师列表</h3>
           <% @exam_raters[simulation.id].each do |rater_email|%>
             <p>
-              <%= rater_email %><a onclick="javascript:delete_rater('<%= rater_email %>')"> [删除]</a>
+              <%= rater_email %><a onclick="javascript:delete_rater(<%= simulation.id %>,'<%= rater_email %>')"> [删除]</a>
             </p>
           <% end  %>
         <% else %>
@@ -56,9 +63,9 @@
         <% end %>
         <span class="yj_x" id="yj_x_<%=simulation.id  %>"><img src="/assets/x.gif" /></span>
       </div>
-     <script type="text/javascript">
-      show_rater(<%= simulation.id %>);
-    </script>
+      <script type="text/javascript">
+        show_rater(<%= simulation.id %>);
+      </script>
     <% end %>
   <% end %>
   <%=  will_paginate @simulations ,:previous_label=>" &lt;", :next_label=>" &gt;" %>
