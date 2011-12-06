@@ -3,7 +3,7 @@ RailsTest3::Application.routes.draw do
 
   resources :papers do
     member do
-      post :form_block_baseinfo
+      post :edit_block_baseinfo,:create_problem
     end
   end
 

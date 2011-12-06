@@ -46,12 +46,27 @@ function stop_bunble(){
 
 
 //载入编辑模块div
-function load_edit_block(block_xpath,block_name){
+function load_edit_block(block_xpath,block_name,block_start_time,block_time){
     $("#block_xpath").val(block_xpath);
     $("#block_name").val(block_name);
+    if(block_start_time!="0" && block_start_time!=""){
+        $("#block_start_time_radio2").attr("checked","true").val(block_start_time);
+        $("#block_start_time").removeAttr("disabled").val(block_start_time);
+    }else{
+        $("#block_start_time_radio1").attr("checked","true").val('');
+        $("#block_start_time").attr("disabled","disabled").val('');
+    }
+    if(block_time!="0" && block_time!=""){
+        $("#block_time_radio2").attr("checked","true").val(block_time);
+        $("#block_time").removeAttr("disabled").val(block_time);
+    }else{
+        $("#block_time_radio1").attr("checked","true").val('');
+        $("#block_time").attr("disabled","disabled").val('');
+    }
+
     jQuery('.part_info').css('display','block');
     jQuery('.zhezhao').css('display','block');
-    $("#block_name").focus().select()
+    $("#block_name").focus().select();
 }
 
 
@@ -60,5 +75,13 @@ function close_part_info(){
     jQuery('.part_info').css('display','none');
     jQuery('.zhezhao').css('display','none');
     return false;
+}
+
+//验证 模块表单 ，名称不能为空
+function validate_form_block_baseinfo(){
+    if(checkspace($('#block_name').val())){
+        tishi_alert("请输入名称");
+        return false;
+    }
 }
   
