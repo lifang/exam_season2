@@ -15,7 +15,12 @@ RailsTest3::Application.routes.draw do
     end
   end
   
-  resources :users
+  resources :users do
+    collection do
+      post :search
+      get :search_list
+    end
+  end
   resources :similarities do
     member do
       get :statistics
@@ -23,6 +28,14 @@ RailsTest3::Application.routes.draw do
     collection do
       get :paper_list
       post :get_papers, :set_paper
+    end
+  end
+  resources :simulations do
+    member do
+      post :update_rater
+    end
+    collection do
+      post :add_rater,:delete_rater
     end
   end
   resources :categories do

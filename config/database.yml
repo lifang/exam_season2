@@ -5,6 +5,7 @@ development:
   database: exam_app
   username: root
   password: qianjun
+  encoding: utf8
   pool: 5
   timeout: 5000
   host: localhost

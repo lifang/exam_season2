@@ -12,25 +12,24 @@ $(function(){
 })
 
 
-//鼠标点击阅卷，弹出层
-$(function(){
-    var doc_height = $(document).height();
-    //var doc_width = $(document).width();
+
+////鼠标点击阅卷，弹出层
+function show_rater(id){
     var win_height = $(window).height();
     var win_width = $(window).width();
-    var s_layer_height = $('.yuejuan_div').height();
-    var s_layer_width = $('.yuejuan_div').width();
-	
-    $(".yuejuan_btn").bind("click",function(){
-        $(".yuejuan_div").css("display","block");
-        $('.yuejuan_div').css('top',(win_height-s_layer_height)/2)
-        $('.yuejuan_div').css('left',(win_width-s_layer_width)/2);
-    })
-	
-    $(".yj_x").bind("click",function(){
+    var s_layer_height = $('#yuejuan_div_'+id).height();
+    var s_layer_width = $('#yuejuan_div_'+id).width();
+    $("#yuejuan_btn_"+id).bind("click",function(){
         $(".yuejuan_div").css("display","none");
+        $('#yuejuan_div_'+id).css("display","block");
+        $('#yuejuan_div_'+id).css('top',(win_height-s_layer_height)/2);
+        $('#yuejuan_div_'+id).css('left',(win_width-s_layer_width)/2);
     })
-})
+    $("#yj_x_"+id).bind("click",function(){
+        $('#yuejuan_div_'+id).css("display","none");
+    })
+}
+
 
 //试卷编辑TAB
 $(function() {
@@ -106,7 +105,6 @@ $(function(){
         }
     })
 
-
     $('div.prev').click(function(){
         //alert(0)
         var $parent = $(this).parents('div.info_Box');
@@ -154,7 +152,7 @@ function show_flash_div() {
     });
 }
 
-
+//创建元素
 function create_element(element, name, id, class_name, type, ele_flag) {
     var ele = document.createElement("" + element);
     if (name != null)
@@ -173,7 +171,7 @@ function create_element(element, name, id, class_name, type, ele_flag) {
     return ele;
 }
 
-
+//弹出错误提示框
 function tishi_alert(str){
     var div = create_element("div",null,"flash_notice","tishi_tab",null,null);
     var p = create_element("p","","","","innerHTML");
@@ -198,6 +196,16 @@ function checkspace(checkstr){
     }
 }
 
+//关闭弹出框
 function pop_window_closed(tab) {
     tab.parentNode.parentNode.style.display = "none";
 }
+
+/*用户消费记录切换-----*/
+ $(function() {
+	 $('.user_tab_ul li').bind('click',function(){
+	   		$(this).addClass('hover').siblings().removeClass('hover');
+			var index = $('.user_tab_ul li').index(this);
+			$('div.user_tab_box > div').eq(index).show().siblings().hide();
+	});
+ })

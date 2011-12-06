@@ -25,10 +25,10 @@
           <button class="t_btn"
                   onclick="javascript:window.location.href='/similarities/<%= similarity.id %>/edit?category=<%= params[:category] %>';">
             编辑</button>
-          <button class="t_btn">统计</button>
         </div>
         <h2><%= similarity.title %></h2>
-        <span><%= similarity.is_free ? "免费" : "收费" %> <%= @exam_papers[similarity.id].join(" ") %></span>
+        <span><%= similarity.is_free ? "免费" : "收费" %></span>
+        <span><%= @exam_papers[similarity.id].join(" ") %></span>
       </div>
     <% end %>
   <% end %>

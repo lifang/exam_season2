@@ -46,8 +46,8 @@ class PapersController < ApplicationController
     block_name = params["block_name"]
     paper = Paper.find(params[:id].to_i)
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
-    file = File.open(url)
-    doc = Document.new(file).root
+
+    doc = get_doc_from(url)
     if block_xpath != ""
       edit_element(doc,block_xpath,{"base_info/title"=>block_name},{"time"=>params["time"],"start_time"=>params["start_time"]})
     else
@@ -58,7 +58,7 @@ class PapersController < ApplicationController
   end
 
 
-  # 编辑XML节点 （用处：form_block_baseinfo ）
+  # 编辑XML节点 （用处：form_block_baseinfo ）  doc为Document.new()产生的对象，xpath为编辑的XML节点路径，texts为内容，attributes为属性
   def edit_element(doc,xpath,texts={},attributes={})
     element = doc.elements[xpath]
     texts.each do |key,value|
@@ -71,6 +71,11 @@ class PapersController < ApplicationController
         element.attributes[key] = value
       end
     end
+  end
+
+  #新建XML节点
+  def create_element(doc,xpath,texts={},attributes={})
+    
   end
 
 
@@ -88,7 +93,13 @@ class PapersController < ApplicationController
     problems = block.add_element("problems")
   end
 
-  
+  #将XML文件生成document对象 （用处：create_element ，edit_element ）
+  def get_doc_from(url)
+    file = File.open(url)
+    doc = Document.new(file).root
+    return doc
+  end
+
   #将document对象生成xml文件 （用处：create_element ，edit_element ）
   def doc_write_file(doc,url)
     file = File.new(url, File::CREAT|File::TRUNC|File::RDWR, 0644)
@@ -102,6 +113,9 @@ class PapersController < ApplicationController
     puts "------------------------------------------------------"
     puts params[:create_problem][:block_index]
     @problem = Problem.create(params[:problem])
+    paper = Paper.find(params[:id].to_i)
+    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    doc = get_doc_from(url)
     
 
     redirect_to request.referer

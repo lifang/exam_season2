@@ -11,16 +11,19 @@ class ExamUser < ActiveRecord::Base
 
   IS_USER_AFFIREMED = {:YES => 1, :NO => 0} #用户是否确认  1 已确认 0 未确认
   default_scope :order => "exam_users.total_score desc"
-  #选择批阅试卷
+  
+  #查找特定场考试的考卷
   def self.get_paper(examination)
-    exam_users=ExamUser.find_by_sql("select e.id exam_user_id, r.id relation_id, r.is_marked from exam_users e inner join orders o on o.user_id = e.user_id
-        left join rater_user_relations r   on r.exam_user_id= e.id where e.examination_id=#{examination} and e.answer_sheet_url is not null ")
+    exam_users=ExamUser.find_by_sql("select e.id exam_user_id, r.id relation_id,e.total_score, r.is_marked from exam_users e inner join orders o on o.user_id = e.user_id
+        left join rater_user_relations r on r.exam_user_id= e.id where e.examination_id=#{examination} and e.answer_sheet_url is not null ")
     return exam_users
   end
-  #分页显示单场考试的所有成绩
-  def ExamUser.paginate_exam_user(examination_id, pre_page, page, options={})
-    sql = ExamUser.generate_sql(examination_id, options)
-    return Examination.paginate_by_sql(sql, :per_page =>pre_page, :page => page)
+
+
+  def self.score_users(examination)
+    exam_user=ExamUser.find_by_sql("select u.name,u.email,eu.total_score,r.id relation_id, r.is_marked from exam_user eu inner join users u on u.id=eu.user_id inner join
+       orders o on o.user_id = eu.user_id left join rater_user_relations r on r.exam_user_id=eu.id where eu.examination_id=#{examination} and e.answer_sheet_url is not null")
+    return exam_user
   end
 
 

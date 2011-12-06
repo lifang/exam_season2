@@ -1,0 +1,31 @@
+<script type="text/javascript" src="/assets/My97DatePicker/WdatePicker.js" ></script>
+<%= javascript_include_tag "similarities" %>
+<%= javascript_include_tag "simulation_new" %>
+<div class="main_title">
+  <div class="m_t_h">模考编辑</div>
+</div>
+<div class="text_box">
+  <div class="bianji_ny">
+    <%= form_for :exam_info ,:url=>"/simulations/#{@single_exam.id}/update_rater",:html=>{:id=>"exam_info"} do %>
+      <div>名称 <input name="title" type="text" id="title" value="<%= @single_exam.title %>"/></div>
+      <div>日期 <input name="from_date"  id="from_date" value="<%= @single_exam.start_at_time.strftime("%Y-%m-%d") %>" type="text" onClick="WdatePicker();" /> 至 <input name="end_date" value="<%= @single_exam.start_end_time.strftime("%Y-%m-%d") %>" id="end_date" type="text"  onClick="WdatePicker();" /></div>
+      <div id="selected_papers">
+        <%= render :partial => "/common/selected_papers" %>
+      </div>
+      <% fee_type=0 %>
+      <% if @single_exam.is_free==true %>
+        <% fee_type=1 %>
+      <% else %>
+        <% fee_type=2 unless @single_exam.price.nil?  %>
+      <% end %>
+      <div class="bj_sfei">收费方式：<span class="bj_span"><input name="fee" <% if fee_type==Examination::IS_FREE[:YES] %> checked <% end %> type="radio" value="1" />免费</span>
+        <span class="bj_span"><input name="fee" <% if fee_type==Examination::IS_FREE[:NO] %> checked <% end %> type="radio" value="0" />收费</span>
+        <span class="bj_span"><input name="fee" type="radio" <% if fee_type==2 %> checked <% end %> value="2" />单独收费，金额 <input name="total_price" size="10" <% if fee_type==2 %> value="<%= @single_exam.price %>" <% end %> type="text" /></span>
+      </div>
+      <input type="hidden" name="category_id" id="category_id" value="<%= params[:category] %>" />
+      <input type="hidden" name="paper_id" id="paper_id" value="<%= @paper_ids.join(",") %>" />
+    <% end %>
+    <div><button class="t_btn">保存</button></div>
+  </div>
+</div>
+<%= render :partial => "/common/add_expaper" %>
