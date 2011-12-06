@@ -85,7 +85,8 @@ img { border: none;}
 }
 .t_list span { padding: 0 10px; color: #999;}
 .t_list h2 { float: left; font-size: 16px;}
-.text_btn { float: right; _padding-top: 20px; display: none;}
+.text_btn {float: right; padding-top: 20px;}
+.text_btn button { float: left;}
 .t_btn { 
     margin: 0 5px; 
 	width: 81px; 

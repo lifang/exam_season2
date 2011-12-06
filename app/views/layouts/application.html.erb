@@ -27,9 +27,9 @@
         <div class="logo" style="height:200;"><img src="/assets/login_logo.png" /></div>
         <div class="nav">
           <ul>
-            <li><a href="/categories" <%  if controller.controller_name =="categories" %> class="hover" <% end %> >科&nbsp;&nbsp;目</a></li>
-            <li><a href="#">用&nbsp;&nbsp;户</a></li>
-            <li><a href="/statistics" <%  if controller.controller_name =="statistics" %> class="hover" <% end %> >运营数据</a></li>
+            <li><a href="/categories" <% if controller.controller_name =="categories" %> class="hover" <% end %> >科&nbsp;&nbsp;目</a></li>
+            <li><a href="/users" <% if controller.controller_name =="users" %> class="hover" <% end %>>用&nbsp;&nbsp;户</a></li>
+            <li><a href="/statistics" <% if controller.controller_name =="statistics" %> class="hover" <% end %> >运营数据</a></li>
             <% if !params['category'].nil? %>
               <li><a href="#" class="hover"><%= Category.find(params['category']).name %></a></li>
             <% end %>

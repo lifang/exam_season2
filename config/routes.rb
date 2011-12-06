@@ -11,7 +11,12 @@ RailsTest3::Application.routes.draw do
     end
   end
   
-  resources :users
+  resources :users do
+    collection do
+      post :search
+      get :search_list
+    end
+  end
   resources :similarities do
     member do
       get :statistics

@@ -1,0 +1,86 @@
+<div class="main_title">
+  <div class="user_xx_box"><%= @user.username %>的详情</div>
+  <div class="user_xx_box"><%= @user.email %></div>
+  <div class="user_xx_box">来自<%= User::FROM["#{@user.code_type}"].nil? ? "注册用户" : User::FROM["#{@user.code_type}"] %></div>
+  <div class="user_xx_box"><a href="#">发送系统消息</a></div>
+</div>
+<div class="main_title">
+  <div class="user_xx_box">创建时间：<%= @user.created_at.strftime("%Y-%m-%d %H:%M:%S") %></div>
+  <div class="user_xx_box">最后登录时间：<%= @user_action_logs.last_update_time.strftime("%Y-%m-%d %H:%M:%S") if @user_action_logs %></div>
+  <div class="user_xx_box">总动作5次</div>
+  <div class="user_xx_box">周动作5次</div>
+</div>
+
+<div class="text_box">
+  <div class="user_list">
+    <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
+      <tr class="tr_bg">
+        <td>动作时间</td>
+        <td>科目</td>
+        <td>动作</td>
+        <td>对象</td>
+      </tr>
+      <tr>
+        <td>2011-11-11 11:11</td>
+        <td>大学英语四级</td>
+        <td>真题</td>
+        <td>50</td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+    </table>
+    <div class="sabrosus"><span class="disabled"> < </span><span class="current">1</span><a href="#?page=2">2</a><a href="#?page=3">3</a><a href="#?page=4">4</a><a href="#?page=5">5</a><a href="#?page=6">6</a><a href="#?page=7">7</a>...<a href="#?page=199">199</a><a href="#?page=200">200</a><a href="#?page=2"> > </a></div>
+  </div>
+</div>
