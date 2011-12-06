@@ -38,15 +38,17 @@
             <%= "收费" %>
           <% elsif simulation.is_free==false && !simulation.price.nil? %>
             <%= "单独收费  金额：#{simulation.price}" %>
-          <% end %>
-          <%= @exam_papers[simulation.id].join(" ") %></span>
+          <% end %></span>
+        <span> <%= @exam_papers[simulation.id].join(" ") %></span>
         <% time_status=0 %>
         <% if Time.now>simulation.start_at_time.to_datetime && Time.now<simulation.start_end_time.to_datetime %>
           <% time_status=1 %>
         <% elsif Time.now<simulation.start_at_time.to_datetime %>
           <% time_status=2 %>
         <% end %>
-        <span <% if time_status==1 %>class="mk_span_h"<%elsif time_status==2%>class="mk_span_w"<%end%>><%= "#{simulation.start_at_time.strftime("%Y/%m/%d")}-#{simulation.start_end_time.strftime("%Y/%m/%d")}" %></span>
+        <span <% if time_status==1 %>class="mk_span_h"<%elsif time_status==2%>class="mk_span_w"<%end%>>
+          <%= "#{simulation.start_at_time.strftime("%Y/%m/%d")}-#{simulation.start_end_time.strftime("%Y/%m/%d")}" %>
+        </span>
       </div>
       <div class="yuejuan_div" id="yuejuan_div_<%=simulation.id %>">
         <h3>填入阅卷老师的E-mail</h3>

@@ -112,9 +112,14 @@ class SimulationsController < ApplicationController
       }
       if params[:fee].to_i==Examination::IS_FREE[:YES]
         is_free=Examination::IS_FREE[:YES]
+        options.merge!(:price=>"")
       else
         is_free=Examination::IS_FREE[:NO]
-        options.merge!(:price=>params[:total_price].to_i) if params[:fee].to_i==2
+        if params[:fee].to_i==2
+          options.merge!(:price=>params[:total_price].to_i)
+        else
+          options.merge!(:price=>"")
+        end
       end
       options.merge!(:is_free=>is_free)
       simulation_exam=Examination.find(params[:id])
@@ -133,10 +138,17 @@ class SimulationsController < ApplicationController
     exam_user_total =ExamUser.get_paper(params[:id].to_i)
     unmarked=0
     marking=0
+    marked=0
+    total_score=0
     exam_user_total.each do |e|
       marking +=1 if e.relation_id and e.is_marked!=1
-      unmarked +=1 unless e.relation_id
+      unmarked +=1  unless e.relation_id
+      if e.is_marked==1
+        marked +=1
+        total_score+= e.total_score unless e.total_score.nil?
+      end
     end unless  exam_user_total.blank?
+    averge_score=(total_score*1.0)/marked
     unmarked_num=unmarked+marking
     exam_user_one=Statistic.exam_user_count(params[:id].to_i)
     examination=Examination.find(params[:id])
@@ -156,9 +168,19 @@ class SimulationsController < ApplicationController
       sheet.row(3).concate["前三天","#{exam_user_one[1]}"]
       sheet.row(4).concate["所有","#{exam_user_one[2]}"]
       sheet.row(6).concate["为批阅的试卷","#{unmarked_num},其中#{marking}份正批阅"]
-      exam_users =ExamUser.find_by_sql("select name,email from exam_user eu inner join users u on u.id=eu.user_id where eu.examination_id=#{params[:id]}")
-      users.each_with_index do |user, index|
-        sheet.row(index+1).concat ["#{user.name}", "#{user.email}"]
+      sheet.row(8).concate["考生平均分","#{averge_score}"]
+      sheet.row(9).concate("考生成绩报告")
+      sheet.row(9).concate %w["用户名"，"邮箱","分数"]
+      exam_users =ExamUser.score_users(params[:id].to_i)
+      exam_users.each_with_index do |user, index|
+        if user.is_marked==1
+          unless user.total_score.nil?
+            sheet.row(index+9).concat ["#{user.name}", "#{user.email}","#{user.total_score}"]
+          else
+            sheet.row(index+9).concat ["#{user.name}", "#{user.email}","#得分暂无"]
+          end
+        end
+        sheet.row(index+9).concat ["#{user.name}", "#{user.email}","#得分暂无"]  unless user.relation_id
       end
       sheet.row(users.size+1).concat ["总计", "#{users.size}"]
       book.write file_url
