@@ -10,7 +10,12 @@ RailsTest3::Application.routes.draw do
       get :user_info,:action_info,:buyer_info,:login_info
     end
   end
-  
+  resources :study_plans do
+    collection do
+      post :create_task
+    end
+  end
+
   resources :users do
     collection do
       post :search
