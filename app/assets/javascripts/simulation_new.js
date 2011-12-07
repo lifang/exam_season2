@@ -10,7 +10,7 @@ function redirect_to(category_id) {
 
 //新建模考试题
 $(function(){
-    $(".t_btn").click(function(){
+    $(".bianji_ny .t_btn").click(function(){
         if (checkspace($("#title").attr("value"))) {
             tishi_alert("模考名称不能为空。");
             return false;
@@ -55,12 +55,12 @@ function valid_email(exam_id){
         tishi_alert("请输入有效邮箱!");
         return false;
     }
-    //    $("#spinner_add_"+exam_id).css("display","block");
-    //    $("#button_"+exam_id).css("display","none");
+    $("#spinner_add_"+exam_id).css("display","");
+    $("#button_"+exam_id).css("display","none");
     $.ajax({
         async:true,
         success:function(request){
-        //            $("#spinner_add_"+exam_id).css("display","none");
+            $("#spinner_add_"+exam_id).css("display","none");
         },
         data:{
             examination_id :exam_id,
@@ -84,6 +84,34 @@ function delete_rater(exam_id,email){
             },
             dataType:'script',
             url:"/simulations/delete_rater",
+            type:'post'
+        });
+        return false;
+    }
+}
+
+
+function over_exam(id,e){
+    var action=e.text();
+    var status;
+    var types;
+    if (action=="暂停"){
+        status="恢复"
+        types=0;
+    }else{
+        status="暂停";
+        types=1;
+    }
+    if(confirm("确定"+ action+"该场考试吗？")){
+        e.text(status);
+        $.ajax({
+            async:true,
+            data:{
+                exam_id :id,
+                types :types
+            },
+            dataType:'script',
+            url:"/simulations/stop_exam",
             type:'post'
         });
         return false;

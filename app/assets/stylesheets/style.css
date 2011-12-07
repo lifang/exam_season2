@@ -145,7 +145,7 @@ img { border: none;}
 span.mk_span_h { color: #000; font-weight: bold;}
 span.mk_span_w { color: #000;}
 
-.yuejuan_div { width: 250px; padding: 20px; background: #FFF; border: 3px  #999 solid; position: absolute; display: none;}
+.yuejuan_div { width: 250px; padding: 20px; background: #FFF; border: 3px  #999 solid; position: fixed; display: none;z-index:999;}
 .yuejuan_div h3, .yuejuan_div div { font-size: 12px; line-height: 32px;}
 .yj_x { position: absolute; top: 5px; right: 5px; cursor: pointer; font-size: 16px;}
 

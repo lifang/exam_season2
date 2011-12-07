@@ -11,22 +11,23 @@ namespace :operate do
     xy_axis_labels =[]
     max_x = 0
     xy_axis = {}
-    statistics = Statistic.find_by_sql("select * from statistics where TO_DAYS(NOW())-TO_DAYS(created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1")
+    statistics = Statistic.find_by_sql("select s.* from statistics s where TO_DAYS(NOW())-TO_DAYS(created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1")
     start_month = 0
     statistics.each do |data|
       start_month = data.created_at.month unless data.created_at.month == start_month
       x_label = (data.created_at.strftime("%Y%m%d").to_s)[4, 8]
       x_axis_labels << x_label
-      xy_axis["0_#{x_label.to_i}"] = data.register_num
-      xy_axis["1_#{x_label.to_i}"] = data.action_num
-      xy_axis["2_#{x_label.to_i}"] = data.pay_num
-      xy_axis["3_#{x_label.to_i}"] = data.money_num
+      xy_axis["0_#{x_label.to_i}"] = data.register.split(",")[1].to_i
+      xy_axis["1_#{x_label.to_i}"] = data.action.split(",")[1].to_i
+      xy_axis["2_#{x_label.to_i}"] = data.pay.split(",")[1].to_i
+      xy_axis["3_#{x_label.to_i}"] = data.money.split(",")[1].to_i
+      xy_axis["4_#{x_label.to_i}"] = data.login.split(",")[1].to_i
       max_x = x_label.to_i if x_label.to_i > max_x
     end
     x_axis = x_axis_labels.sort
     step =  (x_axis_labels.length-1 > 0) ? max_x/(x_axis_labels.length-1) : max_x
     x_labels = []
-    (0..3).each do |i|
+    (0..4).each do |i|
       num=[]
       x_axis.each_with_index do |item, index|
         x_labels << "#{item[0, 2]}/#{item[2, 3]}" unless  x_labels.include?("#{item[0, 2]}/#{item[2, 3]}")
@@ -34,14 +35,14 @@ namespace :operate do
       end
       xy_axis_labels[i]=num
     end
-    (0..3).each do |index|
+    (0..4).each do |index|
       lc = GoogleChart::LineChart.new('700x100', "", true)
       lc.data "charts", xy_axis_labels[index], '458B00'
       big_data=[]
       xy_axis_labels[index].collect { |number| big_data << number[1]}
-      num=big_data.max
-      n=(num/100.0 +0.5).floor
-      if  n==(num/100.0).floor && n*100<num
+      big_num=big_data.max
+      n=(big_num/100.0 +0.5).floor
+      if  n==(big_num/100.0).floor && n*100<big_num
         data=((n+0.5)*100).to_i
       else
         data=(n*100).to_i
@@ -78,7 +79,7 @@ namespace :operate do
     end
     image_url="/charts/#{Time.now.strftime("%Y%m%d").to_s}/#{file_name}"
     Chart.create(:created_at=>Time.now.strftime("%Y-%m-%d").to_s,:types=>index,:image_url=>image_url) unless Chart.find(:first,:conditions =>"created_at='#{Time.now.strftime("%Y-%m-%d")}' and image_url='#{image_url}'") if File.exists?(file_url)
-      puts "Chart #{index} success generated"
+    puts "Chart #{index} success generated"
   end
 
 end
