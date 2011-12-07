@@ -7,7 +7,7 @@ RailsTest3::Application.routes.draw do
 
   resources :statistics do
     collection do
-      get :user_info,:action_info,:buyer_info,:fee_info
+      get :user_info,:action_info,:buyer_info,:login_info
     end
   end
   
@@ -32,9 +32,11 @@ RailsTest3::Application.routes.draw do
   resources :simulations do
     member do
       post :update_rater
+      get :count_detail
     end
     collection do
-      post :add_rater,:delete_rater
+      post :add_rater,:delete_rater,:stop_exam
+       
     end
   end
   resources :categories do

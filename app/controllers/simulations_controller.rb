@@ -6,8 +6,8 @@ class SimulationsController < ApplicationController
   
   def index
     category_id = params[:category].to_i
-    sql = "select e.id, e.title, e.is_free,e.price,e.start_at_time,e.start_end_time from examinations e
-        where e.category_id = #{category_id} and e.types = #{Examination::TYPES[:SIMULATION]}"
+    sql = "select e.id, e.title, e.is_free,e.price,e.start_at_time,e.is_published,e.start_end_time from examinations e
+        where e.category_id = #{category_id} and e.types = #{Examination::TYPES[:SIMULATION]} order by created_at desc"
     if !params[:category_type].nil? and params[:category_type] == Examination::IS_FREE[:NO].to_s
       sql += " and e.is_free = #{Examination::IS_FREE[:NO]} and e.price is null"
     elsif !params[:category_type].nil? and params[:category_type] == Examination::IS_FREE[:YES].to_s
@@ -39,7 +39,6 @@ class SimulationsController < ApplicationController
         @exam_papers[paper.examination_id] << paper.p_title
       end
     end unless papers.blank?
-    puts @exam_papers
   end
 
 
@@ -72,7 +71,7 @@ class SimulationsController < ApplicationController
       papers = Paper.find(params[:paper_id].split(","))
       options={
         :title => params[:title].strip, :creater_id => cookies[:user_id].to_i,
-        :is_published => true, :category_id => params[:category_id],
+        :is_published => Examination::IS_PUBLISHED[:ALREADY], :category_id => params[:category_id],
         :types => Examination::TYPES[:SIMULATION],:start_end_time=>params[:end_date],
         :start_at_time=>params[:from_date]
       }
@@ -105,8 +104,7 @@ class SimulationsController < ApplicationController
     unless params[:title].empty? or params[:paper_id].empty?
       papers = Paper.find(params[:paper_id].split(","))
       options={
-        :title => params[:title].strip, :creater_id => cookies[:user_id].to_i,
-        :is_published => true, :category_id => params[:category_id],
+        :title => params[:title].strip, :creater_id => cookies[:user_id].to_i, :category_id => params[:category_id],
         :types => Examination::TYPES[:SIMULATION],:start_end_time=>params[:end_date],
         :start_at_time=>params[:from_date]
       }
@@ -144,11 +142,14 @@ class SimulationsController < ApplicationController
       marking +=1 if e.relation_id and e.is_marked!=1
       unmarked +=1  unless e.relation_id
       if e.is_marked==1
-        marked +=1
-        total_score+= e.total_score unless e.total_score.nil?
+        unless e.total_score.nil?
+          marked +=1
+          total_score+= e.total_score
+        end
       end
     end unless  exam_user_total.blank?
-    averge_score=(total_score*1.0)/marked
+    averge_score="未统计"
+    averge_score=(total_score*1.0)/marked unless marked==0
     unmarked_num=unmarked+marking
     exam_user_one=Statistic.exam_user_count(params[:id].to_i)
     examination=Examination.find(params[:id])
@@ -156,35 +157,44 @@ class SimulationsController < ApplicationController
     unless File.directory?(url)               #判断dir目录是否存在，不存在则创建 下3行
       Dir.mkdir(url)
     end
-    file_name="/#{Time.now.to_date.to_s}.xls"
+    file_name="/#{Time.now.to_date.to_s}_#{params[:id]}.xls"
     file_url=url+file_name
     unless File.exist?(file_url)
       Spreadsheet.client_encoding = "UTF-8"
       book = Spreadsheet::Workbook.new
       sheet = book.create_worksheet
-      sheet.row(0).concat "#{examination.title} 的统计数据"
-      sheet.row(1).font("12").concat("考生人数统计")
-      sheet.row(2).concate["前一天","#{exam_user_one[0]}"]
-      sheet.row(3).concate["前三天","#{exam_user_one[1]}"]
-      sheet.row(4).concate["所有","#{exam_user_one[2]}"]
-      sheet.row(6).concate["为批阅的试卷","#{unmarked_num},其中#{marking}份正批阅"]
-      sheet.row(8).concate["考生平均分","#{averge_score}"]
-      sheet.row(9).concate("考生成绩报告")
-      sheet.row(9).concate %w["用户名"，"邮箱","分数"]
+      sheet.row(0).concat ["","","#{examination.title}"]
+      show_unmarked="#{unmarked_num}"
+      show_unmarked += ",其中#{marking}份正批阅" unless marking==0
+      sheet.row(1).concat ["前一天考生人数","前一天考生人数","所有考生","未批阅","平均分"]
+      sheet.row(2).concat ["#{exam_user_one[0]}","#{exam_user_one[1]}","#{exam_user_one[2]}",show_unmarked,averge_score]
+      sheet.row(4).concat ["","分数报告"]
       exam_users =ExamUser.score_users(params[:id].to_i)
-      exam_users.each_with_index do |user, index|
-        if user.is_marked==1
-          unless user.total_score.nil?
-            sheet.row(index+9).concat ["#{user.name}", "#{user.email}","#{user.total_score}"]
-          else
-            sheet.row(index+9).concat ["#{user.name}", "#{user.email}","#得分暂无"]
+      unless exam_users.blank?
+        sheet.row(5).concat ["用户名","邮箱","分数"]
+        exam_users.each_with_index do |user, index|
+          if user.is_marked==1
+            unless user.total_score.nil?
+              sheet.row(index+6).concat ["#{user.name}", "#{user.email}","#{user.total_score}"]
+            else
+              sheet.row(index+6).concat ["#{user.name}", "#{user.email}","得分暂无"]
+            end
           end
+          sheet.row(index+6).concat ["#{user.name}", "#{user.email}","未批阅"]  unless user.relation_id
+          sheet.row(index+6).concat ["#{user.name}", "#{user.email}","批阅中"]  if user.relation_id and user.is_marked!=1
         end
-        sheet.row(index+9).concat ["#{user.name}", "#{user.email}","#得分暂无"]  unless user.relation_id
+      else
+        sheet.row(6).concat ["没有考生"]
       end
-      sheet.row(users.size+1).concat ["总计", "#{users.size}"]
       book.write file_url
     end
-    render :inline => "<script>window.location.href='/data/#{file_name}';</script>"
+    render :inline => "<script>window.location.href='#{Constant::SIMULATION_DIR}#{file_name}';</script>"
+    
+  end
+
+
+  def stop_exam
+    exam=Examination.find(params[:exam_id])
+    exam.update_attributes(:is_published=>params[:types].to_i)
   end
 end
