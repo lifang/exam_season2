@@ -46,7 +46,8 @@ $(function(){
         var $answer = $(this).next(".q_l_answer")
         if($answer.is(":visible")){
             $answer.hide();
-        }else{
+        }
+        else{
             $answer.show();
         }
     })
@@ -67,14 +68,6 @@ $(function(){
         }
     })
 })
-
-//用户表格
-$(function(){
-    $(".user_tb tbody tr:even").css("background","#f2f2f2");
-    $(".user_tb tbody tr:first").css("background","#333");
-	
-})
-
 
 /*试卷信息，添加小题，左右滑动--*/
 $(function(){
@@ -104,7 +97,6 @@ $(function(){
             }
         }
     })
-
 
     $('div.prev').click(function(){
         //alert(0)
@@ -148,12 +140,14 @@ function generate_flash_div(style) {
 function show_flash_div() {
     $('.tishi_tab').stop(null,true);
     generate_flash_div(".tishi_tab");
-    $('.tishi_tab').animate({"":""},3000).fadeOut("slow",function(){
+    $('.tishi_tab').animate({
+        "":""
+    },3000).fadeOut("slow",function(){
         $(this).remove();
     });
 }
 
-
+//创建元素
 function create_element(element, name, id, class_name, type, ele_flag) {
     var ele = document.createElement("" + element);
     if (name != null)
@@ -166,13 +160,14 @@ function create_element(element, name, id, class_name, type, ele_flag) {
         ele.type = type;
     if (ele_flag == "innerHTML") {
         ele.innerHTML = "";
-    } else {
+    }
+    else {
         ele.value = "";
     }
     return ele;
 }
 
-
+//弹出错误提示框
 function tishi_alert(str){
     var div = create_element("div",null,"flash_notice","tishi_tab",null,null);
     var p = create_element("p","","","","innerHTML");
@@ -197,6 +192,30 @@ function checkspace(checkstr){
     }
 }
 
+//关闭弹出框
 function pop_window_closed(tab) {
     tab.parentNode.parentNode.style.display = "none";
 }
+
+//用户表格
+$(function(){
+    $(".user_tb tbody tr:even").css("background","#f2f2f2");
+    $(".tr_bg").css("background","#333");
+
+})
+
+/*用户消费记录切换-----*/
+$(function() {
+    $('.user_tab_ul li').bind('click',function(){
+        $(this).addClass('hover').siblings().removeClass('hover');
+        var index = $('.user_tab_ul li').index(this);
+        $('div.user_tab_box > div').eq(index).show().siblings().hide();
+    });
+})
+
+function change_tab(item) {
+    $(item).addClass('hover').siblings().removeClass('hover');
+    var index = $('.user_tab_ul li').index(item);
+    $('div.user_tab_box > div').eq(index).show().siblings().hide();
+}
+

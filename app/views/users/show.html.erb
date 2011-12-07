@@ -1,0 +1,104 @@
+<%
+if !params[:rels].nil?  and session[:rels] != params[:rels]
+  session[:select] = 1
+elsif params[:rels].nil? or session[:pays] != params[:pays]
+  session[:select] = 0
+end
+%>
+<div class="main_title">
+  <div class="user_xx_box"><%= @user.username %>的详情</div>
+  <div class="user_xx_box"><%= @user.email %></div>
+  <div class="user_xx_box">来自<%= User::FROM["#{@user.code_type}"].nil? ? "注册用户" : User::FROM["#{@user.code_type}"] %></div>
+  <div class="user_xx_box"><a href="#">发送系统消息</a></div>
+</div>
+<div class="main_title">
+  <div class="user_xx_box">创建时间：<%= @user.created_at.strftime("%Y-%m-%d %H:%M") %></div>
+  <div class="user_xx_box">最后登录时间：<%= @login_log.updated_at.strftime("%Y-%m-%d %H:%M") if @login_log %></div>
+  <div class="user_xx_box">
+    总动作<%= (@user_action_logs and  @user_action_logs.total_num) ? @user_action_logs.total_num.split(",")[0] : 0 %>次
+  </div>
+  <div class="user_xx_box">
+    周动作<%= (@user_action_logs and @user_action_logs.week_num) ? @user_action_logs.week_num : 0 %>次
+  </div>
+</div>
+
+<div class="text_box">
+  <div class="user_tab">
+    <div class="user_tab_ul">
+      <ul>
+        <li <% if session[:select] == 1 %>class="hover"<% end %>>科目一览</li>
+        <li <% if session[:select].nil? or session[:select] == 0 %>class="hover"<% end %>>消费记录</li>
+      </ul>
+    </div>
+    <div class="user_tab_box">
+      <div 
+        style="display: <% if session[:select] == 1 %>block<% else %>none<% end %>;">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
+          <tr class="tr_bg">
+            <td>科目</td>
+            <td>类型</td>
+            <td>升级方式</td>
+            <td>其他说明</td>
+            <td>最后有效日期</td>
+            <td>操作</td>
+          </tr>
+          <% unless @category_relations.blank? %>
+            <% @category_relations.each do |relation| %>
+              <tr>
+                <td>
+                  <%= link_to "#{relation.name}", "/users/#{@user.id}/category_logs?category_id=#{relation.c_id}",
+                    :remote => true %>
+                </td>
+                <td><%= UserCategoryRelation::TYPE_NAME[relation.ucr_type] %></td>
+                <td><%= Order::TYPE_NAME[relation.order_type] %></td>
+                <td><%= relation.remark %></td>
+                <td><%= relation.end_time.strftime("%Y-%m-%d") if relation.end_time %></td>
+                <td><% unless relation.ucr_type == UserCategoryRelation::TYPES[:CHARGE] %><a href="#">升级</a><% end %></td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="4">当前用户没有参加任何科目的练习</td>
+            </tr>
+          <% end %>
+        </table>
+        <%=  will_paginate @category_relations ,:previous_label=>" &lt;",
+          :next_label=>" &gt;", :param_name => "rels" %>
+      </div>
+      <div 
+        style="display: <% if session[:select] == 0 %>block<%else%>none<% end %>;">
+        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
+          <tr class="tr_bg">
+            <td>日期</td>
+            <td>科目</td>
+            <td>产品</td>
+            <td>金额</td>
+          </tr>
+          <% unless @pay_logs.blank? %>
+            <% @pay_logs.each do |pay| %>
+              <tr>
+                <td><%= pay.created_at.strftime("%Y-%m-%d") if pay.created_at %></td>
+                <td><%= pay.name %></td>
+                <td><%= pay.remark %></td>
+                <td><%= pay.total_price %></td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="4">当前用户暂无消费记录</td>
+            </tr>
+          <% end %>
+        </table>
+        <%=  will_paginate @pay_logs ,:previous_label=>" &lt;", :next_label=>" &gt;",
+          :param_name => "pays", :params => {:controller => "users", :action => "show"} %>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="user_big_tab" id="user_category_div" style="display: none;">
+</div>
+
+<%  
+session[:pays] = params[:pays].nil? ? 1 : params[:pays]
+session[:rels] = params[:rels].nil? ? 1 : params[:rels]
+%>

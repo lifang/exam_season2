@@ -1,2 +1,45 @@
-
-<%= @action_count.length %>
+<%= javascript_include_tag "users" %>
+<div class="main_title">
+  <div class="user_search">
+    <%= form_for :similarity ,:url=>"/users/search", :method => "post",
+      :html => {:onsubmit => "return search_user_form()"} do |f|%>
+      <input name="search_text" id="search_text" type="text" class="t_se_input"
+             value="<%= session[:search_text].nil? ? "昵称或E-mail" : session[:search_text] %>" />
+      <button type="submit" class="t_search"></button>
+    <% end %>
+  </div>
+  <div class="m_t_h">用户列表</div>
+</div>
+<div class="text_box">
+  <div class="user_list">
+    <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
+      <tr class="tr_bg">
+        <td width="10%">昵称</td>
+        <td width="20%">E-mail</td>
+        <td width="10%">来源</td>
+        <td width="20%">
+          <% if params[:time_sort].nil? or params[:time_sort].to_i == User::TIME_SORT[:ASC] %>
+          <a href="<%= request.path %>?time_sort=<%= User::TIME_SORT[:DESC] %>">创建时间&nbsp;<img src="/assets/tr_bg_a.png" /></a>
+          <% else %>
+            <a href="<%= request.path %>?time_sort=<%= User::TIME_SORT[:ASC] %>">创建时间&nbsp;<img src="/assets/tr_bg_a0.png" /></a>
+          <% end %>
+        </td>
+        <td width="10%">动作次数</td>
+        <td width="20%">最后动作时间</td>
+        <td width="10%">周动作次数</td>
+      </tr>
+      <% @users.each do |user| %>
+        <tr>
+          <td><a href="/users/<%= user.user_id %>"><%= user.username %></a></td>
+          <td><%= user.email %></td>
+          <td><%= User::FROM["#{user.code_type}"].nil? ? "注册用户" : User::FROM["#{user.code_type}"] %></td>
+          <td><%= user.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+          <td><%= user.total_num ? user.total_num.split(",")[0] : 0 %></td>
+          <td><%= user.last_update_time ? user.last_update_time.strftime("%Y-%m-%d %H:%M:%S") : "--" %></td>
+          <td><%= user.week_num ? user.week_num : 0 %></td>
+        </tr>
+      <% end unless @users.blank? %>
+    </table>
+    <%=  will_paginate @users ,:previous_label=>" &lt;", :next_label=>" &gt;" %>
+  </div>
+</div>
