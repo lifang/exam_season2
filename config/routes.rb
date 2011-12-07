@@ -16,6 +16,9 @@ RailsTest3::Application.routes.draw do
       post :search
       get :search_list
     end
+    member do
+      get :category_logs
+    end
   end
   resources :similarities do
     member do
