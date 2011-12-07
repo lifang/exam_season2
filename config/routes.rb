@@ -17,7 +17,7 @@ RailsTest3::Application.routes.draw do
       get :search_list
     end
     member do
-      get :category_logs
+      get :category_logs, :user_action_logs, :user_simulations
     end
   end
   resources :similarities do

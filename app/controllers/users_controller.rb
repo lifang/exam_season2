@@ -30,41 +30,45 @@ class UsersController < ApplicationController
     @category_relations = @user.category_relations(params[:rels])
   end
 
+  #科目一览表的单个可以信息
   def category_logs
     @user_id = params[:id].to_i
     @category_id = params[:category_id].to_i
     @action_logs = User.action_log_by_category(@category_id, @user_id, params[:page])
     @simulations = User.get_simulation_by_category(@category_id, @user_id, params[:page])
-    @study_plan = StudyPlanUser.find_by_user_id(@user_id)
+    @study_plan = UserPlanRelation.find(:first,
+      :joins => "inner join study_plans sp on sp.id = user_plan_relations.study_plan_id",
+      :conditions => ["user_plan_relations.user_id = ? and sp.category_id = ?", @user_id, @category_id])
     if @study_plan
-      ActionLog.find_by_sql(["select * from action_logs al 
-        where al.types = ? and TO_DAYS(NOW())=TO_DAYS(created_at) and al.user_id = ?", ActionLog::TYPES[:STUDY_PLAY]])
-      respond_to do |format|
-        format.html
-        format.js
-      end
+      @today_plan = ActionLog.find(:first, :conditions => ["al.types = ? and al.user_id = ? ",
+          ActionLog::TYPES[:STUDY_PLAY], @user_id], :order => "updated_at desc")
+    end
+    respond_to do |format|
+      format.html
+      format.js
     end
   end
 
+  #动作详情
+  def user_action_logs
+    @user_id = params[:id].to_i
+    @category_id = params[:category_id].to_i
+    @action_logs = User.action_log_by_category(@category_id, @user_id, params[:page])
+    respond_to do |format|
+      format.html
+      format.js
+    end
+  end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  #考试成绩
+  def user_simulations
+    @user_id = params[:id].to_i
+    @category_id = params[:category_id].to_i
+    @simulations = User.get_simulation_by_category(@category_id, @user_id, params[:page])
+    respond_to do |format|
+      format.html
+      format.js
+    end
+  end
 
 end

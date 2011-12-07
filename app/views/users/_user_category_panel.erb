@@ -10,54 +10,16 @@
   </ul>
 </div>
 <div class="user_tab_box">
-  <div>
-    <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
-      <tr class="tr_bg">
-        <td>日期</td>
-        <td>动作</td>
-        <td>数量</td>
-      </tr>
-      <% unless @action_logs.blank? %>
-        <% @action_logs.each do |log| %>
-          <tr>
-            <td><%= log.created_at.strftime("%Y-%m-%d") if log.created_at %></td>
-            <td><%= ActionLog::TYPE_NAMES[log.types] %></td>
-            <td><%= log.total_num %></td>
-          </tr>
-        <% end %>
-      <% else %>
-        <tr><td colspan="3">暂无操作记录</td></tr>
-      <% end %>
-    </table>
-    <%=  will_paginate_remote(@action_logs , "", 
-      {:url => "/users/#{@user_id}/category_logs?category_id=#{@category_id}"}) %>
+  <div id="user_action_logs_div">
+    <%= render :partial => "/users/user_category_action_logs" %>
   </div>
-  <div style="display: none;">
-    <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
-      <tr class="tr_bg">
-        <td>日期</td>
-        <td>考试</td>
-        <td>成绩</td>
-      </tr>
-      <% unless @simulations.blank? %>
-      <% @simulations.each do |simulation| %>
-      <tr>
-        <td><%= simulation.created_at.strftime("%Y-%m-%d") if simulation.created_at %></td>
-        <td><%= simulation.title %></td>
-        <td><%= simulation.total_score ? "批卷中..." : simulation.total_score %></td>
-      </tr>
-      <% end %>
-      <% else %>
-      <tr><td colspan="3">暂无参加任何模拟考试</td></tr>
-      <% end %>
-    </table>
-    <%=  will_paginate_remote(@simulations , "",
-      {:url => "/users/#{@user_id}/category_logs?category_id=#{@category_id}"}) %>
+  <div style="display: none;" id="user_simulations_div">
+    <%= render :partial => "/users/user_category_simulations" %>
   </div>
   <div style="display: none;">
     <% if @study_plan %>
-    <div class="st_play_p">开始时间：2011年11月15日</div>
-    <div class="st_play_p">预计完成：2011年12月15日</div>
+    <div class="st_play_p">开始时间：<%= @study_plan.created_at.strftime("%Y-%m-%d") %></div>
+    <div class="st_play_p">预计完成：<%= @study_plan.ended_at.strftime("%Y-%m-%d") %></div>
     <div class="st_play_zt">
       <p>今日状态</p>
       <p><strong>已完成</strong></p>
@@ -65,7 +27,7 @@
     <div class="st_load_box">
       <div class="st_hpjg"><img src="/assets/icon_hpjg.png" /></div>
       <div class="st_play_load"> <div class="st_play_bg" style="width: 200px;"></div> </div>
-      <div class="st_day">第六天</div>
+      <div class="st_day">第<%= ((Time.now - @study_plan.created_at)/1.day).to_i + 1 %>天</div>
     </div>
     <% else %>
     <div class="st_play_p">当前用户暂无参加学习计划</div>
