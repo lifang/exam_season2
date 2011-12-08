@@ -4,7 +4,11 @@ RailsTest3::Application.routes.draw do
   resources :papers
 
   resources :categories
-
+  resources :notices do
+    collection do
+      post :single_notice
+    end
+  end
   resources :statistics do
     collection do
       get :user_info,:action_info,:buyer_info,:login_info
@@ -61,6 +65,7 @@ RailsTest3::Application.routes.draw do
     end
   end
 
+  match '/signout'=> 'sessions#destroy'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

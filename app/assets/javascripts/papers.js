@@ -13,4 +13,5 @@
       window.location.href="/papers?category="+category_id+"&checked=1";
       return false;
     }
+    return true;
   }

@@ -18,5 +18,7 @@ class ApplicationController < ActionController::Base
     return code_array.join("")
   end
 
+  
+
 
 end

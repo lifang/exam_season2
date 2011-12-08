@@ -9,6 +9,7 @@ function validate_add_manage(category_id){
         $("#add_manage_email_textfield_"+category_id).focus().select();
         return false;
     }
+    return true;
 }
 
 //验证新建和编辑科目  来源于："/categories/new" 新建科目    "/categories/?/edit" 修改   参数str无实际功能，起提示作用
@@ -27,4 +28,5 @@ function validate_category_form(str){
         $("#category_price").focus().select();
         return false;
     }
+    return true;
 }

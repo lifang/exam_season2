@@ -27,4 +27,12 @@ class SessionsController < ApplicationController
     end
   end
 
+  #退出登录
+  def destroy
+    cookies.delete(:user_id)
+    cookies.delete(:user_name)
+    cookies.delete(:user_roles)
+    redirect_to root_path
+  end
+
 end
