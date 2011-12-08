@@ -7,7 +7,7 @@ class SimulationsController < ApplicationController
   def index
     category_id = params[:category].to_i
     sql = "select e.id, e.title, e.is_free,e.price,e.start_at_time,e.is_published,e.start_end_time from examinations e
-        where e.category_id = #{category_id} and e.types = #{Examination::TYPES[:SIMULATION]} order by created_at desc"
+        where e.category_id = #{category_id} and e.types = #{Examination::TYPES[:SIMULATION]}"
     if !params[:category_type].nil? and params[:category_type] == Examination::IS_FREE[:NO].to_s
       sql += " and e.is_free = #{Examination::IS_FREE[:NO]} and e.price is null"
     elsif !params[:category_type].nil? and params[:category_type] == Examination::IS_FREE[:YES].to_s
@@ -15,6 +15,7 @@ class SimulationsController < ApplicationController
     elsif !params[:category_type].nil? and params[:category_type] =="2"
       sql += " and price>0 and e.is_free = #{Examination::IS_FREE[:NO]}"
     end
+    sql += "  order by created_at desc"
     @simulations = Examination.paginate_by_sql(sql,
       :per_page => 5, :page => params[:page])
     @exam_papers = {}

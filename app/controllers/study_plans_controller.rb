@@ -3,22 +3,43 @@ class StudyPlansController < ApplicationController
   respond_to :html, :xml, :json
 
   def index
-    @study=StudyPlan.find_by_category_id(params[:category_id].to_i)
-    session[:plan_ids]<< @study.plan_tasks unless @study.nil?
-    @plans=PlanTask.find(session[:plan_ids]) unless session[:plan_ids].nil?
+    @study=StudyPlan.find_by_category_id(params[:category].to_i)
   end
   
   def create_task
-    @plan=PlanTask.create(:task_types=>params[:task],:period_types=>params[:period],:num=>params[:amount])
-    if session[:plan_ids].nil?
-      session[:plan_ids]=[@plan.id]
-    else
-      session[:plan_ids]<<@plan.id
+    @tasks=[]
+    unless params[:info]==""||params[:info].nil?
+      infos=params[:info].split(";")
+      infos.each do |info|
+        single=[]
+        info.split(",").each do |task|
+          single << task
+        end
+        @tasks << single
+      end
     end
-    @paper=PlanTask.find(session[:plan_ids])
-    respond_with (@paper) do |format|
+    respond_with (@tasks) do |format|
       format.js
     end
+  end
+
+
+  def create_plan
+    study=StudyPlan.find_by_category_id(params[:category].to_i)
+    if study.blank?
+      study=StudyPlan.create(:study_date=>params[:date],:category_id=>params[:category])
+    end
+    unless params[:info]==""||params[:info].nil?
+      infos=params[:info].split(";")
+      infos.each do |info|
+        single=[]
+        info.split(",").each do |task|
+          single << task
+        end
+        PlanTask.create(:study_plan_id=>study.id,:task_types=>single[0].to_i,:period_types=>single[1].to_i,:num=>single[2].to_i)
+      end
+    end
+    redirect_to "/study_plans?category=#{params[:category]}"
   end
   
 end

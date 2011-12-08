@@ -13,6 +13,7 @@ RailsTest3::Application.routes.draw do
   resources :study_plans do
     collection do
       post :create_task
+      get :create_plan
     end
   end
 
