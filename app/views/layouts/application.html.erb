@@ -22,17 +22,19 @@
   </head>
 
   <body>
+    <div class="top_bg"><p>你好，<span class="red"><%= current_user.email %></span><a href="/signout">退出</a></p></div>
     <div class="wrap">
       <div class="head">
         <div class="logo" style="height:200;"><img src="/assets/login_logo.png" /></div>
         <div class="nav">
           <ul>
-            <li><a href="/categories" <% if controller.controller_name =="categories" %> class="hover" <% end %> >科&nbsp;&nbsp;目</a></li>
+            <li><a href="/categories" <% if controller.controller_name =="categories" %> class="hover" <% end %>>科&nbsp;&nbsp;目</a></li>
             <li><a href="/users" <% if controller.controller_name =="users" %> class="hover" <% end %>>用&nbsp;&nbsp;户</a></li>
-            <li><a href="/statistics" <% if controller.controller_name =="statistics" %> class="hover" <% end %> >运营数据</a></li>
+            <li><a href="/statistics" <% if controller.controller_name =="statistics" %> class="hover" <% end %>>运营数据</a></li>
             <% if !params['category'].nil? %>
               <li><a href="#" class="hover"><%= Category.find(params['category']).name %></a></li>
             <% end %>
+            <li><a href="/notices" <% if controller.controller_name =="notices" %> class="hover" <% end %>>消息</a></li>
           </ul>
         </div>
       </div>

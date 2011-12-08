@@ -36,11 +36,12 @@ class UsersController < ApplicationController
     @category_id = params[:category_id].to_i
     @action_logs = User.action_log_by_category(@category_id, @user_id, params[:page])
     @simulations = User.get_simulation_by_category(@category_id, @user_id, params[:page])
-    @study_plan = UserPlanRelation.find(:first,
+    @study_plan = UserPlanRelation.find(:first, 
+      :select => ["sp.study_date, user_plan_relations.created_at, user_plan_relations.ended_at"],
       :joins => "inner join study_plans sp on sp.id = user_plan_relations.study_plan_id",
       :conditions => ["user_plan_relations.user_id = ? and sp.category_id = ?", @user_id, @category_id])
     if @study_plan
-      @today_plan = ActionLog.find(:first, :conditions => ["al.types = ? and al.user_id = ? ",
+      @today_plan = ActionLog.find(:first, :conditions => ["types = ? and user_id = ? ",
           ActionLog::TYPES[:STUDY_PLAY], @user_id], :order => "updated_at desc")
     end
     respond_to do |format|

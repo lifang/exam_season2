@@ -1,3 +1,4 @@
+<%= javascript_include_tag "users" %>
 <%
 if !params[:rels].nil?  and session[:rels] != params[:rels]
   session[:select] = 1
@@ -9,7 +10,7 @@ end
   <div class="user_xx_box"><%= @user.username %>的详情</div>
   <div class="user_xx_box"><%= @user.email %></div>
   <div class="user_xx_box">来自<%= User::FROM["#{@user.code_type}"].nil? ? "注册用户" : User::FROM["#{@user.code_type}"] %></div>
-  <div class="user_xx_box"><a href="#">发送系统消息</a></div>
+  <div class="user_xx_box"><a href="javascript:show_notice_div(<%= @user.id %>);">发送系统消息</a></div>
 </div>
 <div class="main_title">
   <div class="user_xx_box">创建时间：<%= @user.created_at.strftime("%Y-%m-%d %H:%M") %></div>
@@ -90,14 +91,27 @@ end
           <% end %>
         </table>
         <%=  will_paginate @pay_logs ,:previous_label=>" &lt;", :next_label=>" &gt;",
-          :param_name => "pays", :params => {:controller => "users", :action => "show"} %>
+          :param_name => "pays" %>
       </div>
     </div>
   </div>
 </div>
+
 <div class="user_big_tab" id="user_category_div" style="display: none;">
 </div>
-
+<%= form_for :similarity_form, :url => "/notices/single_notice", :method => "post",
+      :html => {:onsubmit => "return user_notice_form()"}, :remote => true do |f| -%>
+<div class="send_message_tab" style="display:none;">
+  <a href="javascript:void(0);" class="right_float">
+    <img src="/assets/x.gif" onclick="javascript:pop_window_closed(this);" />
+  </a><div class="clear"></div><br/>
+  <div>
+    <input type="hidden" name="user_id" id="user_id" value=""/>
+    <textarea name="description" id="description" cols="" rows=""></textarea>
+  </div>
+  <div><button class="t_btn">发送</button></div>
+</div>
+<% end %>
 <%  
 session[:pays] = params[:pays].nil? ? 1 : params[:pays]
 session[:rels] = params[:rels].nil? ? 1 : params[:rels]

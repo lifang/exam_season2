@@ -9,6 +9,10 @@ module ApplicationHelper
     return cookies[:user_id] != nil
   end
 
+  def current_user
+    User.find_by_id(cookies[:user_id].to_i)
+  end
+
 
  
 end

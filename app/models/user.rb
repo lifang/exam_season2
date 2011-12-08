@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
   has_many :categories,:through=>:user_category_relations, :source => :category
   has_many :user_plan_relations,:dependent => :destroy
   has_many :study_plans,:through=>:user_plan_relations, :source => :study_plan
+  has_many :send_notices, :foreign_key => "send_id", :source => :notice
+  has_many :recive_notices, :foreign_key => "target_id", :source => :notice
 
   attr_accessor :password
   validates:password, :confirmation=>true,:length=>{:within=>6..20}, :allow_nil => true
@@ -28,7 +30,7 @@ class User < ActiveRecord::Base
       sql += " desc " if time_sort.to_i == TIME_SORT[:DESC]
     end
     if search_text.nil?
-      users = User.paginate_by_sql(sql, :per_page => 1, :page => page)
+      users = User.paginate_by_sql(sql, :per_page => 10, :page => page)
     else
       users = User.paginate_by_sql([sql, "%#{search_text.strip}%", "%#{search_text.strip}%"],
         :per_page => 10, :page => page)

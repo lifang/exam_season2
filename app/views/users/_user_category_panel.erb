@@ -18,19 +18,41 @@
   </div>
   <div style="display: none;">
     <% if @study_plan %>
-    <div class="st_play_p">开始时间：<%= @study_plan.created_at.strftime("%Y-%m-%d") %></div>
-    <div class="st_play_p">预计完成：<%= @study_plan.ended_at.strftime("%Y-%m-%d") %></div>
-    <div class="st_play_zt">
-      <p>今日状态</p>
-      <p><strong>已完成</strong></p>
-    </div>
-    <div class="st_load_box">
-      <div class="st_hpjg"><img src="/assets/icon_hpjg.png" /></div>
-      <div class="st_play_load"> <div class="st_play_bg" style="width: 200px;"></div> </div>
-      <div class="st_day">第<%= ((Time.now - @study_plan.created_at)/1.day).to_i + 1 %>天</div>
-    </div>
+      <div class="st_play_p">开始时间：<%= @study_plan.created_at.strftime("%Y-%m-%d") %></div>
+      <div class="st_play_p">预计完成：<%= @study_plan.ended_at.strftime("%Y-%m-%d") %></div>
+      <div class="st_play_zt">
+        <p>今日状态</p>
+        <p>
+          <strong>
+            <% if @today_plan.updated_at.to_date == Time.now.to_date or @today_plan.updated_at.to_date == @study_plan.ended_at.to_date %>
+              已完成
+            <% else %>未完成
+            <% end %>
+          </strong>
+        </p>
+      </div>
+      <div class="st_load_box">
+        <% if @today_plan.updated_at.to_date < Time.now.to_date and @today_plan.updated_at.to_date != @study_plan.ended_at.to_date  %>
+          <% fact_percent = ((@today_plan.updated_at.to_date -
+                @study_plan.created_at.to_date + 1.day)/(@study_plan.study_date * 1.day)).to_f %>
+          <div class="st_hpjg"
+               style="left:<%= fact_percent*500 - 49 %>px;">
+            <img src="/assets/icon_hpjg.png" />
+          </div>
+        <% end %>
+        <% plan_day = Time.now.to_date - @study_plan.created_at.to_date + 1.day
+        plan_percent = (plan_day/(@study_plan.study_date * 1.day)).to_f*100 %>
+        <div class="st_play_load">
+          <div class="st_play_bg"
+               style="width:<%= (plan_percent <= 100) ? (plan_percent.to_s + "%") : "100%" %>;">
+          </div>
+        </div>
+        <div class="st_day" style="left:<%= (plan_percent <= 100) ? ((plan_percent/100)*500.round - 49) : "451" %>px;">
+          第<%=  (plan_percent <= 100) ? (plan_day/1.day).to_i : @study_plan.study_date %>天
+        </div>
+      </div>
     <% else %>
-    <div class="st_play_p">当前用户暂无参加学习计划</div>
+      <div class="st_play_p">当前用户暂无参加学习计划</div>
     <% end %>
   </div>
 </div>

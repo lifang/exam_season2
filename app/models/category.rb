@@ -7,6 +7,7 @@ class Category < ActiveRecord::Base
   has_many :users, :through=>:user_category_relations, :source => :user
   has_many :category_manages
   has_one :study_plan
+  has_many :notices
   #判断分类是否存在
   FAURTH = 2
   SIXTH = 3
