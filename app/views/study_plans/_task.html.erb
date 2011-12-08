@@ -1,0 +1,8 @@
+<input type="hidden" value="<%=  %>" id="task_ids" />
+<div id="tasks">任务
+  <% @paper.each do |plan| %>
+  <p class="rw_list"><span>周期：<%= PlanTask::PERIOD_NAMES[plan.period_types] %></span><span>任务：<%= PlanTask::TYPES_NAME[plan.task_types] %></span><span>数量：<%= plan.num %></span><span><a href="#">[删除]</a></span></p>
+  <% end unless @paper.blank? %>
+  <a href="#" class="gl_add_a">添加任务</a>
+</div>
+
