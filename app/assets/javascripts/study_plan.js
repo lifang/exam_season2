@@ -1,6 +1,6 @@
 $(function(){
     $(".add_renwu .t_btn").click(function(){
-        var radio_value=$("add_renwu :radio").val();
+        var radio_value=$(":checked").val();
         var select_value=$("select option:selected").val();
         var amount=$("#amount").val();
         if(radio_value==undefined){
@@ -11,7 +11,7 @@ $(function(){
             tishi_alert("请选择任务类型");
             return false;
         }
-        if(amount==""){
+        if(isNaN(parseInt(amount))||parseInt(amount)==0){
             tishi_alert("请输入数量");
             return false;
         }

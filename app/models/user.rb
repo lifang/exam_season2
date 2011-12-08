@@ -31,7 +31,7 @@ class User < ActiveRecord::Base
       users = User.paginate_by_sql(sql, :per_page => 1, :page => page)
     else
       users = User.paginate_by_sql([sql, "%#{search_text.strip}%", "%#{search_text.strip}%"],
-        :per_page => 1, :page => page)
+        :per_page => 10, :page => page)
     end
     return users
   end
@@ -45,7 +45,7 @@ class User < ActiveRecord::Base
            (select co.created_at created_at, ca.name name, co.remark remark, co.price total_price from competes co
            left join categories ca on ca.id = co.category_id
            where co.user_id = ? ) order by created_at desc "
-    return Order.paginate_by_sql([pay_sql, self.id, self.id], :per_page => 1, :page => page)
+    return Order.paginate_by_sql([pay_sql, self.id, self.id], :per_page => 10, :page => page)
   end
 
   #用户参与的科目
@@ -56,7 +56,7 @@ class User < ActiveRecord::Base
           inner join categories c on c.id = ucr.category_id
           where ucr.user_id = ? and o.status = #{Order::STATUS[:NOMAL]} and ucr.status = #{UserCategoryRelation::STATUS[:NOMAL]} "
     return UserCategoryRelation.paginate_by_sql([category_sql, self.id],
-      :per_page => 1, :page => page)
+      :per_page => 10, :page => page)
   end
 
   #查看用户分类下的action_log
@@ -64,7 +64,7 @@ class User < ActiveRecord::Base
     ActionLog.paginate_by_sql(["select al.created_at, al.types, al.total_num from action_logs al
       where al.category_id = ? and user_id = ?",
         category_id, user_id],
-      :per_page => 1, :page => page)
+      :per_page => 5, :page => page)
   end
 
   #查看用户参与的所有模拟考试
@@ -72,7 +72,7 @@ class User < ActiveRecord::Base
     ExamUser.paginate_by_sql(["select eu.created_at, e.title, eu.total_score from exam_users eu
         inner join examinations e on e.id = eu.examination_id
         where eu.is_submited = ? and e.types = ? and e.category_id = ? and eu.user_id = ?",
-      ExamUser::IS_SUBMITED[:YES], Examination::TYPES[:SIMULATION], category_id, user_id], :per_page => 1, :page => page)
+      ExamUser::IS_SUBMITED[:YES], Examination::TYPES[:SIMULATION], category_id, user_id], :per_page => 5, :page => page)
   end
 
   def has_password?(submitted_password)

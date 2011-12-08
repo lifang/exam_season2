@@ -1,12 +1,26 @@
+<%= javascript_include_tag "study_plan" %>
 <div class="main_title">
   <div class="m_t_h">学习计划</div>
 </div>
-<%= javascript_include_tag "study_plan" %>
 <div class="text_box">
   <div class="bianji_ny">
-    <div>天数： <input name="" type="text" /></div>
-    <div id="taks">任务：<a href="javascript:$('.add_renwu').css('display','');" class="gl_add_a">添加任务</a></div>
-    <div><button class="t_btn">保存</button></div>
+
+    <% if @study.nil? %>
+      <div>天数： <input name="" type="text" /></div>
+      <div id="taks">任务：<% @plans.each do |plan| %>
+          <p class="rw_list"><span>周期：<%= PlanTask::PERIOD_NAMES[plan.period_types] %></span><span>任务：<%= PlanTask::TYPES_NAME[plan.task_types] %></span><span>数量：<%= plan.num %></span><span><a href="#">[删除]</a></span></p>
+        <% end unless @plans.blank? %><a href="javascript:$('.add_renwu').css('display','');" class="gl_add_a">添加任务</a></div>
+      <div><button class="t_btn">保存</button></div>
+    <% else %>
+      <input type="hidden" value="<%=  %>" id="task_ids" />
+      <div>天数： <input value="<%= @study.study_date %>" type="text" /></div>
+      <div id="tasks">任务：<% @plans.each do |plan| %>
+          <p class="rw_list"><span>周期：<%= PlanTask::PERIOD_NAMES[plan.period_types] %></span><span>任务：<%= PlanTask::TYPES_NAME[plan.task_types] %></span><span>数量：<%= plan.num %></span><span><a href="#">[删除]</a></span></p>
+        <% end unless @plans.blank? %>
+        <a href="#" class="gl_add_a">添加任务</a>
+      </div>
+      <div><button class="t_btn">提交更新</button></div>
+    <% end %>
   </div>
 </div>
 
@@ -17,9 +31,9 @@
   <div>任务：
     <select name="">
       <option value="-1">任务类型</option>
-      <option value="0">做题</option>
-      <option value="1">背词</option>
-      <option value="2">模拟考试</option>
+      <option value="1">做题</option>
+      <option value="2">背词</option>
+      <option value="0">模拟考试</option>
     </select>
   </div>
   <div>数量：<input id="amount" type="text" /></div>
