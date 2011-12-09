@@ -30,96 +30,144 @@ class PapersController < ApplicationController
   #[get][member] 编辑试卷具体内容（新建试卷第二步）
   def edit
     paper = Paper.find(params[:id].to_i)
-    #    begin
-    file = File.open("#{Constant::PAPER_XML_PATH}#{paper.paper_url}")
-    @xml=Document.new(file).root
-    file.close
-    #    rescue
-    #      flash[:error] = "当前试卷不能正常打开，请检查试卷是否正常。"
-    #      redirect_to request.referer
-    #    end
+    begin
+      file = File.open("#{Constant::PAPER_XML_PATH}#{paper.paper_url}")
+      @xml=Document.new(file).root
+      file.close
+    rescue
+      flash[:error] = "当前试卷不能正常打开，请检查试卷是否正常。"
+      redirect_to request.referer
+    end
   end
 
-  #[post][member] 编辑、新建模块基本信息，修改名称
-  def edit_block_baseinfo
-    block_xpath = params["block_xpath"]
-    block_name = params["block_name"]
+  #[post][member] 模块表单
+  def post_block
+    block_xpath , block_name ,block_description , block_time , block_start_time = params["block_xpath"]  , params["block_name"] , params["block_description"] , params["time"] , params["start_time"]
     paper = Paper.find(params[:id].to_i)
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
-
-    doc = get_doc_from(url)
+    doc = get_doc(url)
     if block_xpath != ""
-      edit_element(doc,block_xpath,{"base_info/title"=>block_name},{"time"=>params["time"],"start_time"=>params["start_time"]})
+      block=doc.elements[block_xpath]
+      manage_element(block,{"base_info/title"=>block_name,"base_info/description"=>block_description},{"time"=>block_time,"start_time"=>block_start_time})
     else
-      create_block(doc,url,block_name,params["start_time"],params["time"])
+      block = doc.elements["blocks"].add_element("block")
+      manage_element(block,{"base_info/title"=>block_name,"base_info/description"=>block_description,"problems"=>""},{"total_score"=>"0","total_num"=>"0","time"=>block_time,"start_time"=>block_start_time})
     end
-    doc_write_file(doc,url)
+
+    write_xml(doc,url)
     redirect_to request.referer
   end
 
 
-  # 编辑XML节点 （用处：form_block_baseinfo ）  doc为Document.new()产生的对象，xpath为编辑的XML节点路径，texts为内容，attributes为属性
-  def edit_element(doc,xpath,texts={},attributes={})
-    element = doc.elements[xpath]
-    texts.each do |key,value|
-      element.elements["#{key}"].text = value unless element.elements["#{key}"].nil?
+  #[post][member] 新建表单
+  def create_problem
+    @post = params[:create_problem]
+    puts "category_id = "+@post[:category]
+    puts "problems_xpath = "+@post[:problems_xpath]
+    puts "problem_description = "+@post[:problem_description]
+    puts "problem_title = "+@post[:problem_title]
+    puts "question_type = "+@post[:question_type]
+    puts "correct_type = "+@post[:correct_type]
+    puts "question_answer = " +@post[:question_answer]
+    puts "question_attrs = "+@post[:question_attrs]
+    puts "question_description = " +@post[:question_description]
+    puts "question_analysis = " +@post[:question_analysis]
+    puts "question_score = " +@post[:question_score]
+    puts "init_block = " +@post[:init_block]
+    puts "init_problem = " +@post[:init_problem]
+    #存储数据库
+    @problem = Problem.create(:category_id=>@post[:category],:description=>@post[:problem_description],:title=>@post[:problem_title],:question_type=>@post[:question_type])
+    @question =Question.create(:problem_id=>@problem.id,:description=>@post[:question_description],:answer=>@post[:question_answer],:question_attrs=>@post[:question_attrs],:correct_type=>@post[:correct_type],:analysis=>@post[:question_analysis])
+
+    #存储xml文件
+    paper = Paper.find(params[:id].to_i)
+    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    doc = get_doc(url)
+    problem_element = doc.elements[@post[:problems_xpath]].add_element("problem")
+    manage_element(problem_element,{:description=>@post[:problem_description],:title=>@post[:problem_title],:category=>@post[:category],:questions=>""},{:id=>@problem.id,:question_type=>@post[:question_type]})
+    question_element = problem_element.elements["questions"].add_element("question")
+    manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>"",:analysis=>@post[:question_analysis]},{:id=>@question.id,:score=>@post[:question_score],:correct_type=>@post[:correct_type]})
+    write_xml(doc,url)
+    redirect_to "/papers/#{params[:id]}/edit?category=#{@post[:category]}"
+  end
+
+  # ajax 选择题目类型，更新 attrs_module 部分
+  def select_question_type
+    question_type ,block_index =params["question_type"].to_i , params["block_index"].to_i
+    @object={:question_type=>question_type,:block_index=>block_index}
+    render :partial=>"attrs_module",:object=>@object
+  end
+
+  # ajax [post][member] 编辑题目说明
+  def ajax_edit_problem_description
+    paper = Paper.find(params[:id].to_i)
+    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    doc = get_doc(url)
+    problem_element = doc.elements["/paper/blocks/block[#{params[:block_index]}]/problems/problem[#{params[:problem_index]}]"]
+    manage_element(problem_element,{:description=>params[:description]},{})
+    write_xml(doc,url)
+    respond_to do |format|
+      format.json {
+        data={:description=>params[:description]}
+        render:json=>data
+      }
     end
-    attributes.each do |key,value|
-      if element.attributes[key].nil?
-        element.add_attribute(key,value)
-      else
-        element.attributes[key] = value
-      end
+
+  end
+  # ajax [post][member] 编辑题目标题
+  def ajax_edit_problem_title
+    paper = Paper.find(params[:id].to_i)
+    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    doc = get_doc(url)
+    problem_element = doc.elements["/paper/blocks/block[#{params[:block_index]}]/problems/problem[#{params[:problem_index]}]"]
+    manage_element(problem_element,{:title=>params[:title]},{})
+    write_xml(doc,url)
+    respond_to do |format|
+      format.json {
+        data={:title=>params[:title]}
+        render:json=>data
+      }
     end
   end
 
-  #新建XML节点
-  def create_element(doc,xpath,texts={},attributes={})
+  def post_question
     
+    redirect_to request.referer
   end
 
+  
+  # --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------
 
-  # 新建XML节点 （用处：form_block_baseinfo ）
-  def create_block(doc,url,block_name,start_time,time)
-    blocks = doc.root.elements["blocks"]
-    block = blocks.add_element("block")
-    block.add_attribute("total_score","0")
-    block.add_attribute("total_num","0")
-    block.add_attribute("time", "#{time}")
-    block.add_attribute("start_time", "#{start_time}")
-    base_info=block.add_element("base_info")
-    title = base_info.add_element("title")
-    title.add_text(block_name)
-    problems = block.add_element("problems")
-  end
-
-  #将XML文件生成document对象 （用处：create_element ，edit_element ）
-  def get_doc_from(url)
+  #将XML文件生成document对象
+  def get_doc(url)
     file = File.open(url)
     doc = Document.new(file).root
     return doc
   end
+  
+  #处理XML节点
+  #参数解释： element为doc.elements[xpath]产生的对象，content为子内容，attributes为属性
+  def manage_element(element,content={},attributes={})
+    content.each do |key,value|
+      arr , ele = "#{key}".split("/") , element
+      arr.each do |a|
+        ele = ele.elements[a].nil? ? ele.add_element(a) : ele.elements[a]
+      end
+      ele.text.nil? ? ele.add_text("#{value}") : ele.text="#{value}"
+    end
+    attributes.each do |key,value|
+      element.attributes["#{key}"].nil? ? element.add_attribute("#{key}","#{value}") :  element.attributes["#{key}"] = "#{value}"
+    end
+    return element
+  end
 
-  #将document对象生成xml文件 （用处：create_element ，edit_element ）
-  def doc_write_file(doc,url)
+  #将document对象生成xml文件
+  def write_xml(doc,url)
     file = File.new(url, File::CREAT|File::TRUNC|File::RDWR, 0644)
     file.write(doc)
     file.close
   end
 
-  
-  #[post][member] 添加题目
-  def create_problem
-    puts "------------------------------------------------------"
-    puts params[:create_problem][:block_index]
-    @problem = Problem.create(params[:problem])
-    paper = Paper.find(params[:id].to_i)
-    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
-    doc = get_doc_from(url)
-    
-
-    redirect_to request.referer
-  end
-
+  # --------- END ------XML文件操作--------require 'rexml/document'----------include REXML----------
   
 end

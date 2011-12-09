@@ -124,6 +124,9 @@ img { border: none;}
 .bj_h { padding: 10px 0; font-size: 16px; border-bottom: 1px #CCC solid; border-top: 1px #CCC solid;}
 .bj_span { margin-left: 10px; font-size: 12px;}
 
+/*学习计划----*/
+.rw_list { padding-left: 30px;}
+.rw_list span { padding: 0 10px;}
 
 /*科目管理------------*/
 .kemu_box {
@@ -211,8 +214,11 @@ span.mk_span_w { color: #000;}
 .question_bianji { width: 308px; padding-right: 5px; float: left;}
 
 .qc_h { height: 32px; line-height: 32px; padding-left: 20px;}
-.qc_textarea1 { width: 480px; height: 100px; margin-left: 11px;}
-.qc_textarea2 { width: 480px; height: 230px; margin-left: 11px;}
+.qc_textarea1 { width: 470px; height: 90px; margin-left: 11px; padding: 5px;}
+.qc_textarea2 { width: 470px; height: 220px; margin-left: 11px; padding: 5px;}
+
+.qu_con_explain { width: 470px; height: 90px; padding: 5px; border: 1px #CCC solid; margin-left: 11px; line-height: 24px; overflow: auto;}
+.qu_con_content { width: 470px; height: 220px; padding: 5px; border: 1px #CCC solid; margin-left: 11px; line-height: 24px; overflow: auto;}
 
 .qu_tab {padding-top: 10px;}
 .q_tab_ul { height: 32px; line-height: 32px;}
@@ -250,6 +256,8 @@ span.mk_span_w { color: #000;}
 .qa_input { width: 250px; margin-top: 5px;}
 .qa_textarea { width: 250px; height: 50px; margin-top: 5px;}
 
+
+.qa_textarea_div { width: 240px; margin-top: 5px; border: 1px #999 solid; line-height: 24px; padding: 5px;}
 
 /*弹出层----------*/
 .add_label { width: 300px; padding: 10px; background: #FFF; border: 3px #999 solid; position: fixed;}
@@ -305,6 +313,7 @@ div.word_xx { width: 800px; margin: 20px auto;}
 .word_xx_gl p {line-height: 24px; font-size: 14px;}
 .word_xx_gl p a { margin: 0 10px;}
 .size_16 { font-size: 16px;}
+.word_liju { font-size: 16px; padding: 10px 0; color: #666;}
 
 /*专项*/
 .word_zx {border: 1px #CCC solid; width: 880px; margin: 20px auto; overflow: hidden; padding: 10px;}
@@ -395,3 +404,25 @@ div.word_xx { width: 800px; margin: 20px auto;}
 .see_message { width: 400px; padding: 10px; border: 3px #999 solid; background: #FFF; position: fixed; z-index:999;}
 .see_message div { line-height: 24px;}
 .see_mess_xx { border: 1px #CCC solid; padding: 10px;}
+
+/*添加词汇----------*/
+.addWords { width: 440px; padding: 10px; border: 3px #999 solid; background: #FFF; overflow: hidden; position: fixed;}
+.addwords_side { width: 220px; float: left;}
+.words_ny { width: 200px; height: 100px; margin: 5px 0; overflow: hidden; border: 1px #CCC solid;}
+.words_ny li { height: 24px; line-height: 24px;}
+.words_ny li a {width: 190px; height: 24px; display: block; padding-left: 10px; color: #333;}
+.words_ny li a:hover { background: #09C; color: #FFF;}
+.words_ny li a.hover { background: #09C; color: #FFF;}
+.words_ny div { margin:5px;}
+.words_ny div a { padding-left: 5px;}
+
+.hui_bg { background: #e1e1e1; padding-left: 10px; height: 24px; line-height: 24px; margin: 5px 0;}
+.xs_add span { padding: 0 5px;}
+
+.xs_add { margin-top: 20px; line-height: 24px;}
+.xs_add h2 { font-size: 18px;}
+
+/*发送消息tab*/
+.send_message_tab {width: 440px; padding: 10px; border: 3px #999 solid; background: #FFF; overflow: hidden;}
+.send_message_tab div {margin:5px;}
+.send_message_tab div textarea { width: 100%; height: 100px;}
