@@ -2,7 +2,14 @@ RailsTest3::Application.routes.draw do
   
 
   resources :papers
+  resources :report_errors do
+    collection do
+      post :modify_status
+    end
+    member do
 
+    end
+  end
   resources :categories
   resources :notices do
     collection do
@@ -16,8 +23,9 @@ RailsTest3::Application.routes.draw do
   end
   resources :study_plans do
     collection do
-      post :create_task
-      get :create_plan
+      post :create_task,:create_plan,:delete_task
+    end
+    member do
     end
   end
 
@@ -46,7 +54,6 @@ RailsTest3::Application.routes.draw do
     end
     collection do
       post :add_rater,:delete_rater,:stop_exam
-       
     end
   end
   resources :categories do

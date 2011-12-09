@@ -19,7 +19,7 @@
 
 <div class="text_box">
   <% if @simulations.blank? %>
-    <div class="t_list">暂无真题，您可以在 <a href="/simulations/new?category=<%= params[:category] %>">这里</a> 添加</div>
+    <div class="t_list">暂无模考，您可以在 <a href="/simulations/new?category=<%= params[:category] %>">这里</a> 添加</div>
   <% else %>
     <% @simulations.each do |simulation| %>
       <div class="t_list">

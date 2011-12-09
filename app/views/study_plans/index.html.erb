@@ -4,20 +4,26 @@
 </div>
 <div class="text_box">
   <div class="bianji_ny">
-    <% if @study.nil? %>
-      <div>天数： <input name="" type="text" id="date"/></div>
-      <div id="taks">任务：<a href="javascript:$('.add_renwu').css('display','');" class="gl_add_a">添加任务</a></div>
-      <div><button class="t_btn">保存</button></div>
-    <% else %>
-      <input type="hidden" value="<%=  %>" id="task_ids" />
-      <div>天数： <input value="<%= @study.study_date %>" id="date" type="text" /></div>
-      <div>任务：<% @study.plan_tasks.each do |plan| %>
-          <p class="rw_list"><span>周期：<%= PlanTask::PERIOD_NAMES[plan.period_types] %></span><span>任务：<%= PlanTask::TYPES_NAME[plan.task_types] %></span><span>数量：<%= plan.num %></span><span><a href="#">[删除]</a></span></p>
-        <% end unless @study.blank? %>
-        <div id="tasks">
-          <a href="javascript:$('.add_renwu').css('display','');" class="gl_add_a">添加任务</a></div>
-      </div>
-      <div><button class="t_btn">提交更新</button></div>
+    <%= form_for :task_info,:url=>"/study_plans/create_plan",:html=>{:id=>"task_form"},:method=>:post do  %>
+      <% if @study.nil? %>
+        <div>天数： <input name="" type="text" name="date" id="date"/></div>
+        <div>任务： <div id="tasks"></div><a href="javascript:$('.add_renwu').css('display','');" class="gl_add_a">添加任务</a></div>
+        <div><button class="t_btn">保存</button></div>
+      <% else %>
+        <input type="hidden" value="<%=  %>" id="task_ids" />
+        <div>天数： <input value="<%= @study.study_date %>" name="date" id="date" type="text" /></div>
+        <div>任务：<div id="real_tasks"><% @plans.each do |plan| %>
+              <p class="rw_list" id="task_<%= plan.id %>"><span>周期：<%= PlanTask::PERIOD_NAMES[plan.period_types] %></span><span>任务：
+                  <%= PlanTask::TYPES_NAME[plan.task_types] %></span><span>数量：<%= plan.num %></span><span>
+                  <a href="#" onclick="javascript:delete_real_task(<%= plan.id %>);">[删除]</a></span></p>
+            <% end unless @plans.blank? %></div>
+          <div id="tasks"></div>
+          <a href="javascript:$('.add_renwu').css('display','');" class="gl_add_a">添加任务</a>
+        </div>
+        <div><button class="t_btn">提交更新</button></div>
+      <% end %>
+      <input type="hidden" value="<%= params[:category] %>" id="category" name="category"/>
+      <input type="hidden" value="" id="delete_task_ids" name="delete_task_ids" />
     <% end %>
   </div>
 </div>

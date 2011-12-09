@@ -1,0 +1,5 @@
+<% @plans.each do |plan| %>
+  <p class="rw_list" id="task_<%= plan.id %>"><span>周期：<%= PlanTask::PERIOD_NAMES[plan.period_types] %></span>
+    <span>任务：<%= PlanTask::TYPES_NAME[plan.task_types] %></span>
+    <span>数量：<%= plan.num %></span><span><a href="#" onclick="javascript:delete_real_task(<%= plan.id %>);">[删除]</a></span></p>
+<% end unless @study.blank? %>

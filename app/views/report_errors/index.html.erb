@@ -1,0 +1,132 @@
+<%= javascript_include_tag "report_error" %>
+<%  @errors.each do |error| %>
+  <div id="error_<%= error.id %>"  style="display:none">
+    <div class="error_top">
+      <div>
+        <select name="">
+          <option <%= "selected" if params[:error_type].nil? %> value="-1">全部</option>
+          <option value="1" <%= "selected" if params[:error_type] == ReportError::TYPE[:TOPOIC].to_s %> >题目错误</option>
+          <option value="2" <%= "selected" if params[:error_type] == ReportError::TYPE[:ANSWER].to_s %> >答案错误</option>
+          <option value="3" <%= "selected" if params[:error_type] == ReportError::TYPE[:ANALISIS].to_s %> >解析错误</option>
+          <option value="4" <%= "selected" if params[:error_type] == ReportError::TYPE[:WORD].to_s %> >词汇错误</option>
+        </select>
+        <span>【错误类型】</span>
+      </div>
+      <input type="hidden" value="<%= params[:error_type] %>" id="error_type"/>
+      <input type="hidden" value="<%= params[:page] %>" id="page"/>
+      <input type="hidden" value="<%= params[:category] %>" id="category"/>
+      <div>报告人：<span><%= error.name %></span></div>
+      <div class="error_explain">错误说明：
+        <span></span>
+      </div>
+      <div><button class="t_btn" onclick="javascript:modify_status(<%= error.id %>,1)">改好了</button><button class="t_btn" onclick="javascript:modify_status(<%= error.id %>,0)">忽略</button></div>
+      <div>
+        <span class="updown"><img src="/assets/icon_up.png" onclick="javascript:window.location.href='/report_errors?category=<%= params[:category] %>&page=<%= (params[:page].nil?|| params[:page].to_i==1) ? 1: params[:page].to_i-1 %>'"/></span>
+        <span class="updown"><img src="/assets/icon_down.png" onclick="javascript:window.location.href='/report_errors?category=<%= params[:category] %>&page=<%=
+          if (params[:page].nil? and @errors.size>=2)
+            2
+          elsif params[:page].to_i==@errors.size
+            params[:page].to_i
+          else
+            params[:page].to_i+1
+                                  end %>'"/></span>
+      </div>
+    </div>
+
+    <div class="error_box">
+      <div class="error_text_h">
+        <p><%= @info[error.id][2] %></p>
+        <h2>第<%= @info[error.id][0] %>题（共<%= @info[error.id][1] %>题）</h2>
+      </div>
+      <div class="error_nr">
+        <%= @info[error.id][3].elements["description"].to_s.html_safe  %>
+      </div>
+    </div>
+    <% question=@info[error.id][3].elements["questions/question[@id=#{error.question_id}]"]
+    attrs_str = question.elements["questionattrs"].text
+    attrs_array = attrs_str.split(";-;") unless attrs_str.nil?
+    answer = question.elements["answer"]
+    answers = []
+    answer.text.split(";|;").collect { |item| answers << item.strip } unless answer.nil? or answer.text.nil?
+    correct_type = question.attributes["correct_type"]
+  %>
+    <div class="error_box">
+      <div class="move_updown"><a href="#"><img src="/assets/icon_up.png" />上一题</a></div>
+      <div class="error_problem">
+        <% unless  question.elements['description'].nil? or question.elements['description'].text.nil? or
+            question.elements['description'].text == "" %>
+          <% if correct_type.to_i == Problem::QUESTION_TYPE[:MORE_BLANKS] %>
+            <div><%= question.elements["description"].text.to_s.html_safe %>
+      <%#*gsub("problem_x_dropplace", "problem_#{question_answer.attributes["id"]}_dropplace")  %>
+      <%#*<script type="text/javascript">%>
+      <%#*droppable_result('<%= answers.join(",") %>', '<%#= user_answers.join(",") %>', <%#= question_answer.attributes["id"] %>);%>
+      <%#*</script>%>
+            </div>
+          <% else %>
+            <div> <%= question.elements["description"].text.to_s.html_safe  %></div>
+          <% end %>
+        <% end %>
+        <div class="er_pr_an">
+          <% if (correct_type.to_i == Problem::QUESTION_TYPE[:MORE_CHOSE] or
+                correct_type.to_i == Problem::QUESTION_TYPE[:SINGLE_CHOSE]) %>
+            <ul>
+              <%
+              (0..attrs_array.length-1).each do |i|
+                is_answer = answers.include?(attrs_array[i].strip)
+              %>
+                <li>
+                  <% if correct_type.to_i == Problem::QUESTION_TYPE[:MORE_CHOSE] %>
+                    <input type="checkbox" name="question_attr_<%= question.attributes["id"].to_i %>" id="question_attr_<%= i %>" disabled/>
+                  <% elsif correct_type.to_i == Problem::QUESTION_TYPE[:SINGLE_CHOSE] %>
+                    <input type="radio" name="question_attr_<%= question.attributes["id"].to_i %>"    id="question_attr_<%= i %>"disabled/>
+                  <% end %>&nbsp;&nbsp;
+                  <%= attrs_array[i] %><% if is_answer %> <div class="icon_true"><img src="/assets/icon_true.png" /></div><% end %>
+                </li>
+              <% end %>
+            </ul>
+          <% elsif correct_type.to_i == Problem::QUESTION_TYPE[:JUDGE] %>
+            <ul>
+              <li>
+                <input type="radio" disabled/><label>对</label>
+              </li>
+              <li>
+                <input type="radio" disabled /><label>错</label>
+              </li>
+            </ul>
+          <% elsif correct_type.to_i == Problem::QUESTION_TYPE[:SINGLE_CALK] %>
+            <div>
+              <input name="answer" type="text" value="" disabled/>
+            </div>
+          <% elsif correct_type.to_i == Problem::QUESTION_TYPE[:CHARACTER] %>
+            <div>
+              <textarea cols="" rows=""readonly></textarea>
+            </div>
+          <% elsif correct_type.to_i == Problem::QUESTION_TYPE[:MORE_BLANKS] %>
+            <div>
+              <textarea disabled cols="" rows="" style="height:24px;"></textarea>
+            </div>
+          <% end %>
+          <div><a href="#">解析</a><a href="#">相关词汇</a><button class="t_btn">编辑</button></div>
+        </div>
+      </div>
+      <div class="move_updown"><a href="#"><img src="/assets/icon_down.png" />下一题</a></div>
+    </div>
+  </div>
+<% end %>
+<input type="hidden" value="<%=@errors.size %>" id="all_error"/>
+<script type="text/javascript" >
+  // 控制分页
+  if (getCookie("page")==null){
+    $('div[id^="error_"]').first.style.display="block";
+  }
+  $(function(){
+   
+    $(".blocks_li").bind("click",function(){
+      $('div[id^="error_"]').css("display","none");
+      var index=$('div[id^="error_"]').index(this);
+      $('div[id^="error_')[index+1].style.display="block";
+      setCookie("page",(index+1));
+      //$('div[id^="error_"] :eq(0)').css("display","block");
+    })
+  })
+</script>
