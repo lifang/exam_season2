@@ -2,6 +2,9 @@
 class Paper < ActiveRecord::Base
 
   belongs_to :category
+  has_many :examination_paper_relations,:dependent=>:destroy
+  has_many :examinations, :through=>:examination_paper_realations, :source => :examination
+  belongs_to :user,:foreign_key=>"creater_id"
   
   default_scope :order => "papers.created_at desc"
 

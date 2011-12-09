@@ -27,14 +27,7 @@ function new_similarity_form() {
 
 //添加试卷
 function add_paper() {
-    var scolltop = document.body.scrollTop|document.documentElement.scrollTop;
-    var win_height = document.documentElement.clientHeight;//jQuery(document).height();
-    var win_width = $(window).width();
-    var z_layer_height = $(".add_exPaper").height();
-    var z_layer_width = $(".add_exPaper").width();
-    $(".add_exPaper").css('top',((win_height-z_layer_height)/2 + scolltop));
-    $(".add_exPaper").css('left',(win_width-z_layer_width)/2);
-    $(".add_exPaper").css('display','block');
+    generate_flash_div(".add_exPaper");
 }
 
 //检查试卷是否被选中

@@ -29,7 +29,7 @@ module Constant
   DIR_ROOT="/data"
 
   #模考统计
-  SIMULATION_DIR="/simulations"
+  SIMULATION_DIR="/simulas"
   #运营数据操作类型
   ACTION_TYPES={:action1=>1,:action2=>2,:action3=>3,:action4=>4}
   

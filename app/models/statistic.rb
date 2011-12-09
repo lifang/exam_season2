@@ -1,19 +1,65 @@
 # encoding: utf-8
 class Statistic< ActiveRecord::Base
-  TIME_EXPRESSION=" TO_DAYS(NOW())-TO_DAYS(created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1"
-  def self.count_num
-    num=[]
-    num << User.count(:id)
-    num << User.count(:id, :conditions =>TIME_EXPRESSION)
-    num << ActionLog.count(:id)
-    num << ActionLog.count(:id, :conditions =>TIME_EXPRESSION)
-    num << Order.count(:id)
-    num << Order.count(:id, :conditions =>TIME_EXPRESSION)
-    num << Order.sum(:total_price)
-    num << Order.sum(:total_price, :conditions =>TIME_EXPRESSION)
-    num << Compete.count(:id)
-    num << Compete.count(:id, :conditions =>TIME_EXPRESSION)
-    return num
+
+def self.user_expr(types)
+     if types.to_i==1
+      file_name="/#{Time.now.to_date.to_s}_user_all.xls"
+    elsif types.to_i==2
+      file_name="/#{Time.now.to_date.to_s}_user_30.xls"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(al.created_at)>=1"
+    elsif types.to_i==3
+      file_name="/#{Time.now.to_date.to_s}_user_7.xls"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)<=7 and TO_DAYS(NOW())-TO_DAYS(al.created_at)>=1"
+    else
+      file_name="/#{Time.now.to_date.to_s}_user_1.xls"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)=1"
+    end
+    return [file_name,expression]
+  end
+
+
+  def self.download_expr(types,action,other)
+     if types.to_i==1
+      file_name="/#{Time.now.to_date.to_s}_#{action}_all.xls"
+      expression=" where #{other}"
+    elsif types.to_i==2
+      file_name="/#{Time.now.to_date.to_s}_#{action}_30.xls"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(al.created_at)>=1 and  #{other}"
+    elsif types.to_i==3
+      file_name="/#{Time.now.to_date.to_s}_#{action}_7.xls"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)<=7 and TO_DAYS(NOW())-TO_DAYS(al.created_at)>=1 and  #{other}"
+    else
+      file_name="/#{Time.now.to_date.to_s}_#{action}_1.xls"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)=1 and #{other}"
+    end
+    return [file_name,expression]
+  end
+
+  def self.download_info(types)
+    if types.to_i==1
+      file_name="/#{Time.now.to_date.to_s}_buyer_all.xls"
+    elsif types.to_i==2
+      file_name="/#{Time.now.to_date.to_s}_buyer_30.xls"
+      expr=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1"
+    elsif types.to_i==3
+      file_name="/#{Time.now.to_date.to_s}_buyer_7.xls"
+      expr=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=7 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1"
+    elsif types.to_i==4
+      file_name="/#{Time.now.to_date.to_s}_buyer_1.xls"
+      expr=" where TO_DAYS(NOW())-TO_DAYS(created_at)=1"
+    elsif types.to_i==5
+      file_name="/#{Time.now.to_date.to_s}_fee_all.xls"
+    elsif types.to_i==6
+      file_name="/#{Time.now.to_date.to_s}_fee_30.xls"
+      expr=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1"
+    elsif types.to_i==7
+      file_name="/#{Time.now.to_date.to_s}_fee_7.xls"
+      expr=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=7 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1"
+    elsif types.to_i==8
+      file_name="/#{Time.now.to_date.to_s}_fee_1.xls"
+      expr=" where TO_DAYS(NOW())-TO_DAYS(created_at)=1"
+    end
+    return [file_name,expr]
   end
 
   def self.exam_user_count(id)

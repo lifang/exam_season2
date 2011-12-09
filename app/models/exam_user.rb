@@ -9,6 +9,7 @@ class ExamUser < ActiveRecord::Base
   include REXML
   require 'spreadsheet'
 
+  IS_SUBMITED = {:YES => 1, :NO => 0} #用户是否提交 1 提交 2 未提交
   IS_USER_AFFIREMED = {:YES => 1, :NO => 0} #用户是否确认  1 已确认 0 未确认
   default_scope :order => "exam_users.total_score desc"
   
@@ -21,8 +22,8 @@ class ExamUser < ActiveRecord::Base
 
 
   def self.score_users(examination)
-    exam_user=ExamUser.find_by_sql("select u.name,u.email,eu.total_score,r.id relation_id, r.is_marked from exam_user eu inner join users u on u.id=eu.user_id inner join
-       orders o on o.user_id = eu.user_id left join rater_user_relations r on r.exam_user_id=eu.id where eu.examination_id=#{examination} and e.answer_sheet_url is not null")
+    exam_user=ExamUser.find_by_sql("select u.name,u.email,eu.total_score,r.id relation_id, r.is_marked from exam_users eu inner join users u on u.id=eu.user_id inner join
+       orders o on o.user_id = eu.user_id left join rater_user_relations r on r.exam_user_id=eu.id where eu.examination_id=#{examination} and eu.answer_sheet_url is not null")
     return exam_user
   end
 

@@ -1,0 +1,20 @@
+<table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
+  <tr class="tr_bg">
+    <td width="40%">日期</td>
+    <td width="40%">考试</td>
+    <td width="40%">成绩</td>
+  </tr>
+  <% unless @simulations.blank? %>
+    <% @simulations.each do |simulation| %>
+      <tr>
+        <td><%= simulation.created_at.strftime("%Y-%m-%d") if simulation.created_at %></td>
+        <td><%= simulation.title %></td>
+        <td><%= simulation.total_score ? "批卷中..." : simulation.total_score %></td>
+      </tr>
+    <% end %>
+  <% else %>
+    <tr><td colspan="3">暂无参加任何模拟考试</td></tr>
+  <% end %>
+</table>
+<%=  will_paginate_remote(@simulations , "",
+  {:url => "/users/#{@user_id}/user_simulations?category_id=#{@category_id}"}) %>

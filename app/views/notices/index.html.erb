@@ -1,0 +1,68 @@
+<%= javascript_include_tag "/assets/My97DatePicker/WdatePicker.js" %>
+<%= javascript_include_tag "notice" %>
+<div class="main_title">
+  <div class="m_t_h">发送消息</div>
+</div>
+
+<div class="text_box">
+  <div class="send_message">
+    <%= form_for :similarity_form, :url => "/notices", :method => "post",
+      :html => {:onsubmit => "return new_notice_form()"} do |f| -%>
+      <div>范围：
+        <select name="category_id" id="category_id">
+          <option value="-1">全站</option>
+          <% Category.all.each do |category| %>
+            <option value="<%= category.id %>"><%= category.name %></option>
+          <% end %>
+        </select>
+        <span>有效期：
+          <input name="started_at" id="started_at" type="text" size="15" class="Wdate" onClick="WdatePicker()"/>
+          到 <input name="ended_at" id="ended_at" type="text" size="15" class="Wdate" onClick="WdatePicker()"/>
+        </span>
+      </div>
+      <div>
+        <textarea name="description" id="description" cols="" rows=""></textarea>
+      </div>
+      <div><button class="t_btn">发送</button></div>
+    <% end %>
+  </div>
+  <div class="user_list">
+    <div class="message_record">消息记录</div>
+    <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
+      <tr class="tr_bg">
+        <td>日期</td>
+        <td>发送人</td>
+        <td>范围</td>
+        <td>内容</td>
+        <td>有效期</td>
+      </tr>
+      <% unless @notices.blank? %>
+        <% @notices.each do |notice| %>
+          <tr id="tr_<%= notice.id %>">
+            <td><%= notice.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+            <td><%= notice.username %></td>
+            <td><%= notice.c_name ? notice.c_name : "全站" %></td>
+            <td>
+              <a href="javascript:void(0);" class="message_sl"
+                 onclick="javascript:show_notice(<%= notice.id %>, this);"><%= notice.description %></a>
+            </td>
+            <td><%= notice.started_at.strftime("%Y-%m-%d") %>到<%= notice.ended_at.strftime("%Y-%m-%d") %></td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr><td colspan="4">暂无系统消息</td></tr>
+      <% end %>
+    </table>
+    <%=  will_paginate @notices ,:previous_label=>" &lt;", :next_label=>" &gt;" %>
+  </div>
+</div>
+<div class="see_message" style="display: none;">
+  <a href="javascript:void(0);" class="right_float">
+    <img src="/assets/x.gif" onclick="javascript:pop_window_closed(this);" />
+  </a>
+  <div>发送时间：<span></span></div>
+  <div>发送人：<span></span></div>
+  <div>范围：<span></span></div>
+  <div>详细内容：</div>
+  <div class="see_mess_xx"></div>
+</div>

@@ -11,17 +11,30 @@ RailsTest3::Application.routes.draw do
   end
 
   resources :categories
-
-  resources :statistics do
+  resources :notices do
     collection do
-      get :user_info,:action_info,:buyer_info,:fee_info
+      post :single_notice
     end
   end
-  
+  resources :statistics do
+    collection do
+      get :user_info,:action_info,:buyer_info,:login_info
+    end
+  end
+  resources :study_plans do
+    collection do
+      post :create_task
+      get :create_plan
+    end
+  end
+
   resources :users do
     collection do
       post :search
       get :search_list
+    end
+    member do
+      get :category_logs, :user_action_logs, :user_simulations
     end
   end
   resources :similarities do
@@ -36,9 +49,11 @@ RailsTest3::Application.routes.draw do
   resources :simulations do
     member do
       post :update_rater
+      get :count_detail
     end
     collection do
-      post :add_rater,:delete_rater
+      post :add_rater,:delete_rater,:stop_exam
+       
     end
   end
   resources :categories do
@@ -57,6 +72,7 @@ RailsTest3::Application.routes.draw do
     end
   end
 
+  match '/signout'=> 'sessions#destroy'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
