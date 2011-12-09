@@ -76,11 +76,40 @@ $(function(){
             return false;
         }
         if (all_tasks.length==0){
-            if (!confirm("暂时不添加任务?")){
+            alert(1);
+            if (!confirm("暂时不添加新任务?")){
                 return false;
             }
-
         }
-        window.location.href="/study_plans/create_plan?info="+all_tasks+"&date="+date+"&"+location.toString().split("?")[1]
+        $("#task_form").submit();
+
+    //        window.location.href="/study_plans/create_plan?info='"+all_tasks+"'&date="+date+"&"+location.toString().split("?")[1]
     })
 })
+
+function delete_real_task(id){
+    var delete_ids=$("#delete_task_ids").val();
+    var ids="";
+    if (confirm("确认删除此任务？"))
+    {
+        if (delete_ids==""||delete_ids.length==0){
+            ids=id;
+        }else{
+            ids=delete_ids+","+id;
+        }
+        $.ajax({
+            async:true,
+            success:function(request){
+                $("#delete_task_ids").val(ids);
+            },
+            data:{
+                delete_ids :ids,
+                category : $("#category").val()
+            },
+            dataType:'script',
+            url:"/study_plans/delete_task",
+            type:'post'
+        });
+        return false;
+    }
+}
