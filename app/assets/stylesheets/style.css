@@ -149,7 +149,7 @@ img { border: none;}
 span.mk_span_h { color: #000; font-weight: bold;}
 span.mk_span_w { color: #000;}
 
-.yuejuan_div { width: 250px; padding: 20px; background: #FFF; border: 3px  #999 solid; position: fixed; display: none;z-index: 100;}
+.yuejuan_div { width: 250px; padding: 20px; background: #FFF; border: 3px  #999 solid; position: fixed; display: none; z-index:100;}
 .yuejuan_div h3, .yuejuan_div div { font-size: 12px; line-height: 32px;}
 .yj_x { position: absolute; top: 5px; right: 5px; cursor: pointer; font-size: 16px;}
 
@@ -211,12 +211,15 @@ span.mk_span_w { color: #000;}
 }
 .bj_info_box { width: 813px; height: 405px; margin: 0 auto; background: #FFF; border: 1px #139DD3 solid;}
 
-.question_content { width: 500px; float: left;}
-.question_bianji { width: 308px; padding-right: 5px; float: left;}
+.question_content { width: 408px; float: left;}
+.question_bianji { width: 400px; padding-right: 5px; float: left;}
 
 .qc_h { height: 32px; line-height: 32px; padding-left: 20px;}
-.qc_textarea1 { width: 480px; height: 100px; margin-left: 11px;}
-.qc_textarea2 { width: 480px; height: 230px; margin-left: 11px;}
+.qc_textarea1 { width: 380px; height: 90px; margin-left: 11px; padding: 5px;}
+.qc_textarea2 { width: 380px; height: 220px; margin-left: 11px; padding: 5px;}
+
+.qu_con_explain { width: 380px; height: 90px; padding: 5px; border: 1px #CCC solid; margin-left: 11px; line-height: 24px; overflow: auto;}
+.qu_con_content { width: 380px; height: 220px; padding: 5px; border: 1px #CCC solid; margin-left: 11px; line-height: 24px; overflow: auto;}
 
 .qu_tab {padding-top: 10px;}
 .q_tab_ul { height: 32px; line-height: 32px;}
@@ -241,7 +244,7 @@ span.mk_span_w { color: #000;}
 .q_l_text { height: 64px; background: url(/assets/question_list_bg.png) repeat-x;}
 .q_l_word { padding: 0 10px; height: 32px; line-height: 32px;}
 .q_l_word p { float: left;}
-.q_w_p { width: 200px; font-size: 16px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.q_w_p { width: 300px; font-size: 16px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 .q_w_p em { color: #999; font-size: 12px;}
 .q_w_img { margin-top: 7px;}
 
@@ -252,7 +255,13 @@ span.mk_span_w { color: #000;}
 .qa_h { padding: 5px 10px;}
 .qa_h li { margin: 5px 0;}
 .qa_input { width: 250px; margin-top: 5px;}
-.qa_textarea { width: 250px; height: 50px; margin-top: 5px;}
+.qa_textarea { width: 350px; height: 50px; margin-top: 5px;}
+
+
+.qa_textarea_div { width: 340px; margin-top: 5px; border: 1px #999 solid; line-height: 24px; padding: 5px;}
+
+
+
 
 
 /*弹出层----------*/
@@ -288,7 +297,7 @@ span.mk_span_w { color: #000;}
 .yy_img { width: 700px; height: 120px; float: left;}
 
 /*词汇*/
-.word_text {}
+.word_text { height: 460px; overflow: auto;}
 .word_text div { line-height: 24px; margin: 5px 0; clear: both; overflow: hidden;}
 .word_text div label { display: inline-block; width: 80px; text-align: right;}
 .word_text div input, .word_text div select {margin-top: 4px;}
@@ -299,6 +308,8 @@ span.mk_span_w { color: #000;}
 .word_search { float: right; margin: 10px 50px 0 0;}
 div.word_list { border: 1px #CCC solid; width: 900px; height: 400px; margin: 20px auto;}
 .word_list li { width:180px; float: left; height: 30px; line-height: 32px; text-align: center; font-size: 16px;}
+
+div.gl_word_left { margin-left: 80px;}
 
 /*详细词汇---*/
 div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
@@ -336,9 +347,10 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 
 /*错误报告-------*/
 .error_top { background: #e1e1e1; overflow: hidden; padding: 5px; line-height: 24px;}
-.error_top div { float: left; margin: 0 10px; display: inline; font-weight: bold;}
+.error_top div { float: left; margin: 0 9px; display: inline; font-weight: bold;}
 .error_top div span { font-weight:100;}
-.error_explain { width: 410px;}
+.error_baog { width: 130px; overflow: hidden;}
+.error_explain { width: 430px; overflow: hidden;}
 .updown { width: 22px; height: 14px; display: block; margin: 8px 0; cursor: pointer;}
 
 .error_box { width: 439px; height: 430px; margin: 5px 0; padding: 4px 20px; overflow: auto; float: left; font-family: Arial;}
@@ -353,10 +365,13 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 .er_pr_an li { height: 24px; line-height: 24px; position: relative;}
 .er_pr_an a { margin: 0 10px;}
 
-.er_singleLine { height: 24px; overflow: hidden; text-overflow:ellipsis; white-space:nowrap; background: none;}
-.icon_true { position: absolute; left: -90px; top: -6px;}
+.answer_true { height: 34px; line-height: 34px; padding-left: 100px; color: #093; background: url(/assets/icon_true.png) no-repeat;}
 
-.move_updown { width: 100px; line-height: 24px; padding: 5px; margin: 0 auto;}
+
+
+.error_tab_list { padding: 10px; border: 3px #999 solid; background: #FFF; width: 800px; position: fixed;}
+.error_jiexi_tab { width: 400px; padding: 10px; border: 3px #999 solid; background: #FFF; position: fixed;}
+
 
 /*消费记录----*/
 .user_tab { width: 920px; background: #FFF;}
@@ -415,7 +430,6 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 .xs_add h2 { font-size: 18px;}
 
 /*发送消息tab*/
-.send_message_tab {width: 440px; padding: 10px; border: 3px #999 solid; background: #FFF; overflow: hidden; position: fixed;}
+.send_message_tab {width: 440px; padding: 10px; border: 3px #999 solid; background: #FFF; overflow: hidden;}
 .send_message_tab div {margin:5px;}
 .send_message_tab div textarea { width: 100%; height: 100px;}
-

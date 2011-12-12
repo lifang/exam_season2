@@ -8,6 +8,7 @@ class Category < ActiveRecord::Base
   has_many :category_manages
   has_one :study_plan
   has_many :notices
+  has_many :words
   #判断分类是否存在
   FAURTH = 2
   SIXTH = 3

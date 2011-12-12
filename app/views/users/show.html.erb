@@ -99,7 +99,7 @@ end
 
 <div class="user_big_tab" id="user_category_div" style="display: none;">
 </div>
-<%= form_for :similarity_form, :url => "/notices/single_notice", :method => "post",
+<%= form_for :message_form, :url => "/notices/single_notice", :method => "post",
       :html => {:onsubmit => "return user_notice_form()"}, :remote => true do |f| -%>
 <div class="send_message_tab" style="display:none;">
   <a href="javascript:void(0);" class="right_float">
