@@ -8,15 +8,12 @@ class Problem < ActiveRecord::Base
 
   require 'rexml/document'
   include REXML
+
+  #小题类型 题面外：0  题面内：1
+  QUESTION_TYPE = {:OUTER=>0,:INNER=>1}
+
+
   
-  QUESTION_TYPE = {:SINGLE_CHOSE => 0, :MORE_CHOSE => 1, :JUDGE => 2, :SINGLE_CALK => 3,
-    :COLLIGATION => 4, :CHARACTER => 5, :MORE_BLANKS => 6 }
-  #0 单选题； 1 多选题；2 判断题；3 填空题； 4 综合题； 5 简答题； 6 完型填空
-
-  PROBLEM_STATUS = {:USED=>1}
-  #1 代表题目已经被试卷使用
-
-  #
   #  #创建problem
   #  def Problem.create_problem(paper, options = {})
   #    options[:category_id] = paper.category_id

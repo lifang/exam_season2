@@ -62,7 +62,7 @@ class Paper < ActiveRecord::Base
       <blocks>
         <block id='' time='' total_num='4' total_score='15.0'>
             <base_info>
-                <title>test</title>
+                <title>first</title>
                 <description></description>
             </base_info>
             <problems></problems>
