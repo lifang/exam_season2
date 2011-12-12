@@ -383,8 +383,7 @@ float: left; font-family: Arial;}
 .error_nr {line-height: 18px;}
 .error_nr div { text-indent: 24px; padding: 5px 0;}
 
-.error_problem { line-height: 24px; border-bottom: 1px #CCC solid; margin: 10px 0;
-background: #ffe7e7;}
+.error_problem { line-height: 24px; border-bottom: 1px #CCC solid; margin: 10px 0;background: #ffe7e7;}
 .er_pr_an { padding: 10px 0 0 80px;}
 .er_pr_an li { height: 24px; line-height: 24px; position: relative;}
 .er_pr_an a { margin: 0 10px;}
