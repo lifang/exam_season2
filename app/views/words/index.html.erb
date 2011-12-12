@@ -4,7 +4,7 @@
   </div>
   <div class="user_search">
     <%= form_for :words ,:url=>"/words/search?category=#{params[:category]}", :method => "post" do |f|%>
-      <input name="word_text" id="word_text" type="text" class="t_se_input" 
+      <input name="word_text" id="word_text" type="text" class="t_se_input"
              value="<%= session[:word_text].nil? ? "搜索词汇" : session[:word_text] %>" />
       <button type="submit" class="t_search"></button>
     <% end %>
@@ -17,7 +17,7 @@
     <ul>
       <% unless @words.blank? %>
         <% @words.each do |word| %>
-          <li><%= word.name %></li>
+          <li><a href="/words/<%= word.id %>?category=<%= params[:category] %>"><%= word.name %></a></li>
         <% end %>
       <% else %>
         <li>当前科目下暂无词汇</li>
