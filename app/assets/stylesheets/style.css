@@ -69,7 +69,7 @@ display: block; border: 1px #CCC solid; background: #f4f4f4;}
 .main { width: 958px; min-height: 548px; border: 1px #CCC solid; background: #FFF; position:
 relative;}
 .main_title { height: 40px; line-height: 40px; padding-left: 30px;}
-.m_t_h { width: 100px; float: left; font-size: 14px; font-weight: bold;}
+.m_t_h { width: 600px; float: left; font-size: 14px; font-weight: bold;}
 .m_t_select { width: 100px; float: left; padding-top: 9px;}
 .m_t_select select { width: 100px; height: 24px; line-height: 24px; border: 1px #CCC solid;}
 .m_t_btn { width: 100px; float: right; padding-top: 10px;}
@@ -467,3 +467,6 @@ solid;}
 overflow: hidden;}
 .send_message_tab div {margin:5px;}
 .send_message_tab div textarea { width: 100%; height: 100px;}
+
+.p_name { color: #333; font-weight: bold;}
+.p_time { color: #333; width: 40px; margin-left: 20px;}
