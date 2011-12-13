@@ -28,7 +28,14 @@ class WordsController < ApplicationController
         WordSentence.create(:word_id => word.id, :description => sen.strip) unless sen.nil? or sen.strip.empty?
       end unless sens.blank?
       unless params[:description].nil? or params[:description].strip.empty?
-        Discriminate.create(:description => params[:description].strip)
+        dis = Discriminate.create(:description => params[:description].strip)
+        WordDiscriminateRelation.create(:word_id => word.id, :discriminate_id => dis.id)
+        unless params[:re_word].nil? or params[:re_word].strip.empty?
+          re_w_id = params[:re_word].strip.strip.split(",")
+            re_w_id.each do |w|
+              WordDiscriminateRelation.create(:word_id => w, :discriminate_id => dis.id)
+            end unless re_w_id.blank?
+        end
       end
     end
     flash[:notice] = "添加成功"
@@ -36,8 +43,12 @@ class WordsController < ApplicationController
   end
 
   def list_similar
-    @words = Word.find(:all, :conditions => ["w.name like ?", params[:search_text].strip], :limit => 10)
+    @words = Word.find(:all, :conditions => ["name like ?", "%#{params[:search_text].strip}%"], :limit => 10)
     render :partial => "/words/similar_list"
+  end
+
+  def show
+    @word = Word.find(params[:id].to_i)
   end
   
 end

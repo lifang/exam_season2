@@ -11,7 +11,7 @@
       <div><label>词性：</label>
         <select name="types" id="types">
           <% Word::TYPES.each do |k, v| %>
-            <option value="<%= v %>"><%= k %></option>
+            <option value="<%= k %>"><%= v %></option>
           <% end %>
         </select>
       </div>
@@ -30,11 +30,7 @@
         <span><input name="search_text" id="search_text" type="text" class="t_se_input"/>
           <button type="button" class="t_search" onclick="javascript:list_similar();"></button>
         </span>
-        <span id="chose_list">
-          <%#*<span class="gl_add_span">abcdefg<a href="#">[删除]</a></span>%>
-          <%#*<span class="gl_add_span">abcdefg<a href="#">[删除]</a></span>%>
-          <%#*<span class="gl_add_span">abcdefg<a href="#">[删除]</a></span>%>
-        </span>
+        <span id="chose_list"></span>
         <div class="words_ny gl_word_left" id="similar_list" style="display:none;">
         </div>
       </div>

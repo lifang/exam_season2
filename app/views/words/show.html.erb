@@ -1,0 +1,33 @@
+<div class="main_title">
+  <div class="m_t_h">词汇</div>
+</div>
+
+<div class="text_box">
+  <div class="word_xx">
+    <div class="word_xx_h"><h2><%= @word.name %></h2><span><%= Word::TYPES[@word.types] %></span>
+      <span><%= @word.phonetic %></span>
+      <a href="#"><img src="/assets/icon_lb.png" /></a></div>
+    <div class="size_16"><%= @word.en_mean %></div>
+    <div><%= @word.ch_mean %></div>
+    <div class="word_liju">
+      <% @word.word_sentences.each do |sentence| %>
+        <div><%= sentence.description %></div>
+      <% end unless @word.word_sentences.blank? %>
+    </div>
+    <div class="word_xx_gl">
+      <% discriminate = @word.discriminates[0] unless @word.discriminates.blank? or @word.discriminates[0].nil? %>
+      <% if discriminate %>
+        <p>关联词：
+          <%  unless discriminate.words.blank? or (discriminate.words.to_a - [@word]).blank? %>
+            <% (discriminate.words.to_a - [@word]).each do |word| %>
+              <%= word.name %>
+            <% end %>
+          <% else %>
+            暂无关联词
+          <% end %>
+        </p>
+        <p><%= discriminate.description %></p>
+      <% end %>
+    </div>
+  </div>
+</div>

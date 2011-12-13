@@ -38,10 +38,31 @@ function list_similar() {
             $("#similar_list").css("display", "");
             $("#similar_list").html(request.responseText);
         },
-        data:{ search_text :$("#search_text").val() },
+        data:{
+            search_text :$("#search_text").val()
+        },
         dataType:'script',
         url:"/words/list_similar",
         type:'post'
     });
     return false;
+}
+
+//选择选中的单词
+function choose_word(id, name) {
+    var word_ids = $("#re_word").val();
+    if (word_ids.split(",").indexOf("" + id) == -1) {
+        var new_ids = word_ids != "" ? (word_ids + "," + id) : id;
+        $("#re_word").attr("value", new_ids);
+        var word = create_element("span", null, "similar_" + id, "gl_add_span", null, "innerHTML");
+        word.innerHTML = name + "<a href='javascript:void(0);' onclick='javascript:remove_similar(" + id + ");'>[删除]</a>";
+        $("#chose_list").append(word);
+    }
+}
+
+//删除选择的单词
+function remove_similar(id) {
+    var word_ids = $("#re_word").val();
+    $("#similar_" + id).remove();
+    $("#re_word").attr("value", word_ids.replace(","+id, "").replace(id+",", "").replace(id, ""));
 }
