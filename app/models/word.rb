@@ -2,6 +2,8 @@
 class Word < ActiveRecord::Base
   belongs_to :category
   has_many :word_sentences
+  has_many :word_question_relations,:dependent=>:destroy
+  has_many :questions,:through=>:word_question_relations, :source => :question
   has_many :word_discriminate_relations,:dependent => :destroy
   has_many :discriminates,:through=>:word_discriminate_relations, :source => :discriminate
 

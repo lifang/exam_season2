@@ -16,7 +16,7 @@ function select_checked(dom,category_id){
 }
 
   
-//编辑、新建部分，控制DIV居中
+//初始化编辑、新建部分，弹出框居中
 jQuery(function(){
     if (jQuery('.part_info') != null) {
         var win_height = jQuery(window).height();
@@ -33,15 +33,32 @@ jQuery(function(){
     }
 })
 
+//初始化添加标签，弹出框居中
+jQuery(function(){
+    if (jQuery('.add_label') != null) {
+        var win_height = jQuery(window).height();
+        var win_width = jQuery(window).width();
+        var z_layer_height = jQuery('.add_label').height();
+        var z_layer_width = jQuery('.add_label').width();
+        if (win_height-z_layer_height > 0) {
+            jQuery('.add_label').css('top',(win_height-z_layer_height)/2);
+        } else {
+            jQuery('.add_label').css('top',0);
+        }
+        jQuery('.add_label').css('left',(win_width-z_layer_width)/2);
+        return false;
+    }
+})
+
 
 //停止事件冒泡
 function stop_bunble(){
     if(event.stopPropagation){
         event.stopPropagation();
     }else
-        if(window.event){
-            window.event.cancelBubble = true;
-        };
+    if(window.event){
+        window.event.cancelBubble = true;
+    };
 }
 
 
@@ -87,21 +104,20 @@ function validate_post_block(){
 }
 
 
-//ajax载入小题类型，拼凑完整表单
+//ajax载入小题类型，拼凑完整表单(create_problem 表单)
 function select_question_type(question_type,block_index){
-    $('#attrs_module_'+block_index).load('/papers/select_question_type',
+    $('#create_problem_attrs_module_'+block_index).load('/papers/select_question_type',
     {
         "question_type" : question_type,
         "block_index" : block_index
     },
     function(){
-        ajax_callback_function(question_type,block_index);
+        add_event_on_create_problem_form(question_type,block_index);
     });
 }
 
-//ajax回调函数，载入模版后，给其中的元素绑定事件
-function ajax_callback_function(question_type,block_index){
-    //  alert("  "+question_type+"    "+block_index);
+//ajax回调函数，载入模版后，给其中的元素绑定事件 (create_problem 表单)
+function add_event_on_create_problem_form(question_type,block_index){
     var text = ".text_"+question_type+"_block_"+block_index;
     var attrs = ".question_attrs_block_"+block_index;   //表单
     var answer = ".question_answer_block_"+block_index;   //表单
@@ -220,3 +236,90 @@ function ajax_edit_problem_title(paper_id,block_index,problem_index,title){
         }
     });
 }
+
+////ajax载入小题类型，拼凑完整表单(post_question 表单)
+function select_correct_type(ele_str,block_index,problem_index,question_index,correct_type,question_answer,question_attrs,question_description,question_analysis,question_score,question_tags){
+    $('#post_question_attrs_module').load('/papers/select_correct_type',
+    {
+        "correct_type" : correct_type,
+        "question_answer" : question_answer,
+        "question_attrs" : question_attrs
+    },
+    function(){
+        var location = question_index=="" ?  ele_str+block_index+"_"+problem_index : ele_str+block_index+"_"+problem_index+"_"+question_index;
+        // alert(location);
+        $(location).append($("#post_question_div"));  //载入form
+        var questions_xpath = "/paper/blocks/block["+block_index+"]/problems/problem["+problem_index+"]/questions" //构造 questions_xpath , 作为下一个方法的变量
+        fill_post_question_form(questions_xpath,question_index,question_answer,question_attrs,question_description,question_analysis,question_score,question_tags); //初始化表单值
+        add_event_on_post_question_form(correct_type);  //初始化表单事件
+    });
+}
+
+//初始化 post_question 表单 值
+function fill_post_question_form(questions_xpath,question_index,question_answer,question_attrs,question_description,question_analysis,question_score,question_tags){
+    $("#post_question_questions_xpath").val(questions_xpath);
+    $("#post_question_question_index").val(question_index);
+    $("#post_question_question_answer").val(question_answer);
+    $("#post_question_question_attrs").val(question_attrs);
+    $("#post_question_question_description").val(question_description);
+    $("#post_question_question_analysis").val(question_analysis);
+    $("#post_question_question_score").val(question_score);
+    $("#post_question_question_tags").val(question_tags);
+}
+
+//初始化 post_question 表单 元素事件
+function add_event_on_post_question_form(correct_type){
+    var text = ".text_"+correct_type+"_question";
+    var attrs = "#post_question_question_attrs";   //表单
+    var answer = "#post_question_question_answer";   //表单
+    if(correct_type == 0 ){
+        var radio = ".radio_"+correct_type+"_question";
+        generate_single_choose(text,attrs,answer,radio);
+    }else if(correct_type== 1 ){
+        var checkbox = ".checkbox_"+correct_type+"_question";
+        generate_multi_choose(text,attrs,answer,checkbox);
+    }else if(correct_type== 2 ){
+        var radio = ".radio_"+correct_type+"_question";
+        generate_judge(answer,radio);
+    }else if(correct_type==3 ||correct_type==5){
+        generate_fill(answer,text);
+    }
+}
+
+
+function ajax_edit_paper_title(paper_id,title){
+    $.ajax({
+        type: "POST",
+        url: "/papers/"+paper_id+"/ajax_edit_paper_title.json",
+        dataType: "json",
+        data : {
+            "title" : title
+        },
+        beforeSend: function(){
+            $(".p_name:eq(1)").html($("#ajax_loader").html());
+        },
+        success : function(data){
+            $(".p_name:eq(1)").html(data.title);
+        }
+    });
+}
+
+function ajax_edit_paper_time(paper_id,time){
+    $.ajax({
+        type: "POST",
+        url: "/papers/"+paper_id+"/ajax_edit_paper_time.json",
+        dataType: "json",
+        data : {
+            "time" : time
+        },
+        beforeSend: function(){
+            $(".p_time:eq(1)").html($("#ajax_loader").html());
+        },
+        success : function(data){
+            $(".p_time:eq(1)").html(data.time);
+        }
+    });
+}
+
+
+

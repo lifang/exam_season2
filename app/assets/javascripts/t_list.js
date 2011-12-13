@@ -40,10 +40,17 @@ $(function() {
     });
 })
  
-//试卷编辑小题，点击出现编辑内容
+//试卷编辑小题，点击出现详细内容，关闭编辑表单
 $(function(){
     $(".q_l_text").bind("click",function(){
-        var $answer = $(this).next(".q_l_answer")
+        var $answer = $(this).next(".q_l_answer");
+        if(check_edit()){
+            if(confirm("你当前处于编辑状态，如果你取消编辑，所有未保存的内容将全部丢失，你要取消编辑么？")){
+                $("#post_question_loader").append($('#post_question_div'));
+            }else{
+                return false;
+            }
+        }
         if($answer.is(":visible")){
             $answer.hide();
         }
@@ -52,6 +59,11 @@ $(function(){
         }
     })
 })
+
+//判断用户在问题编辑页面是否处于编辑状态
+function check_edit(){
+    return $("#post_question_loader>#post_question_div").length == 0;
+}
 
 //用户列表search
 $(function(){
@@ -140,9 +152,7 @@ function generate_flash_div(style) {
 function show_flash_div() {
     $('.tishi_tab').stop(null,true);
     generate_flash_div(".tishi_tab");
-    $('.tishi_tab').animate({
-        "":""
-    },3000).fadeOut("slow",function(){
+    $('.tishi_tab').fadeOut("slow",function(){
         $(this).remove();
     });
 }
@@ -218,4 +228,3 @@ function change_tab(item) {
     var index = $('.user_tab_ul li').index(item);
     $('div.user_tab_box > div').eq(index).show().siblings().hide();
 }
-

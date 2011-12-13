@@ -16,8 +16,7 @@ class SimulationsController < ApplicationController
       sql += " and price>0 and e.is_free = #{Examination::IS_FREE[:NO]}"
     end
     sql += "  order by created_at desc"
-    @simulations = Examination.paginate_by_sql(sql,
-      :per_page => 5, :page => params[:page])
+    @simulations = Examination.paginate_by_sql(sql,:per_page => 5, :page => params[:page])
     @exam_papers = {}
     examination_ids = []
     @simulations.collect { |s|  examination_ids << s.id }

@@ -2,34 +2,34 @@
 class ReportErrorsController < ApplicationController
   require 'rexml/document'
   include REXML
+
   def index
-    sql="select re.id,re.question_id,u.name,p.title,q.problem_id,p.paper_url,re.paper_id,q.correct_type from report_errors re inner join users u on u.id=re.user_id inner join
-         questions q on q.id=re.question_id inner join papers p on p.id=re.paper_id where re.status =0"
-    unless params[:error_type].nil?
-      sql += " and error_type=#{params[:error_type].to_i}"
+    error_sql="select id,question_id from report_errors where status=0"
+    unless params[:error_type].nil?|| params[:error_type]=""
+      error_sql += " and error_type=#{params[:error_type].to_i}"
     end
-    sql += " order by re.created_at desc"
-    @errors=ReportError.find_by_sql(sql)
-    @info={}
-    @errors.each do |error|
-      url=Constant::PAPER_XML_PATH+"#{error.paper_url}"
-      doc=open_file(url)
-      problems=doc.get_elements("/paper/blocks//problems/problem")
-      problem=doc.elements["/paper/blocks//problem[@id=#{error.problem_id}]"]
-      index=problems.index(problem)+1
-      @info[error.id]=[index,problems.size,error.title,problem]
+    unless params[:offset].nil?
+      error_sql +=" order by created_at desc  limit #{params[:offset].to_i},1"
+    else
+      error_sql +=" order by created_at desc  limit 0,1"
     end
+    @errors=ReportError.find_by_sql(error_sql)
+    other_sql="select u.email,re.error_type,re.description from report_errors re inner join users u on u.id=re.user_id where re.question_id=#{@errors[0].question_id}"
+    @others=ReportError.paginate_by_sql(other_sql,:per_page =>1, :page => params[:page])
+    sql="select re.id error_id,re.description r_desc,q.*,u.name u_name,p.title p_title,pe.title pe_title,pe.total_question_num num,w.*,ws.description ws_des from report_errors re inner join users u on u.id=re.user_id inner join
+         questions q on q.id=re.question_id inner join problems p on p.id=q.problem_id inner join papers pe on pe.id=re.paper_id left join word_question_relations wq on wq.question_id=q.id
+         left join words w on w.id=wq.word_id left join word_sentences ws on ws.word_id=w.id where re.id=#{@errors[0].id}"
+    @num=ReportError.count(:id,:conditions=>"status=0")
+    @single_error=ReportError.find_by_sql(sql)
   end
+
 
   def modify_status
     ReportError.find(params[:id].to_i).update_attributes(:status=>params[:status].to_i)
-    my_params = Hash.new
-    request.parameters.each {|key,value|my_params[key.to_s]=value}
-    my_params.delete("action")
-    my_params.delete("controller")
-    my_params.delete("id")
-    my_params.delete("status")
-    paras=my_params.sort.map{|k,v|"#{k}=#{v}"}.join("&")
-    puts  paras
+    if params[:error_type].nil? || params[:error_type]==""
+      redirect_to "/report_errors?category=#{params[:category]}"
+    else
+      redirect_to "/report_errors?category=#{params[:category]}&error_type=#{params[:error_type]}"
+    end
   end
 end
