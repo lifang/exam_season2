@@ -1,0 +1,44 @@
+<%= javascript_include_tag "words" %>
+<div class="main_title">
+  <div class="m_t_h">词汇</div>
+</div>
+<%= form_for :words ,:url=>"/words", :method => "post",
+  :html => {:onsubmit => "return new_word_form()", :multipart => true} do |f|%>
+  <div class="text_box">
+    <div class="word_text">
+      <input type="hidden" name="category_id" id="category_id" value="<%= params[:category] %>"/>
+      <div><label>条目：</label><input name="name" id="name" type="text"/></div>
+      <div><label>词性：</label>
+        <select name="types" id="types">
+          <% Word::TYPES.each do |k, v| %>
+            <option value="<%= k %>"><%= v %></option>
+          <% end %>
+        </select>
+      </div>
+      <div>
+        <label>音标：</label><input name="phonetic" id="phonetic" type="text" />
+        <label>音频：</label><input name="enunciate_url" id="enunciate_url" type="file" />
+      </div>
+      <div><label class="left_float">释义：</label><textarea name="en_mean" id="en_mean" cols="" rows=""></textarea></div>
+      <div><label class="left_float">翻译：</label><textarea name="ch_mean" id="ch_mean" cols="" rows=""></textarea></div>
+      <div><label class="left_float">例句：</label>
+        <textarea name="sentence" id="sentence" cols="100" rows="10"></textarea>
+        <font color="red">*</font>注：多条例句请用“;”(分号)分割，句子中间不能有分号
+      </div>
+      <div><label class="left_float">关联词：</label>
+        <input name="re_word" id="re_word" type="hidden" value="" />
+        <span><input name="search_text" id="search_text" type="text" class="t_se_input"/>
+          <button type="button" class="t_search" onclick="javascript:list_similar();"></button>
+        </span>
+        <span id="chose_list"></span>
+        <div class="words_ny gl_word_left" id="similar_list" style="display:none;">
+        </div>
+      </div>
+      <div><label class="left_float">关联词说明：</label>
+        <textarea name="description" id="description" cols="" rows=""></textarea>
+      </div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="submit" class="t_btn">保 存</button></div>
+    </div>
+  </div>
+<% end %>

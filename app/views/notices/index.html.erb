@@ -6,7 +6,7 @@
 
 <div class="text_box">
   <div class="send_message">
-    <%= form_for :similarity_form, :url => "/notices", :method => "post",
+    <%= form_for :notice_form, :url => "/notices", :method => "post",
       :html => {:onsubmit => "return new_notice_form()"} do |f| -%>
       <div>范围：
         <select name="category_id" id="category_id">
