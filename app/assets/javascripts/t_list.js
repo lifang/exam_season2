@@ -228,4 +228,3 @@ function change_tab(item) {
     var index = $('.user_tab_ul li').index(item);
     $('div.user_tab_box > div').eq(index).show().siblings().hide();
 }
-

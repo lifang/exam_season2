@@ -373,8 +373,8 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 
 
 
-.error_tab_list { padding: 10px; border: 3px #999 solid; background: #FFF; width: 800px; position: fixed;}
-.error_jiexi_tab { width: 400px; padding: 10px; border: 3px #999 solid; background: #FFF; position: fixed;}
+.error_tab_list { padding: 30px 10px 10px 10px; border: 3px #999 solid; background: #FFF; width: 800px; position: fixed;display:none;}
+.error_jiexi_tab { width: 400px; padding: 10px; border: 3px #999 solid; background: #FFF; position: fixed;display:none;}
 
 
 /*消费记录----*/
@@ -441,3 +441,4 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 
 .p_name { color: #333; font-weight: bold;}
 .p_time { color: #333; width: 40px; margin-left: 20px;}
+
