@@ -1,5 +1,6 @@
 # encoding: utf-8
 class SimilaritiesController < ApplicationController
+  before_filter :access?
   respond_to :html, :xml, :json
   #真题列表
   def index

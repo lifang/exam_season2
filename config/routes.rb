@@ -17,7 +17,7 @@ RailsTest3::Application.routes.draw do
 
     end
   end
-  
+  resources :specials
   resources :categories
   resources :notices do
     collection do

@@ -1,5 +1,7 @@
 # encoding: utf-8
 class NoticesController < ApplicationController
+  before_filter :access?
+  
   def index
     @notices = Notice.paginate_by_sql(["select n.*, u.username, c.name c_name from notices n
           left join users u on u.id = n.send_id left join categories c on c.id = n.category_id 

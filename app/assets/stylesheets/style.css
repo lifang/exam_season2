@@ -64,7 +64,7 @@ img { border: none;}
 
 .main { width: 958px; min-height: 548px; border: 1px #CCC solid; background: #FFF; position: relative;}
 .main_title { height: 40px; line-height: 40px; padding-left: 30px;}
-.m_t_h { width: 100px; float: left; font-size: 14px; font-weight: bold;}
+.m_t_h { width: 500px; float: left; font-size: 14px; font-weight: bold;}
 .m_t_select { width: 100px; float: left; padding-top: 9px;}
 .m_t_select select { width: 100px; height: 24px; line-height: 24px; border: 1px #CCC solid;}
 .m_t_btn { width: 100px; float: right; padding-top: 10px;}
@@ -260,7 +260,8 @@ span.mk_span_w { color: #000;}
 
 .qa_textarea_div { width: 340px; margin-top: 5px; border: 1px #999 solid; line-height: 24px; padding: 5px;}
 
-
+.p_name { color: #333; font-weight: bold;}
+.p_time { color: #333; width: 40px; margin-left: 20px;}
 
 
 
@@ -313,7 +314,7 @@ div.gl_word_left { margin-left: 80px;}
 
 /*详细词汇---*/
 div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
-.word_xx_h { height: 32px; line-height: 32px;}
+.word_xx_h { height: 32px;}
 .word_xx_h h2 { float: left; font-size: 18px;}
 .word_xx_h span { margin: 0 10px;}
 .word_xx_gl { background: #e8e8e8; padding: 20px;}
@@ -321,6 +322,8 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 .word_xx_gl p a { margin: 0 10px;}
 .size_16 { font-size: 16px;}
 .word_liju { font-size: 16px; padding: 10px 0; color: #666;}
+
+.word_xx_btn { margin-top: 20px;}
 
 /*专项*/
 .word_zx {border: 1px #CCC solid; width: 880px; margin: 20px auto; overflow: hidden; padding: 10px;}
@@ -369,7 +372,7 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 
 
 
-.error_tab_list { padding: 10px; border: 3px #999 solid; background: #FFF; width: 800px; position: fixed;}
+.error_tab_list { padding: 30px 10px 10px 10px; border: 3px #999 solid; background: #FFF; width: 800px; position: fixed;}
 .error_jiexi_tab { width: 400px; padding: 10px; border: 3px #999 solid; background: #FFF; position: fixed;}
 
 

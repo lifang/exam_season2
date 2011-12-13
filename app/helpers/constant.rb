@@ -39,7 +39,8 @@ module Constant
   #考试价格
   EXAM_PRICE={:vip=>36,:competes=>10}
 
-
+  #系统管理员的id
+  ADMIN_ID = 1
 
 
 

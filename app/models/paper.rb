@@ -78,5 +78,21 @@ class Paper < ActiveRecord::Base
   def set_paper_used!
     self.toggle!(:is_used)
   end
+
+  #生成试卷的json
+  def create_paper_js
+    file=File.open "#{Constant::PUBLIC_PATH}/#{self.paper_url}"
+    doc = Document.new(file)
+    file.close
+    doc.root.elements["blocks"].each_element do |block|
+      block.elements["problems"].each_element do |problem|
+        problem.elements["questions"].each_element do |question|
+          doc.delete_element("#{question.xpath}/answer") if question.elements["answer"]
+          doc.delete_element("#{question.xpath}/analysis") if question.elements["analysis"]
+        end unless problem.elements["questions"].nil?
+      end
+    end
+    return "papers = " + Hash.from_xml(doc.to_s).to_json
+  end
   
 end

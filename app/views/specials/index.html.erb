@@ -1,0 +1,20 @@
+<div class="main_title">
+  <div class="m_t_h">专项</div>
+</div>
+
+<div class="text_box">
+  <div class="word_zx">
+    <ul>
+      <% unless @tags.blank? %>
+        <% @tags.each do |tag| %>
+          <li><%= tag.name %>
+            <%= link_to "[删除]", "/specials/#{tag.etr_id}?category=#{params[:category]}",
+              :method => :delete, :confirm => "确定要删除么?" %>
+          </li>
+        <% end %>
+      <% else %>
+        <li>暂无专项练习</li>
+      <% end %>
+    </ul>
+  </div>
+</div>
