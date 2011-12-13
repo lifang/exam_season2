@@ -1,0 +1,8 @@
+<% object = tags_list %>
+
+<ul>
+  <% object[:tags].each do |tag| %>
+    <li><input type="checkbox" value="<%= tag.id %>"/> <%= tag.name %></li>
+  <% end %>
+    <% if object[:negation]&&object[:match]!="" %><li><input type="checkbox" id="insert_new_tag" value="<%= object[:match] %>"/><span style="color:red;"> <%= object[:match] %></span></li><% end %>
+</ul>

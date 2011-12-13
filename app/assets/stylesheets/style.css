@@ -110,6 +110,7 @@ img { border: none;}
 
 .main_bottom { width: 958px; height: 10px; background: url(/assets/main_bottom.png) no-repeat; position: absolute; bottom: -10px; _bottom: -12px;}
 
+
 /*CSS sabrosus style pagination*/
 .sabrosus { padding: 6px; margin: 6px; text-align: center; font-size: 14px;}
 .sabrosus a { border: #c1c1c1 1px solid; padding: 6px 10px; color: #2e6ab1; margin-right: 4px; text-decoration: none;}
@@ -265,16 +266,19 @@ span.mk_span_w { color: #000;}
 
 
 /*弹出层----------*/
-.add_label { width: 300px; padding: 10px; background: #FFF; border: 3px #999 solid; position: fixed;}
+.add_label { width: 300px; padding: 10px; background: #FFF; border: 3px #999 solid; position: fixed;z-index:900;display:none;}
 .add_label div { line-height: 24px; margin: 5px 0;}
-.add_word_box { width: 298px; height: 100px; border: 1px #CCC solid; margin: 2px 0;}
-.add_word_box li { float: left; margin: 5px; font-size: 16px;}
+.add_word_box { width: 298px; height: 100px; border: 1px #CCC solid; margin: 2px 0;overflow:auto;}
+.add_word_box li { float: left; margin: 5px; font-size: 16px; width:45%;}
 .add_word_box li a { padding-left: 5px;}
 
-.part_info { width: 400px; padding: 10px; background: #FFF; border: 3px #999 solid; position: fixed;}
+.part_info { width: 400px; padding: 10px; background: #FFF; border: 3px #999 solid; position: fixed;z-index:900;display:none;}
 .part_info table { background: #CCC;}
 .part_info table td { background: #FFF; padding: 5px;}
 .part_info table textarea { width: 315px; height: 100px;}
+
+/*备考弹出层--------------------*/
+.zhezhao { width:100%; left:0; position:absolute; top:0; background:#000000; opacity:0.5; filter:alpha(opacity=50); z-index:888;display: none; height: 100%;position:fixed; display: none;}
 
 
 /*用户列表*/

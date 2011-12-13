@@ -34,6 +34,7 @@ class PapersController < ApplicationController
       file = File.open("#{Constant::PAPER_XML_PATH}#{@paper.paper_url}")
       @xml=Document.new(file).root
       file.close
+      @tags=Tag.all
     rescue
       flash[:error] = "当前试卷不能正常打开，请检查试卷是否正常。"
       redirect_to request.referer
@@ -62,23 +63,14 @@ class PapersController < ApplicationController
   #[post][member] 新建表单
   def create_problem
     @post = params[:create_problem]
-    #    puts "category_id = "+@post[:category]
-    #    puts "problems_xpath = "+@post[:problems_xpath]
-    #    puts "problem_description = "+@post[:problem_description]
-    #    puts "problem_title = "+@post[:problem_title]
-    #    puts "question_type = "+@post[:question_type]
-    #    puts "correct_type = "+@post[:correct_type]
-    #    puts "question_answer = " +@post[:question_answer]
-    #    puts "question_attrs = "+@post[:question_attrs]
-    #    puts "question_description = " +@post[:question_description]
-    #    puts "question_analysis = " +@post[:question_analysis]
-    #    puts "question_score = " +@post[:question_score]
-    #    puts "init_block = " +@post[:init_block]
-    #    puts "init_problem = " +@post[:init_problem]
     #存储数据库
     @problem = Problem.create(:category_id=>@post[:category],:description=>@post[:problem_description],:title=>@post[:problem_title],:question_type=>@post[:question_type])
     @question =Question.create(:problem_id=>@problem.id,:description=>@post[:question_description],:answer=>@post[:question_answer],:question_attrs=>@post[:question_attrs],:correct_type=>@post[:correct_type],:analysis=>@post[:question_analysis])
-
+    #创建标签
+    if !@post[:question_tags].nil? and @post[:question_tags].strip != ""
+      tag_name = @post[:question_tags].strip.split(" ")
+      @question.question_tags(Tag.create_tag(tag_name))
+    end
     #存储xml文件
     paper = Paper.find(params[:id].to_i)
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
@@ -134,21 +126,17 @@ class PapersController < ApplicationController
 
   def post_question
     @post = params[:post_question]
-    #    puts "-------------------------------------------------------"
-    #    puts "questions_xpath = " + @post[:questions_xpath]
-    #    puts "question_index = " + @post[:question_index]
-    #    puts "question_attrs = " + @post[:question_attrs]
-    #    puts "question_answer = " + @post[:question_answer]
-    #    puts "correct_type = "+@post[:correct_type]
-    #    puts "question_description = " + @post[:question_description]
-    #    puts "question_analysis = " + @post[:question_analysis]
-    #    puts "question_score = " + @post[:question_score]
     paper = Paper.find(params[:id].to_i)
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     if @post[:question_index]==""   # 当 question_index 为空，就是新建小题，不为空，就是编辑小题
       problem_id = doc.elements[@post[:questions_xpath]].parent.attributes["id"].to_i
       @question = Question.create(:problem_id=>problem_id,:description=>@post[:question_description],:answer=>@post[:question_answer],:correct_type=>@post[:correct_type],:analysis=>@post[:question_analysis],:question_attrs=>@post[:question_attrs])
+      #创建标签
+      if !@post[:question_tag].nil? and @post[:question_tag].strip != ""
+        tag_name = @post[:tag].strip.split(" ")
+        @question.question_tags(Tag.create_tag(tag_name))
+      end
       question_element = doc.elements[@post[:questions_xpath]].add_element("question")
       manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>"",:analysis=>@post[:question_analysis]},{:correct_type=>@post[:correct_type],:id=>@question.id,:score=>@post[:question_score]})
       write_xml(doc,url)
@@ -195,6 +183,17 @@ class PapersController < ApplicationController
     end
   end
 
+  def ajax_load_tags_list
+    match = params["match"].strip
+    like_params = "%#{match}%"
+    negation = Tag.find_by_name(match).blank?
+    @tags = Tag.find_by_sql(["select * from tags where name like ?",like_params])
+    respond_to do |format|
+      format.html {
+        render :partial=>"/papers/tags_list" ,:object=>{:tags=>@tags,:negation=>negation,:match=>match}
+      }
+    end
+  end
 
 
   #ajax 选择题目类型，载入 _post_question_attrs_module 部分

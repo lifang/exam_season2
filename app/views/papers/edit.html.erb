@@ -105,17 +105,17 @@
                 <div class="q_tab_div">
                   <% if problem.attributes["question_type"].to_i==Problem::QUESTION_TYPE[:INNER] %>
                     <div><ul>
-                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',0,'','','','','');">单选题</a></li>
-                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',3,'','','','','');">填空题</a></li>
-                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',1,'','','','','');">拖拽题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',0,'','','','','','');">单选题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',3,'','','','','','');">填空题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',1,'','','','','','');">拖拽题</a></li>
                       </ul></div>
                   <% elsif problem.attributes["question_type"].to_i==Problem::QUESTION_TYPE[:OUTER] %>
                     <div><ul>
-                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',0,'','','','','');">单选题</a></li>
-                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',1,'','','','','');">多选题</a></li>
-                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',2,'','','','','');">判断题</a></li>
-                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',3,'','','','','');">填空题</a></li>
-                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',5,'','','','','');">简答题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',0,'','','','','','');">单选题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',1,'','','','','','');">多选题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',2,'','','','','','');">判断题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',3,'','','','','','');">填空题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',5,'','','','','','');">简答题</a></li>
                       </ul></div>
                   <% end %>
                 </div>
@@ -158,7 +158,11 @@
                       </div>
                       <div class="q_label">
                         <div><strong>知识点标签</strong></div>
-                        <div>限定词</div>
+                        <% if question.elements['tags'].text ; question.elements['tags'].text.split(" ").each do |tag| %>
+                        <div class="tag_mark"><%= tag %> <a href="javascript:void(0);" onclick="javascript:$(this).closest('.tag_mark').hide();delete_tag('<%= tag %>');" class="q_re_a">X</a></div>
+                        <% end else %>
+                          没有标签
+                        <% end %>
                       </div>
                       <div class="q_label">
                         <div><strong>词汇</strong></div>
@@ -167,7 +171,7 @@
                       <div class="clear"></div>
                       <div class="qa_h">分值: <span class="red"><%= question.attributes["score"] unless question.attributes["score"].nil? %></span></div>
                       <div class="qa_h">
-                        <button class="t_btn" onclick="javascript:select_correct_type('#q_l_answer_',<%= block_index %>,<%= problem_index %>,<%= question_index %>,<%= correct_type %>,'<%= question.elements['answer'].text %>','<%= question.elements['questionattrs'].text %>','<%= question.elements['description'].text %>','<%= question.elements['analysis'].text %>','<%= question.attributes['score'] %>');$(this).closest('.q_l_answer').hide();" >编辑</button>
+                        <button class="t_btn" onclick="javascript:select_correct_type('#q_l_answer_',<%= block_index %>,<%= problem_index %>,<%= question_index %>,<%= correct_type %>,'<%= question.elements['answer'].text %>','<%= question.elements['questionattrs'].text %>','<%= question.elements['description'].text %>','<%= question.elements['analysis'].text %>','<%= question.attributes['score'] %>','<%= question.elements['tags'].text %>');$(this).closest('.q_l_answer').hide();" >编辑</button>
                       </div>
                     </div>
                     <div class="edit_question_form" id="q_l_answer_<%= block_index %>_<%= problem_index %>_<%= question_index %>"></div>
@@ -186,6 +190,7 @@
             <%= f.hidden_field :question_answer ,:class=>"question_answer_block_#{block_index}" %>
             <%= f.hidden_field :question_attrs ,:class=>"question_attrs_block_#{block_index}"%>
             <%= f.hidden_field :question_type ,:class=>"question_type_block_#{block_index}" ,:value=>"#{Problem::QUESTION_TYPE[:OUTER]}"%>
+            <%= f.hidden_field :question_tags ,:class=>"question_tags_block_#{block_index}" %>
             <%= f.hidden_field :init_block ,:value=>block_index %>
             <%= f.hidden_field :init_problem ,:value=>(problem_index+1) %>
             <div class="question_content">
@@ -241,8 +246,8 @@
 
 
 <!--  新建、编辑 block 表单  -->
-<div class="zhezhao" id="zhezhao" style="display: none; height: 100%;position:fixed; "></div>
-<div class="part_info" style="display:none;">
+<div class="zhezhao" id="zhezhao"></div>
+<div class="part_info">
   <%= form_for :post_block ,:url=>"/papers/#{params[:id]}/post_block" ,:html=>{:onsubmit=>"return validate_post_block();"} do |f| %>
     <span class="yj_x"><img alt="assets/x.gif" src="/assets/x.gif" onclick="javascript:close_part_info();" /></span>
     <div class="qc_h"><strong>部分信息</strong></div>
@@ -269,6 +274,7 @@
       <%= f.hidden_field :question_index ,:id=>"post_question_question_index" %>
       <%= f.hidden_field :question_answer ,:id=>"post_question_question_answer" %>
       <%= f.hidden_field :question_attrs ,:id=>"post_question_question_attrs" %>
+      <%= f.hidden_field :question_tags ,:id=>"post_question_question_tags" %>
       <div class="qa_h">小题描述<textarea name="post_question[question_description]" id="post_question_question_description" cols="" rows="" class="qa_textarea"></textarea></div>
       <div class="qa_h"><span class="yl_bc"><input name="" type="checkbox" value=""/> 自动批改</span>答案</div>
       <div class="qa_h">
@@ -279,13 +285,14 @@
       <div class="clear"></div>
       <div class="q_label">
         <div><strong>知识点标签</strong> </div>
-        <div><a href="#" class="q_re_a">X</a></div>
-        <a href="#">添加标签</a>
+        <div>暂无</div><div style="display:none;">限定词<a href="#" class="q_re_a">X</a></div>
+        <a href="javascript:void(0);" onclick="load_add_label();">添加标签</a>
       </div>
+
       <div class="q_label">
         <div><strong>词汇</strong></div>
-        <div>限定词<a href="#" class="q_re_a">X</a></div>
-        <a href="#">添加词汇</a>
+        <div>暂无</div><div style="display:none;">限定词<a href="#" class="q_re_a">X</a></div>
+        <a href="javascript:void(0);">添加词汇</a>
       </div>
       <div class="clear"></div>
       <div class="qa_h">分值 <input name="post_question[question_score]" id="post_question_question_score" type="text" /></div>
@@ -296,6 +303,78 @@
     <% end #追加、编辑 question 表单 END%>
   </div>
 </div>
+<script type="text/javascript">
+  // 载入添加标签弹出框
+  function load_add_label(){
+//    $("#block_xpath").val(block_xpath);
+//    $("#block_name").val(block_name);
+//    $("#block_description").val(block_description);
+    jQuery('.add_label').css('display','block');
+    jQuery('.zhezhao').css('display','block');
+    $("#t_se_input").focus();
+  }
+
+  function close_add_label(){
+    jQuery('.add_label').css('display','none');
+    jQuery('.zhezhao').css('display','none');
+    return false;
+  }
+
+//根据查询内容，载入标签列表
+  function ajax_load_tags_list(paper_id,match){
+        $.ajax({
+        type: "POST",
+        url: "/papers/"+paper_id+"/ajax_load_tags_list.html",
+        dataType: "html",
+        data : {
+            "match" : match
+        },
+        beforeSend: function(){
+            $("#tags_list_ajax_loader").html($("#ajax_loader").html());
+        },
+        success : function(data){
+            $("#tags_list_ajax_loader").html(data);
+        }
+    });
+  }
+
+  //删除小题的标签
+  function delete_tag(tag_name){
+    var origin_tags = $('#post_question_question_tags').val();
+    $('#post_question_question_tags').val(origin_tags.replace(tag_name,"").replace(/  /g," "));
+    alert("("+$('#post_question_question_tags').val()+")");
+  }
+
+</script>
+
+
+<div class="add_label">
+  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:close_add_label();" /></span>
+  <div><input name="" type="text" id="t_se_input" class="t_se_input" /><button class="t_search" onclick="javascipt:ajax_load_tags_list(<%= params[:id] %>,$('#t_se_input').val());"></button></div>
+  <div>标签列表</div>
+
+  <div id="tags_list_ajax_loader" class="add_word_box" ></div>
+
+  <div>已添加标签</div>
+  <div class="add_word_box">
+    <ul>
+      <li><input type="checkbox" />spg</li>
+      <li><input type="checkbox" />spang</li>
+      <li><input type="checkbox" />spagerge</li>
+      <li><input type="checkbox" />sn</li>
+      <li><input type="checkbox" />spagre</li>
+      <li><input type="checkbox" />s</li>
+      <li><input type="checkbox" />span</li>
+      <li><input type="checkbox" />spagr</li>
+      <li><input type="checkbox" />spagrg</li>
+      <li><input type="checkbox" />spgre</li>
+      <li><input type="checkbox" />spagre</li>
+      <li><input type="checkbox" />spagern</li>
+    </ul>
+  </div>
+  <div><button class="t_btn">插入</button></div>
+</div>
+
 
 <!-- ajax载入图片 提前载入以便调用 -->
 <div id="ajax_loader" style="display:none;"><%= image_tag 'ajax-loader.gif' %></div>
