@@ -12,8 +12,8 @@
 <div class="main_title">
   <span class="yl_bc"><a href="#">预览</a> | <a href="#">保存</a></span>
   <div class="m_t_h">
-    <input name="" type="text" class="p_name" style="display:none" /><span class="p_name">大学英语四级考试试卷</span>
-    <input name="" type="text" class="p_time" style="display:none" /><span class="p_time">120</span>分钟
+    <input name="" type="text" class="p_name" style="display:none" onblur="$(this).hide();$('.p_name:eq(1)').show();" onchange="javascript:ajax_edit_paper_title(<%= params[:id] %>,$(this).val());" /><span class="p_name" onselectstart="return false;" ondblclick="javascript:$(this).hide();$('.p_name:eq(0)').val($(this).text()).show().focus();"><%= @paper.title %></span>
+    <input name="" type="text" class="p_time" style="display:none" onblur="$(this).hide();$('.p_time:eq(1)').show();" onchange="javascript:ajax_edit_paper_time(<%= params[:id] %>,$(this).val());" /><span class="p_time" onselectstart="return false;" ondblclick="javascript:$(this).hide();$('.p_time:eq(0)').val($(this).text()).show().focus();"><%= @paper.time %></span>分钟
   </div>
 </div>
 
@@ -66,7 +66,7 @@
         </div>
 
         <script type="text/javascript" >
-          // 控制"problem"模块的显示/隐藏，同样默认显示第一个模块
+          // 控制"problem"模块的显示/隐藏
           
           $(function(){
             $(".problems_li_<%= block_index %>").bind("click",function(){

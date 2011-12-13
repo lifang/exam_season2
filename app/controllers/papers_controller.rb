@@ -29,9 +29,9 @@ class PapersController < ApplicationController
 
   #[get][member] 编辑试卷具体内容（新建试卷第二步）
   def edit
-    paper = Paper.find(params[:id].to_i)
+    @paper = Paper.find(params[:id].to_i)
     begin
-      file = File.open("#{Constant::PAPER_XML_PATH}#{paper.paper_url}")
+      file = File.open("#{Constant::PAPER_XML_PATH}#{@paper.paper_url}")
       @xml=Document.new(file).root
       file.close
     rescue
@@ -134,15 +134,15 @@ class PapersController < ApplicationController
 
   def post_question
     @post = params[:post_question]
-    puts "-------------------------------------------------------"
-    puts "questions_xpath = " + @post[:questions_xpath]
-    puts "question_index = " + @post[:question_index]
-    puts "question_attrs = " + @post[:question_attrs]
-    puts "question_answer = " + @post[:question_answer]
-    puts "correct_type = "+@post[:correct_type]
-    puts "question_description = " + @post[:question_description]
-    puts "question_analysis = " + @post[:question_analysis]
-    puts "question_score = " + @post[:question_score]
+    #    puts "-------------------------------------------------------"
+    #    puts "questions_xpath = " + @post[:questions_xpath]
+    #    puts "question_index = " + @post[:question_index]
+    #    puts "question_attrs = " + @post[:question_attrs]
+    #    puts "question_answer = " + @post[:question_answer]
+    #    puts "correct_type = "+@post[:correct_type]
+    #    puts "question_description = " + @post[:question_description]
+    #    puts "question_analysis = " + @post[:question_analysis]
+    #    puts "question_score = " + @post[:question_score]
     paper = Paper.find(params[:id].to_i)
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
@@ -163,9 +163,46 @@ class PapersController < ApplicationController
     redirect_to request.referer
   end
 
+  def ajax_edit_paper_title
+    paper = Paper.find(params[:id].to_i)
+    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    doc = get_doc(url)
+    base_info_element = doc.elements["/paper/base_info"]
+    Paper.find(params[:id]).update_attribute("title",params[:title])
+    manage_element(base_info_element,{:title=>params[:title]},{})
+    write_xml(doc,url)
+    respond_to do |format|
+      format.json {
+        data={:title=>params[:title]}
+        render:json=>data
+      }
+    end
+  end
+
+  def ajax_edit_paper_time
+    paper = Paper.find(params[:id].to_i)
+    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    doc = get_doc(url)
+    base_info_element = doc.elements["/paper/base_info"]
+    Paper.find(params[:id]).update_attribute("time",params[:time])
+    manage_element(base_info_element,{:time=>params[:time]},{})
+    write_xml(doc,url)
+    respond_to do |format|
+      format.json {
+        data={:time=>params[:time]}
+        render:json=>data
+      }
+    end
+  end
+
+
+
   #ajax 选择题目类型，载入 _post_question_attrs_module 部分
   def select_correct_type
     correct_type , question_answer , question_attrs=params["correct_type"].to_i , params["question_answer"] , params["question_attrs"]
+    #    puts "correct_type = #{correct_type}"
+    #    puts "question_attrs = #{question_attrs}"
+    #    puts "question_answer = #{question_answer}"
     @object={:correct_type=>correct_type,:answer=>question_answer,:question_attrs=>question_attrs}
     render :partial=>"post_question_attrs_module",:object=>@object
   end

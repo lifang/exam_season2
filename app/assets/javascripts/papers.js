@@ -269,5 +269,38 @@ function add_event_on_post_question_form(correct_type){
 }
 
 
-//ajax
+function ajax_edit_paper_title(paper_id,title){
+    $.ajax({
+        type: "POST",
+        url: "/papers/"+paper_id+"/ajax_edit_paper_title.json",
+        dataType: "json",
+        data : {
+            "title" : title
+        },
+        beforeSend: function(){
+            $(".p_name:eq(1)").html($("#ajax_loader").html());
+        },
+        success : function(data){
+            $(".p_name:eq(1)").html(data.title);
+        }
+    });
+}
+
+function ajax_edit_paper_time(paper_id,time){
+    $.ajax({
+        type: "POST",
+        url: "/papers/"+paper_id+"/ajax_edit_paper_time.json",
+        dataType: "json",
+        data : {
+            "time" : time
+        },
+        beforeSend: function(){
+            $(".p_time:eq(1)").html($("#ajax_loader").html());
+        },
+        success : function(data){
+            $(".p_time:eq(1)").html(data.time);
+        }
+    });
+}
+
 
