@@ -22,14 +22,14 @@ class User < ActiveRecord::Base
     sql = "select u.id user_id, u.username, u.email, u.created_at, u.code_type,
         al.total_num, al.last_update_time, al.week_num from users u
         left join user_action_logs al on al.user_id = u.id "
-    sql += " where u.username like ? or u.email like ? " unless search_flag.nil?
+    sql += " where u.username like ? or u.email like ? " unless search_flag.nil? or search_text.strip.empty?
     if time_sort.nil?
       sql += " order by u.username "
     else
       sql += " order by u.created_at "
       sql += " desc " if time_sort.to_i == TIME_SORT[:DESC]
     end
-    if search_text.nil?
+    if search_text.nil? or search_text.strip.empty?
       users = User.paginate_by_sql(sql, :per_page => 10, :page => page)
     else
       users = User.paginate_by_sql([sql, "%#{search_text.strip}%", "%#{search_text.strip}%"],

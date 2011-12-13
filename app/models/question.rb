@@ -3,6 +3,9 @@ class Question < ActiveRecord::Base
   belongs_to :problem
   has_many :question_tag_relations,:dependent=>:destroy
   has_many :tags,:through=>:question_tag_relations,:foreign_key=>"tag_id"
+  has_many :word_question_relations,:dependent=>:destroy
+  has_many :words,:through=>:word_question_relations, :source => :word
+
 
 CORRECT_TYPE = {:SINGLE_CHOSE => 0, :MORE_CHOSE => 1, :JUDGE => 2, :SINGLE_CALK => 3,
     :COLLIGATION => 4, :CHARACTER => 5, :MORE_BLANKS => 6 }

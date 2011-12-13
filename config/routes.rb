@@ -1,6 +1,4 @@
 RailsTest3::Application.routes.draw do
-  
-
 
   resources :papers do
     member do
@@ -24,6 +22,12 @@ RailsTest3::Application.routes.draw do
   resources :notices do
     collection do
       post :single_notice
+    end
+  end
+  resources :words do
+    collection do
+      post :search, :list_similar
+      get :search_list
     end
   end
   resources :statistics do

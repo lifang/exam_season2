@@ -3,10 +3,6 @@ function search_user_form() {
         tishi_alert("请输入查询条件。");
         return false;
     }
-    if (checkspace($("#search_text").val())) {
-        tishi_alert("请输入查询条件。");
-        return false;
-    }
     return true;
 }
 
@@ -18,7 +14,7 @@ function show_notice_div(user_id) {
 }
 
 function user_notice_form() {
-    if (checkspace($("#description").val()) || $("#description").val().length > 200) {
+    if (checkspace($("#description").val()) || $("#description").val().length > 250) {
         tishi_alert("请输入消息内容，且内容的长度不能超过250个字符。");
         return false;
     }

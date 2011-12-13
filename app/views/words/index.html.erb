@@ -1,0 +1,28 @@
+<div class="main_title">
+  <div class="m_t_btn">
+    <button onclick="javascript:window.location.href='/words/new?category=<%= params[:category] %>';">增加词汇</button>
+  </div>
+  <div class="user_search">
+    <%= form_for :words ,:url=>"/words/search?category=#{params[:category]}", :method => "post" do |f|%>
+      <input name="word_text" id="word_text" type="text" class="t_se_input" 
+             value="<%= session[:word_text].nil? ? "搜索词汇" : session[:word_text] %>" />
+      <button type="submit" class="t_search"></button>
+    <% end %>
+  </div>
+  <div class="m_t_h">词汇</div>
+</div>
+
+<div class="text_box">
+  <div class="word_list">
+    <ul>
+      <% unless @words.blank? %>
+        <% @words.each do |word| %>
+          <li><%= word.name %></li>
+        <% end %>
+      <% else %>
+        <li>当前科目下暂无词汇</li>
+      <% end %>
+    </ul>
+  </div>
+  <%=  will_paginate(@words ,:previous_label=>" &lt;", :next_label=>" &gt;") if @words %>
+</div>
