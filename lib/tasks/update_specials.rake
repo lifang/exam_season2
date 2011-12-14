@@ -14,9 +14,9 @@ namespace :special do
     category_papers = {}
     category_ids = []
     papers.each do |p|
-      category_ids << p.category_id
+      category_ids << p.category_id unless category_ids.include?(p.category_id)
       unless category_papers[p.category_id].nil?
-        category_papers[p.category_id] << p.paper_url
+        category_papers[p.category_id] << p.paper_url unless category_papers[p.category_id].include?(p.paper_url)
       else
         category_papers[p.category_id] = [p.paper_url]
       end
@@ -25,7 +25,7 @@ namespace :special do
     category_ids.each do |c|
       paper_urls = category_papers[c]
       unless paper_urls.nil? or paper_urls.blank?
-        doc = ExaminationTagRelation.create_document(c.category_id)
+        doc = ExaminationTagRelation.create_document(c)
         puts "category #{c}'s special paper start"
         ExaminationTagRelation.write_xml(ExaminationTagRelation.create_all_elements(doc, tags, paper_urls))
         puts "category #{c}'s special paper end"
