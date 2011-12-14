@@ -5,15 +5,17 @@ class ReportErrorsController < ApplicationController
   include REXML
 
   def index
-    @num=ReportError.count(:id,:conditions=>"status=0")
+   
     error_sql="select id,question_id from report_errors where status=0"
     unless params["error_type"].nil?|| params["error_type"]==""
       session[:error_type]=params["error_type"]
     else
       session[:error_type]=nil
     end
+    num_sql="status=0"
     unless session[:error_type].nil?
       error_sql += " and error_type=#{session[:error_type].to_i}"
+      num_sql += " and error_type=#{session[:error_type].to_i}"
     end
     unless params[:page].nil?||params[:page]==""||params[:page].to_i<0
       @last=params[:page].to_i-1
@@ -22,14 +24,16 @@ class ReportErrorsController < ApplicationController
       @last=0
       error_sql +=" order by created_at desc  limit 0,3"
     end
+    @num=ReportError.count(:id,:conditions=>num_sql)
     @errors=ReportError.find_by_sql(error_sql)
     error=@errors[1]
-    @next= params[:page].to_i==@num-1 ? params[:page].to_i : params[:page].to_i+1
+    @next=params[:page].to_i==@num-1 ? @num-1:params[:page].to_i+1
     if @errors.size==1
       error= @errors[0]
     end
     if @num==1
       @last=0
+      @next=0
     end
     if @last.to_i<0
       @last=0
