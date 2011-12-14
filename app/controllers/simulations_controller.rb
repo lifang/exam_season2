@@ -25,13 +25,13 @@ class SimulationsController < ApplicationController
     exam_raters = ExamRater.find_by_sql(["select er.examination_id, er.email from exam_raters er
        where er.examination_id in (?)", examination_ids])
     @exam_raters={}
-    exam_raters.collect { |exam_rater| 
+    exam_raters.each do |exam_rater|
       if @exam_raters[exam_rater.examination_id].nil?
         @exam_raters[exam_rater.examination_id]=[exam_rater.email]
       else
         @exam_raters[exam_rater.examination_id]<<exam_rater.email
       end
-    }
+    end unless exam_raters.blank?
     papers.each do |paper|
       if @exam_papers[paper.examination_id].nil?
         @exam_papers[paper.examination_id] = [paper.p_title]
@@ -45,7 +45,7 @@ class SimulationsController < ApplicationController
 
   def add_rater
     @examination=params[:examination_id]
-    if ExamRater.where("email='#{params[:email]}' and examination_id=#{@examination}").blank?
+    if ExamRater.find(:first,:conditions=>"email='#{params[:email]}' and examination_id=#{@examination}").nil?
       exam_rater=ExamRater.create(:email=>params[:email],:examination_id=>@examination,:author_code => proof_code(6))
       UserMailer.rater_affirm(exam_rater,Examination.find(@examination)).deliver
     end

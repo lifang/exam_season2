@@ -14,16 +14,7 @@ function redirect(category_id) {
 }
 
 
-function show_div(id){
-    var scolltop = document.body.scrollTop|document.documentElement.scrollTop;
-    var win_height = document.documentElement.clientHeight;//jQuery(document).height();
-    var win_width = jQuery(window).width();
-    var z_layer_height = jQuery("#"+id).height();
-    var z_layer_width = jQuery("#"+id).width();
-    jQuery("#"+id).css('top',(win_height-z_layer_height)/2 + scolltop);
-    jQuery("#"+id).css('left',(win_width-z_layer_width)/2);
-    jQuery("#"+id).css('display','block');
-}
+
 
 function get_others(question_id){
     $.ajax({

@@ -23,7 +23,7 @@ namespace :operate do
       xy_axis["3_#{x_label.to_i}"] = data.money.split(",")[1].to_i
       xy_axis["4_#{x_label.to_i}"] = data.login.split(",")[1].to_i
       max_x = x_label.to_i if x_label.to_i > max_x
-    end
+    end unless statistics.blank?
     x_axis = x_axis_labels.sort
     step =  (x_axis_labels.length-1 > 0) ? max_x/(x_axis_labels.length-1) : max_x
     x_labels = []
