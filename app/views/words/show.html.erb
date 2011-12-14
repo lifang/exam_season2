@@ -1,3 +1,5 @@
+<%= javascript_include_tag "words" %>
+<%= javascript_include_tag "/assets/jplayer/jquery.jplayer.min.js" %>
 <div class="main_title">
   <div class="m_t_h">词汇</div>
 </div>
@@ -6,7 +8,10 @@
   <div class="word_xx">
     <div class="word_xx_h"><h2><%= @word.name %></h2><span><%= Word::TYPES[@word.types] %></span>
       <span><%= @word.phonetic %></span>
-      <a href="#"><img src="/assets/icon_lb.png" /></a></div>
+      <a href="javascript:void(0);" onclick="javascript:control_media();"><img src="/assets/icon_lb.png"/></a>
+      <input type="hidden" name="enunciate_url" id="enunciate_url" value="<%= @word.enunciate_url %>" />
+      <div id="jquery_jplayer" class="jp-jplayer" style="width:0px;height:1px;"></div>
+    </div>
     <div class="size_16"><%= @word.en_mean %></div>
     <div><%= @word.ch_mean %></div>
     <div class="word_liju">
@@ -28,6 +33,12 @@
         </p>
         <p><%= discriminate.description %></p>
       <% end %>
+    </div>
+    <div class="word_xx_btn">
+      <button type="button" class="t_btn" 
+              onclick="javascript:window.location.href='/words/<%= @word.id %>/edit?category=<%= params[:category] %>';" >
+        编辑
+      </button>
     </div>
   </div>
 </div>

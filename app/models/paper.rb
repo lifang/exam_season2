@@ -22,21 +22,23 @@ class Paper < ActiveRecord::Base
   end
 
   #创建试卷的文件
-  def create_paper_url(str, path, file_type)
-    dir = "#{Rails.root}/public/paper_xml"
+  def create_paper_url(str, path, file_type, super_path = "paper_xml")
+    dir = "#{Rails.root}/public/#{super_path}"
     Dir.mkdir(dir) unless File.directory?(dir)
     unless File.directory?(dir + "/" + path)
       Dir.mkdir(dir + "/" + path)
     end
     file_name = "/" + path + "/#{self.id}." + file_type
     url = dir + file_name
+    puts "-----------------------"
+    puts url
     f=File.new(url,"w+")
     f.write("#{str.force_encoding('UTF-8')}")
     f.close
     if file_type == "xml"
-      self.paper_url = file_name
+      self.paper_url = super_path + file_name
     else
-      self.paper_js_url = file_name
+      self.paper_js_url = super_path + file_name
     end
     self.save
   end
@@ -77,6 +79,22 @@ class Paper < ActiveRecord::Base
   #置试卷的使用状态
   def set_paper_used!
     self.toggle!(:is_used)
+  end
+
+  #生成试卷的json
+  def create_paper_js
+    file=File.open "#{Constant::PUBLIC_PATH}/#{self.paper_url}"
+    doc = Document.new(file)
+    file.close
+    doc.root.elements["blocks"].each_element do |block|
+      block.elements["problems"].each_element do |problem|
+        problem.elements["questions"].each_element do |question|
+          doc.delete_element("#{question.xpath}/answer") if question.elements["answer"]
+          doc.delete_element("#{question.xpath}/analysis") if question.elements["analysis"]
+        end unless problem.elements["questions"].nil?
+      end unless block.elements["problems"].nil?
+    end
+    return "papers = " + Hash.from_xml(doc.to_s).to_json
   end
   
 end

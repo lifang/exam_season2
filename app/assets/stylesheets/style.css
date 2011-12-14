@@ -261,7 +261,8 @@ span.mk_span_w { color: #000;}
 
 .qa_textarea_div { width: 340px; margin-top: 5px; border: 1px #999 solid; line-height: 24px; padding: 5px;}
 
-
+.p_name { color: #333; font-weight: bold;}
+.p_time { color: #333; width: 40px; margin-left: 20px;}
 
 
 
@@ -317,7 +318,7 @@ div.gl_word_left { margin-left: 80px;}
 
 /*详细词汇---*/
 div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
-.word_xx_h { height: 32px; line-height: 32px;}
+.word_xx_h { height: 32px;}
 .word_xx_h h2 { float: left; font-size: 18px;}
 .word_xx_h span { margin: 0 10px;}
 .word_xx_gl { background: #e8e8e8; padding: 20px;}
@@ -325,6 +326,8 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 .word_xx_gl p a { margin: 0 10px;}
 .size_16 { font-size: 16px;}
 .word_liju { font-size: 16px; padding: 10px 0; color: #666;}
+
+.word_xx_btn { margin-top: 20px;}
 
 /*专项*/
 .word_zx {border: 1px #CCC solid; width: 880px; margin: 20px auto; overflow: hidden; padding: 10px;}

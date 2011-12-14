@@ -1,5 +1,6 @@
 # encoding: utf-8
 class UsersController < ApplicationController
+  before_filter :access?
   
   def index
     session[:search_text] = nil

@@ -16,3 +16,10 @@
 /nbproject/private/*.txt
 /public/paper_xml
 /config/database.yml
+/public/word_datas
+/public/papers
+/public/data
+/public/charts
+/public/special_paper
+/public/special_paperjs
+
