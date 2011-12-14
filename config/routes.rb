@@ -2,10 +2,11 @@ RailsTest3::Application.routes.draw do
 
   resources :papers do
     member do
-      post :post_block,:create_problem,:ajax_edit_problem_description,:ajax_edit_problem_title,:post_question
+      post :post_block,:create_problem,:post_question
+      post :ajax_edit_problem_description,:ajax_edit_problem_title,:ajax_edit_paper_title,:ajax_edit_paper_time,:ajax_load_tags_list
     end
     collection do
-      post :select_question_type    #ajax
+      post :select_question_type,:select_correct_type    #ajax
     end
   end
 

@@ -64,7 +64,7 @@ img { border: none;}
 
 .main { width: 958px; min-height: 548px; border: 1px #CCC solid; background: #FFF; position: relative;}
 .main_title { height: 40px; line-height: 40px; padding-left: 30px;}
-.m_t_h { width: 100px; float: left; font-size: 14px; font-weight: bold;}
+.m_t_h { width: 500px; float: left; font-size: 14px; font-weight: bold;}
 .m_t_select { width: 100px; float: left; padding-top: 9px;}
 .m_t_select select { width: 100px; height: 24px; line-height: 24px; border: 1px #CCC solid;}
 .m_t_btn { width: 100px; float: right; padding-top: 10px;}
@@ -109,6 +109,7 @@ img { border: none;}
 .tl_hover { background: #f7f7f7; border-left: 1px #CCC solid; border-top: 1px #CCC solid; border-bottom: 2px #CCC solid; border-right: 2px #c1c1c1 solid;}
 
 .main_bottom { width: 958px; height: 10px; background: url(/assets/main_bottom.png) no-repeat; position: absolute; bottom: -10px; _bottom: -12px;}
+
 
 /*CSS sabrosus style pagination*/
 .sabrosus { padding: 6px; margin: 6px; text-align: center; font-size: 14px;}
@@ -265,16 +266,19 @@ span.mk_span_w { color: #000;}
 
 
 /*弹出层----------*/
-.add_label { width: 300px; padding: 10px; background: #FFF; border: 3px #999 solid; position: fixed;}
+.add_label { width: 300px; padding: 10px; background: #FFF; border: 3px #999 solid; position: fixed;z-index:900;display:none;}
 .add_label div { line-height: 24px; margin: 5px 0;}
-.add_word_box { width: 298px; height: 100px; border: 1px #CCC solid; margin: 2px 0;}
-.add_word_box li { float: left; margin: 5px; font-size: 16px;}
+.add_word_box { width: 298px; height: 100px; border: 1px #CCC solid; margin: 2px 0;overflow:auto;}
+.add_word_box li { float: left; margin: 5px; font-size: 16px; width:45%;}
 .add_word_box li a { padding-left: 5px;}
 
-.part_info { width: 400px; padding: 10px; background: #FFF; border: 3px #999 solid; position: fixed;}
+.part_info { width: 400px; padding: 10px; background: #FFF; border: 3px #999 solid; position: fixed;z-index:900;display:none;}
 .part_info table { background: #CCC;}
 .part_info table td { background: #FFF; padding: 5px;}
 .part_info table textarea { width: 315px; height: 100px;}
+
+/*备考弹出层--------------------*/
+.zhezhao { width:100%; left:0; position:absolute; top:0; background:#000000; opacity:0.5; filter:alpha(opacity=50); z-index:888;display: none; height: 100%;position:fixed; display: none;}
 
 
 /*用户列表*/
@@ -432,4 +436,9 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 /*发送消息tab*/
 .send_message_tab {width: 440px; padding: 10px; border: 3px #999 solid; background: #FFF; overflow: hidden;}
 .send_message_tab div {margin:5px;}
+
 .send_message_tab div textarea { width: 100%; height: 100px;}
+
+.p_name { color: #333; font-weight: bold;}
+.p_time { color: #333; width: 40px; margin-left: 20px;}
+

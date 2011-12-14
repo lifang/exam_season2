@@ -11,7 +11,10 @@
 
 <div class="main_title">
   <span class="yl_bc"><a href="#">预览</a> | <a href="#">保存</a></span>
-  <div class="m_t_h">试卷信息</div>
+  <div class="m_t_h">
+    <input name="" type="text" class="p_name" style="display:none" onblur="$(this).hide();$('.p_name:eq(1)').show();" onchange="javascript:ajax_edit_paper_title(<%= params[:id] %>,$(this).val());" /><span class="p_name" onselectstart="return false;" ondblclick="javascript:$(this).hide();$('.p_name:eq(0)').val($(this).text()).show().focus();"><%= @paper.title %></span>
+    <input name="" type="text" class="p_time" style="display:none" onblur="$(this).hide();$('.p_time:eq(1)').show();" onchange="javascript:ajax_edit_paper_time(<%= params[:id] %>,$(this).val());" /><span class="p_time" onselectstart="return false;" ondblclick="javascript:$(this).hide();$('.p_time:eq(0)').val($(this).text()).show().focus();"><%= @paper.time %></span>分钟
+  </div>
 </div>
 
 <div class="text_box">
@@ -63,7 +66,7 @@
         </div>
 
         <script type="text/javascript" >
-          // 控制"problem"模块的显示/隐藏，同样默认显示第一个模块
+          // 控制"problem"模块的显示/隐藏
           
           $(function(){
             $(".problems_li_<%= block_index %>").bind("click",function(){
@@ -101,76 +104,79 @@
                 <ul class="q_tab_ul"><% if problem.attributes["question_type"].to_i==Problem::QUESTION_TYPE[:INNER] %><li class="hover">在题面中插入小题</li><% elsif problem.attributes["question_type"].to_i==Problem::QUESTION_TYPE[:OUTER] %><li class="hover">在题面后追加小题</li><% end %></ul>
                 <div class="q_tab_div">
                   <% if problem.attributes["question_type"].to_i==Problem::QUESTION_TYPE[:INNER] %>
-                    <div><ul><li><a href="javascript:void(0);" onclick="javascript:load_post_question_div();">单选题</a></li><li><a href="javascript:void(0);">填空题</a></li><li><a href="javascript:void(0);">拖拽题</a></li></ul></div>
+                    <div><ul>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',0,'','','','','','');">单选题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',3,'','','','','','');">填空题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',1,'','','','','','');">拖拽题</a></li>
+                      </ul></div>
                   <% elsif problem.attributes["question_type"].to_i==Problem::QUESTION_TYPE[:OUTER] %>
-                    <div><ul><li><a href="javascript:void(0);" onclick="javascript:load_post_question_div();">单选题</a></li><li><a href="javascript:void(0);">多选题</a></li><li><a href="javascript:void(0);">简答题</a></li></ul></div>
+                    <div><ul>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',0,'','','','','','');">单选题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',1,'','','','','','');">多选题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',2,'','','','','','');">判断题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',3,'','','','','','');">填空题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',5,'','','','','','');">简答题</a></li>
+                      </ul></div>
                   <% end %>
                 </div>
               </div>
-              <script type="text/javascript">
-                function load_post_question_div(){
-                  
-                }
-              </script>
-
 
               <div class="clear"></div>
               <div class="question_list_box">
+                <!-- 追加小题的FORM框 -->
+                <div class="question_list" id="question_list_<%=  block_index %>_<%=  problem_index %>"></div>
 
                 <% question_index = 0; problem.elements["questions"].each_element do |question|; question_index += 1 %>
                   <% answer = question.elements["answer"].text %><% correct_type = question.attributes["correct_type"].to_i %>
                   <input type="hidden" value="<%= correct_type %>" class="correct_type" id="correct_type" />
 
-                  <!-- 追加小题的FORM框 -->
-                  <div class="question_list" id="question_list_<%block_index%>_<%problem_index%>_<%question_index%>">
-                  </div>
-
-
                   <div class="question_list">
                     <div class="q_l_text">
-                      <div class="q_l_word"><p class="q_w_p">some/any/Some</p><p class="q_w_img"><img alt="icon_shu"   src="/assets/icon_shu.png"/></p></div>
+                      <% judge_str = {"1"=>"是/对","0"=>"否/错"}   #定义 判断题 "1"=>"是/对"  "0"=>"否/错" %>
+                      <div class="q_l_word"><p class="q_w_p"><%= question.elements["questionattrs"].text!="" && question.elements["questionattrs"].text!=nil ? question.elements["questionattrs"].text.split(";-;").join("/") : correct_type==Question::CORRECT_TYPE[:JUDGE] ? judge_str[question.elements["answer"].text] : question.elements["answer"].text %></p><p class="q_w_img"><img alt="icon_shu"   src="/assets/icon_shu.png"/></p></div>
                       <div class="q_l_word"><p class="q_w_p"><em>限定词的用法</em></p><p>分值：<span class="red"><%= question.attributes["score"] unless question.attributes["score"].nil? %></span></p></div>
                     </div>
                     <div class="q_l_answer">
-                      <div class="qa_h">小题描述<textarea name="" cols="" rows="" class="qa_textarea"><%= question.elements["description"].text unless question.elements["description"].nil? %></textarea></div>
-                      <div class="qa_h"><span class="yl_bc"><input name="" type="checkbox" value=""/> 自动批改</span>答案</div>
-                      <div class="qa_h">
-                        <% if correct_type == Question::CORRECT_TYPE[:SINGLE_CALK] %>
-                          <input name="" type="text" value="<%= answer unless answer.nil? %>" class="qa_input"/>
-                        <% elsif correct_type == Question::CORRECT_TYPE[:CHARACTER] %>
-                          <textarea cols="" rows="" class="qa_textarea"><%= answer unless answer.nil? %></textarea>
-                        <% elsif correct_type == Question::CORRECT_TYPE[:SINGLE_CHOSE] %>
-                          <ul><% question.elements["questionattrs"].text.split(";-;").each do |attr| %><li><input name="" type="radio" value="" <% if answer.split(";|;").include?(attr) %>checked="true"<% end %> /><input name="" type="text" value="<%= attr %>" /><a href="#">[删除]</a></li><% end %></ul>
-                        <% elsif correct_type == Question::CORRECT_TYPE[:MORE_CHOSE] %>
-                          <ul><% question.elements["questionattrs"].text.split(";-;").each do |attr| %><li><input name="" type="checkbox" value="" <% if answer.split(";|;").include?(attr) %>checked="true"<% end %> /><input name="" type="text" value="<%= attr %>" /><a href="#">[删除]</a></li><% end %></ul>
-                        <% elsif correct_type == Question::CORRECT_TYPE[:JUDGE] %>
-                          <ul><li><input name="" type="radio" value="" <% if answer=="1" %>checked="true"<% end %> /> 是/对</li><li><input name="" type="radio" value="" <% if answer=="0" %>checked="true"<% end %> /> 否/错</li></ul>
-                        <% end #小题分类显示结束 %>
+                      <div class="qa_h">小题描述
+                        <div class="qa_textarea_div"><%= question.elements["description"].text unless question.elements["description"].nil? %></div>
                       </div>
-                      <div class="qa_h">解析</div>
-                      <div class="qa_h"><textarea name="" cols="" rows="" class="qa_textarea"><%= question.elements["analysis"].text unless question.elements["analysis"].nil? %></textarea></div>
-                      <div class="clear"></div>
+                      <div class="qa_h"><span class="yl_bc"></span>答案
+                        <div class="qa_textarea_div">
+                          <% if correct_type == Question::CORRECT_TYPE[:SINGLE_CALK] || correct_type == Question::CORRECT_TYPE[:CHARACTER] %>
+                            <%= answer unless answer.nil? %>
+                          <% elsif correct_type == Question::CORRECT_TYPE[:SINGLE_CHOSE] %>
+                            <ul><% question.elements["questionattrs"].text.split(";-;").each do |attr| %><li><input name="" type="radio" disabled="true" value="" <% if answer.split(";|;").include?(attr) %>checked="true"<% end %> /> <%= attr %> </li><% end %></ul>
+                          <% elsif correct_type == Question::CORRECT_TYPE[:MORE_CHOSE] %>
+                            <ul><% question.elements["questionattrs"].text.split(";-;").each do |attr| %><li><input name="" type="checkbox" disabled="true" value="" <% if answer.split(";|;").include?(attr) %>checked="true"<% end %> /> <%= attr %> </li><% end %></ul>
+                          <% elsif correct_type == Question::CORRECT_TYPE[:JUDGE] %>
+                            <ul><li><input name="" type="radio" value="" disabled="true" <% if answer=="1" %>checked="true"<% end %> /> 是/对</li><li><input name="" type="radio" disabled="true" value="" <% if answer=="0" %>checked="true"<% end %> /> 否/错</li></ul>
+                          <% end #小题分类显示结束 %>
+                        </div>
+                      </div>
+                      <div class="qa_h">解析
+                        <div class="qa_textarea_div"><%= question.elements["analysis"].text unless question.elements["analysis"].nil? %></div>
+                      </div>
                       <div class="q_label">
-                        <div><strong>知识点标签</strong> </div>
-                        <div><% unless question.elements["tags"].nil? %><%= question.elements["tags"].text %><a href="#" class="q_re_a">X</a><% end %></div>
-                        <a href="#">添加标签</a>
+                        <div><strong>知识点标签</strong></div>
+                        <% if question.elements['tags'].text ; question.elements['tags'].text.split(" ").each do |tag| %>
+                        <div class="tag_mark"><%= tag %> <a href="javascript:void(0);" onclick="javascript:$(this).closest('.tag_mark').hide();delete_tag('<%= tag %>');" class="q_re_a">X</a></div>
+                        <% end else %>
+                          没有标签
+                        <% end %>
                       </div>
                       <div class="q_label">
                         <div><strong>词汇</strong></div>
-                        <div>限定词<a href="#" class="q_re_a">X</a></div>
-                        <a href="#">添加词汇</a>
+                        <div>限定词</div>
                       </div>
                       <div class="clear"></div>
-                      <div class="qa_h">分值 <input name="" type="text" value="<%= question.attributes["score"] unless question.attributes["score"].nil? %>" /></div>
+                      <div class="qa_h">分值: <span class="red"><%= question.attributes["score"] unless question.attributes["score"].nil? %></span></div>
                       <div class="qa_h">
-                        &nbsp;&nbsp;&nbsp;&nbsp;<button class="t_btn">保存</button>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<button class="t_btn">删除</button>
+                        <button class="t_btn" onclick="javascript:select_correct_type('#q_l_answer_',<%= block_index %>,<%= problem_index %>,<%= question_index %>,<%= correct_type %>,'<%= question.elements['answer'].text %>','<%= question.elements['questionattrs'].text %>','<%= question.elements['description'].text %>','<%= question.elements['analysis'].text %>','<%= question.attributes['score'] %>','<%= question.elements['tags'].text %>');$(this).closest('.q_l_answer').hide();" >编辑</button>
                       </div>
                     </div>
+                    <div class="edit_question_form" id="q_l_answer_<%= block_index %>_<%= problem_index %>_<%= question_index %>"></div>
                   </div>
                 <% end #questions循环结束 %>
-
-
               </div>
             </div>
           </div>
@@ -184,6 +190,7 @@
             <%= f.hidden_field :question_answer ,:class=>"question_answer_block_#{block_index}" %>
             <%= f.hidden_field :question_attrs ,:class=>"question_attrs_block_#{block_index}"%>
             <%= f.hidden_field :question_type ,:class=>"question_type_block_#{block_index}" ,:value=>"#{Problem::QUESTION_TYPE[:OUTER]}"%>
+            <%= f.hidden_field :question_tags ,:class=>"question_tags_block_#{block_index}" %>
             <%= f.hidden_field :init_block ,:value=>block_index %>
             <%= f.hidden_field :init_problem ,:value=>(problem_index+1) %>
             <div class="question_content">
@@ -194,7 +201,7 @@
             </div>
             <div class="question_bianji">
               <div class="qu_tab">
-                <ul class="q_tab_ul"><li class="hover" onclick="javascript:$('.question_type_block_<%= block_index %>').val(<%= Problem::QUESTION_TYPE[:OUTER] %>);">在题面后追加小题</li><li onclick="javascript:$('.question_type_block_<%= block_index %>').val(<%= Problem::QUESTION_TYPE[:INNER] %>);">在题面中插入小题</li></ul>
+                <ul class="q_tab_ul"><li class="hover" onclick="javascript:$('.question_type_block_<%= block_index %>').val(<%= Problem::QUESTION_TYPE[:OUTER] %>);$('#create_problem_attrs_module_<%= block_index %>').text('请选择小题类型。');">在题面后追加小题</li><li onclick="javascript:$('.question_type_block_<%= block_index %>').val(<%= Problem::QUESTION_TYPE[:INNER] %>);$('#create_problem_attrs_module_<%= block_index %>').text('请选择小题类型。');">在题面中插入小题</li></ul>
                 <div class="q_tab_div">
                   <div><ul>
                       <li><a href="javascript:void(0);" onclick="javascript:select_question_type(0,<%= block_index %>);" >单选题</a></li>
@@ -216,7 +223,7 @@
                   <div class="q_l_answer" style="display:block;">
                     <div class="qa_h">小题描述<textarea name="create_problem[question_description]" class="question_description_block_<%= block_index %> qa_textarea" cols="" rows=""></textarea></div>
                     <div class="qa_h"><span class="yl_bc"><input name="" type="checkbox" value=""/> 自动批改</span>答案</div>
-                    <div class="qa_h"><div id="attrs_module_<%= block_index %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">您还没选择小题类型。</font></div></div>
+                    <div class="qa_h"><div id="create_problem_attrs_module_<%= block_index %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">请选择小题类型。</font></div></div>
                     <div class="qa_h">解析</div>
                     <div class="qa_h"><textarea name="create_problem[question_analysis]" cols="" rows="" class="qa_textarea"></textarea></div><div class="clear"></div>
                     <div class="q_label"><div><strong>知识点标签</strong></div><div><a href="#" class="q_re_a">X</a></div><a href="#">添加标签</a></div>
@@ -227,7 +234,7 @@
                 </div>
               </div>
             </div>
-          <% end # 新建 question 表单 END%>
+          <% end # 新建 problem 表单 END%>
         </div>
 
       </div>
@@ -239,8 +246,8 @@
 
 
 <!--  新建、编辑 block 表单  -->
-<div class="zhezhao" id="zhezhao" style="display: none; height: 100%;position:fixed; "></div>
-<div class="part_info" style="display:none;">
+<div class="zhezhao" id="zhezhao"></div>
+<div class="part_info">
   <%= form_for :post_block ,:url=>"/papers/#{params[:id]}/post_block" ,:html=>{:onsubmit=>"return validate_post_block();"} do |f| %>
     <span class="yj_x"><img alt="assets/x.gif" src="/assets/x.gif" onclick="javascript:close_part_info();" /></span>
     <div class="qc_h"><strong>部分信息</strong></div>
@@ -260,36 +267,114 @@
 
 
 <!--  追加、编辑 question 表单  -->
-<div style="display:none;">
+<div id="post_question_loader" style="display:none;">
   <div class="q_l_answer" id="post_question_div" style="display: block; ">
     <%= form_for :post_question ,:url=>"/papers/#{params[:id]}/post_question" ,:html=>{:onsubmit=>""} do |f| %>
-      <div class="qa_h">小题描述<textarea name="" cols="" rows="" class="qa_textarea">11111</textarea></div>
+      <%= f.hidden_field :questions_xpath ,:id=>"post_question_questions_xpath" %>
+      <%= f.hidden_field :question_index ,:id=>"post_question_question_index" %>
+      <%= f.hidden_field :question_answer ,:id=>"post_question_question_answer" %>
+      <%= f.hidden_field :question_attrs ,:id=>"post_question_question_attrs" %>
+      <%= f.hidden_field :question_tags ,:id=>"post_question_question_tags" %>
+      <div class="qa_h">小题描述<textarea name="post_question[question_description]" id="post_question_question_description" cols="" rows="" class="qa_textarea"></textarea></div>
       <div class="qa_h"><span class="yl_bc"><input name="" type="checkbox" value=""/> 自动批改</span>答案</div>
       <div class="qa_h">
-        <ul><li><input name="" type="radio" value=""/><input name="" type="text" value="1"/><a href="#">[删除]</a></li><li><input name="" type="radio" value="" checked="true"/><input name="" type="text" value="11"/><a href="#">[删除]</a></li><li><input name="" type="radio" value=""/><input name="" type="text" value="111"/><a href="#">[删除]</a></li><li><input name="" type="radio" value=""/><input name="" type="text" value="1111"/><a href="#">[删除]</a></li></ul>
+        <div id="post_question_attrs_module"></div>
       </div>
       <div class="qa_h">解析</div>
-      <div class="qa_h"><textarea name="" cols="" rows="" class="qa_textarea">1111</textarea></div>
+      <div class="qa_h"><textarea name="post_question[question_analysis]" id="post_question_question_analysis" cols="" rows="" class="qa_textarea">1111</textarea></div>
       <div class="clear"></div>
       <div class="q_label">
         <div><strong>知识点标签</strong> </div>
-        <div><a href="#" class="q_re_a">X</a></div>
-        <a href="#">添加标签</a>
+        <div>暂无</div><div style="display:none;">限定词<a href="#" class="q_re_a">X</a></div>
+        <a href="javascript:void(0);" onclick="load_add_label();">添加标签</a>
       </div>
+
       <div class="q_label">
         <div><strong>词汇</strong></div>
-        <div>限定词<a href="#" class="q_re_a">X</a></div>
-        <a href="#">添加词汇</a>
+        <div>暂无</div><div style="display:none;">限定词<a href="#" class="q_re_a">X</a></div>
+        <a href="javascript:void(0);">添加词汇</a>
       </div>
       <div class="clear"></div>
-      <div class="qa_h">分值 <input name="" type="text" value="1"/></div>
+      <div class="qa_h">分值 <input name="post_question[question_score]" id="post_question_question_score" type="text" /></div>
       <div class="qa_h">
-        &nbsp;&nbsp;&nbsp;&nbsp;<button class="t_btn">保存</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;<button class="t_btn">删除</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" class="t_btn">保存</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="t_btn" onclick="javascipt:$('#post_question_loader').append($('#post_question_div'));">取消</button>
       </div>
-      <% end %>
-    </div>
+    <% end #追加、编辑 question 表单 END%>
+  </div>
 </div>
+<script type="text/javascript">
+  // 载入添加标签弹出框
+  function load_add_label(){
+//    $("#block_xpath").val(block_xpath);
+//    $("#block_name").val(block_name);
+//    $("#block_description").val(block_description);
+    jQuery('.add_label').css('display','block');
+    jQuery('.zhezhao').css('display','block');
+    $("#t_se_input").focus();
+  }
+
+  function close_add_label(){
+    jQuery('.add_label').css('display','none');
+    jQuery('.zhezhao').css('display','none');
+    return false;
+  }
+
+//根据查询内容，载入标签列表
+  function ajax_load_tags_list(paper_id,match){
+        $.ajax({
+        type: "POST",
+        url: "/papers/"+paper_id+"/ajax_load_tags_list.html",
+        dataType: "html",
+        data : {
+            "match" : match
+        },
+        beforeSend: function(){
+            $("#tags_list_ajax_loader").html($("#ajax_loader").html());
+        },
+        success : function(data){
+            $("#tags_list_ajax_loader").html(data);
+        }
+    });
+  }
+
+  //删除小题的标签
+  function delete_tag(tag_name){
+    var origin_tags = $('#post_question_question_tags').val();
+    $('#post_question_question_tags').val(origin_tags.replace(tag_name,"").replace(/  /g," "));
+    alert("("+$('#post_question_question_tags').val()+")");
+  }
+
+</script>
+
+
+<div class="add_label">
+  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:close_add_label();" /></span>
+  <div><input name="" type="text" id="t_se_input" class="t_se_input" /><button class="t_search" onclick="javascipt:ajax_load_tags_list(<%= params[:id] %>,$('#t_se_input').val());"></button></div>
+  <div>标签列表</div>
+
+  <div id="tags_list_ajax_loader" class="add_word_box" ></div>
+
+  <div>已添加标签</div>
+  <div class="add_word_box">
+    <ul>
+      <li><input type="checkbox" />spg</li>
+      <li><input type="checkbox" />spang</li>
+      <li><input type="checkbox" />spagerge</li>
+      <li><input type="checkbox" />sn</li>
+      <li><input type="checkbox" />spagre</li>
+      <li><input type="checkbox" />s</li>
+      <li><input type="checkbox" />span</li>
+      <li><input type="checkbox" />spagr</li>
+      <li><input type="checkbox" />spagrg</li>
+      <li><input type="checkbox" />spgre</li>
+      <li><input type="checkbox" />spagre</li>
+      <li><input type="checkbox" />spagern</li>
+    </ul>
+  </div>
+  <div><button class="t_btn">插入</button></div>
+</div>
+
 
 <!-- ajax载入图片 提前载入以便调用 -->
 <div id="ajax_loader" style="display:none;"><%= image_tag 'ajax-loader.gif' %></div>

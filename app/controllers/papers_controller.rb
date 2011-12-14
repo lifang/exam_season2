@@ -29,11 +29,12 @@ class PapersController < ApplicationController
 
   #[get][member] 编辑试卷具体内容（新建试卷第二步）
   def edit
-    paper = Paper.find(params[:id].to_i)
+    @paper = Paper.find(params[:id].to_i)
     begin
-      file = File.open("#{Constant::PAPER_XML_PATH}#{paper.paper_url}")
+      file = File.open("#{Constant::PAPER_XML_PATH}#{@paper.paper_url}")
       @xml=Document.new(file).root
       file.close
+      @tags=Tag.all
     rescue
       flash[:error] = "当前试卷不能正常打开，请检查试卷是否正常。"
       redirect_to request.referer
@@ -62,23 +63,14 @@ class PapersController < ApplicationController
   #[post][member] 新建表单
   def create_problem
     @post = params[:create_problem]
-    puts "category_id = "+@post[:category]
-    puts "problems_xpath = "+@post[:problems_xpath]
-    puts "problem_description = "+@post[:problem_description]
-    puts "problem_title = "+@post[:problem_title]
-    puts "question_type = "+@post[:question_type]
-    puts "correct_type = "+@post[:correct_type]
-    puts "question_answer = " +@post[:question_answer]
-    puts "question_attrs = "+@post[:question_attrs]
-    puts "question_description = " +@post[:question_description]
-    puts "question_analysis = " +@post[:question_analysis]
-    puts "question_score = " +@post[:question_score]
-    puts "init_block = " +@post[:init_block]
-    puts "init_problem = " +@post[:init_problem]
     #存储数据库
     @problem = Problem.create(:category_id=>@post[:category],:description=>@post[:problem_description],:title=>@post[:problem_title],:question_type=>@post[:question_type])
     @question =Question.create(:problem_id=>@problem.id,:description=>@post[:question_description],:answer=>@post[:question_answer],:question_attrs=>@post[:question_attrs],:correct_type=>@post[:correct_type],:analysis=>@post[:question_analysis])
-
+    #创建标签
+    if !@post[:question_tags].nil? and @post[:question_tags].strip != ""
+      tag_name = @post[:question_tags].strip.split(" ")
+      @question.question_tags(Tag.create_tag(tag_name))
+    end
     #存储xml文件
     paper = Paper.find(params[:id].to_i)
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
@@ -91,19 +83,20 @@ class PapersController < ApplicationController
     redirect_to "/papers/#{params[:id]}/edit?category=#{@post[:category]}"
   end
 
-  # ajax 选择题目类型，更新 attrs_module 部分
+  # ajax 选择题目类型，载入 _create_problem_attrs_module 部分  备注：此方法在新建题目create_problem时用，追加、编辑小题post_question时用的select_correct_type
   def select_question_type
     question_type ,block_index =params["question_type"].to_i , params["block_index"].to_i
     @object={:question_type=>question_type,:block_index=>block_index}
-    render :partial=>"attrs_module",:object=>@object
+    render :partial=>"create_problem_attrs_module",:object=>@object
   end
 
-  # ajax [post][member] 编辑题目说明
+  # [post][member][ajax] 编辑题目说明
   def ajax_edit_problem_description
     paper = Paper.find(params[:id].to_i)
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     problem_element = doc.elements["/paper/blocks/block[#{params[:block_index]}]/problems/problem[#{params[:problem_index]}]"]
+    Problem.find(problem_element.attributes["id"]).update_attribute("description",params[:description])
     manage_element(problem_element,{:description=>params[:description]},{})
     write_xml(doc,url)
     respond_to do |format|
@@ -114,12 +107,13 @@ class PapersController < ApplicationController
     end
 
   end
-  # ajax [post][member] 编辑题目标题
+  # [post][member][ajax] 编辑题目标题
   def ajax_edit_problem_title
     paper = Paper.find(params[:id].to_i)
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     problem_element = doc.elements["/paper/blocks/block[#{params[:block_index]}]/problems/problem[#{params[:problem_index]}]"]
+    Problem.find(problem_element.attributes["id"]).update_attribute("title",params[:title])
     manage_element(problem_element,{:title=>params[:title]},{})
     write_xml(doc,url)
     respond_to do |format|
@@ -131,8 +125,85 @@ class PapersController < ApplicationController
   end
 
   def post_question
-    
+    @post = params[:post_question]
+    paper = Paper.find(params[:id].to_i)
+    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    doc = get_doc(url)
+    if @post[:question_index]==""   # 当 question_index 为空，就是新建小题，不为空，就是编辑小题
+      problem_id = doc.elements[@post[:questions_xpath]].parent.attributes["id"].to_i
+      @question = Question.create(:problem_id=>problem_id,:description=>@post[:question_description],:answer=>@post[:question_answer],:correct_type=>@post[:correct_type],:analysis=>@post[:question_analysis],:question_attrs=>@post[:question_attrs])
+      #创建标签
+      if !@post[:question_tag].nil? and @post[:question_tag].strip != ""
+        tag_name = @post[:tag].strip.split(" ")
+        @question.question_tags(Tag.create_tag(tag_name))
+      end
+      question_element = doc.elements[@post[:questions_xpath]].add_element("question")
+      manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>"",:analysis=>@post[:question_analysis]},{:correct_type=>@post[:correct_type],:id=>@question.id,:score=>@post[:question_score]})
+      write_xml(doc,url)
+    else
+      question_xpath = @post[:questions_xpath]+"/question[#{@post[:question_index]}]"
+      @question=Question.find(doc.elements[question_xpath].attributes["id"])
+      @question.update_attributes(:description=>@post[:question_description],:answer=>@post[:question_answer],:question_attrs=>@post[:question_attrs],:analysis=>@post[:question_analysis])
+      question_element = doc.elements[question_xpath]
+      manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>"",:analysis=>@post[:question_analysis]},{:score=>@post[:question_score]})
+      write_xml(doc,url)
+    end
     redirect_to request.referer
+  end
+
+  def ajax_edit_paper_title
+    paper = Paper.find(params[:id].to_i)
+    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    doc = get_doc(url)
+    base_info_element = doc.elements["/paper/base_info"]
+    Paper.find(params[:id]).update_attribute("title",params[:title])
+    manage_element(base_info_element,{:title=>params[:title]},{})
+    write_xml(doc,url)
+    respond_to do |format|
+      format.json {
+        data={:title=>params[:title]}
+        render:json=>data
+      }
+    end
+  end
+
+  def ajax_edit_paper_time
+    paper = Paper.find(params[:id].to_i)
+    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    doc = get_doc(url)
+    base_info_element = doc.elements["/paper/base_info"]
+    Paper.find(params[:id]).update_attribute("time",params[:time])
+    manage_element(base_info_element,{:time=>params[:time]},{})
+    write_xml(doc,url)
+    respond_to do |format|
+      format.json {
+        data={:time=>params[:time]}
+        render:json=>data
+      }
+    end
+  end
+
+  def ajax_load_tags_list
+    match = params["match"].strip
+    like_params = "%#{match}%"
+    negation = Tag.find_by_name(match).blank?
+    @tags = Tag.find_by_sql(["select * from tags where name like ?",like_params])
+    respond_to do |format|
+      format.html {
+        render :partial=>"/papers/tags_list" ,:object=>{:tags=>@tags,:negation=>negation,:match=>match}
+      }
+    end
+  end
+
+
+  #ajax 选择题目类型，载入 _post_question_attrs_module 部分
+  def select_correct_type
+    correct_type , question_answer , question_attrs=params["correct_type"].to_i , params["question_answer"] , params["question_attrs"]
+    #    puts "correct_type = #{correct_type}"
+    #    puts "question_attrs = #{question_attrs}"
+    #    puts "question_answer = #{question_answer}"
+    @object={:correct_type=>correct_type,:answer=>question_answer,:question_attrs=>question_attrs}
+    render :partial=>"post_question_attrs_module",:object=>@object
   end
 
   
