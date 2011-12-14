@@ -83,7 +83,7 @@ class ExaminationTagRelation < ActiveRecord::Base
             examination.update_paper("create", [paper])
             ExaminationTagRelation.create(:tag_id => block.attributes["tag_id"].to_i, :examination_id => examination.id)
           else
-            paper = Paper.find(exist_examination.id)
+            paper = Paper.find(exist_examination[0].id)
           end
           last_document = Document.new(paper.xml_content)
           last_document.root.elements["blocks"].add_element(block)

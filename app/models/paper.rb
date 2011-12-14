@@ -30,8 +30,6 @@ class Paper < ActiveRecord::Base
     end
     file_name = "/" + path + "/#{self.id}." + file_type
     url = dir + file_name
-    puts "-----------------------"
-    puts url
     f=File.new(url,"w+")
     f.write("#{str.force_encoding('UTF-8')}")
     f.close

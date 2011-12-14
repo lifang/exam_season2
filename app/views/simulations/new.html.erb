@@ -9,7 +9,8 @@
     <%= form_for :exam_info ,:url=>"/simulations",:html=>{:id=>"exam_info"} do %>
 
       <div>名称 <input name="title" type="text" id="title" /></div>
-      <div>日期 <input name="from_date"  id="from_date" type="text" onClick="WdatePicker();" /> 至 <input name="end_date" id="end_date" type="text"  onClick="WdatePicker();" /></div>
+      <div>日期 <input name="from_date"  id="from_date" type="text" onClick="WdatePicker();" class="Wdate" /> 至
+        <input name="end_date" id="end_date" type="text"  onClick="WdatePicker();" class="Wdate" /></div>
       <div id="selected_papers">
         <div class="bj_h">试卷：<a href="javascript:void(0);" onclick="javascript:add_paper();">添加试卷</a></div>
       </div>

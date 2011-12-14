@@ -10,7 +10,6 @@ namespace :special do
         inner join examination_paper_relations epr on epr.examination_id = e.id
         inner join papers p on p.id = epr.paper_id where e.is_published = ? and status = ? and e.types = ?",
         Examination::IS_PUBLISHED[:ALREADY], Examination::STATUS[:GOING], Examination::TYPES[:OLD_EXAM]])
-    puts "examination #{papers.size}"
     category_papers = {}
     category_ids = []
     papers.each do |p|
