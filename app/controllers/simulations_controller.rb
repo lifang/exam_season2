@@ -1,5 +1,6 @@
 # encoding: utf-8
 class SimulationsController < ApplicationController
+  before_filter :access?
   respond_to :html, :xml, :json
   require 'spreadsheet'
   #模考列表
