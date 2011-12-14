@@ -1,16 +1,11 @@
-function modify_status(id,status){
-    var error_type=$("#error_type").val();
-    var all_error=$("#all_error").val();
-    error_type="";
-    $("#error_type").val(error_type);
+function modify_status(status){
     $("#status").val(status);
-    $("#error").submit();
+    $("#error_form").submit();
 }
 
-//选择收费，免费和单独收费
-function redirect_to(category_id) {
-    alert(category_id);
-    var option_value = $("select option:selected").attr("value");
+//选择错误类型
+function redirect(category_id) {
+    var option_value = $("select option:selected").val();
     if (option_value == "-1") {
         window.location.href = "/report_errors?category=" + category_id;
     } else {
@@ -30,4 +25,18 @@ function show_div(id){
     jQuery("#"+id).css('display','block');
 }
 
-
+function get_others(question_id){
+    $.ajax({
+        async:true,
+        success:function(request){
+        //            $("#spinner_add_"+exam_id).css("display","none");
+        },
+        data:{
+            question_id :question_id
+        },
+        dataType:'script',
+        url:"/report_errors/other_users",
+        type:'get'
+    });
+    return false;   
+}
