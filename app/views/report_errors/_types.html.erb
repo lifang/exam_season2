@@ -1,0 +1,9 @@
+<div><p>【错误类型】</p>
+  <select name="" onchange="javascript:redirect(<%= params[:category] %>)">
+    <option <%= "selected" if session[:error_type].nil? %> value="-1">全部</option>
+    <option value="1" <%= "selected" if session[:error_type] == ReportError::TYPE[:TOPOIC].to_s %> >题目错误</option>
+    <option value="2" <%= "selected "if session[:error_type] == ReportError::TYPE[:ANSWER].to_s %> >答案错误</option>
+    <option value="3" <%= "selected" if session[:error_type] == ReportError::TYPE[:ANALISIS].to_s %> >解析错误</option>
+    <option value="4" <%= "selected" if session[:error_type] == ReportError::TYPE[:WORD].to_s %> >词汇错误</option>
+  </select>
+</div>
