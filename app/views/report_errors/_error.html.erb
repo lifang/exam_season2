@@ -4,7 +4,6 @@ attrs_array = attrs_str.split(";-;") unless attrs_str.nil?
 answers=[]
 error.answer.split(";|;").collect { |item| answers << item.strip }
 correct_type =error.correct_type
-analysis=error.analysis
 %>
 <div class="er_pr_an">
   <% if (correct_type.to_i == Question::CORRECT_TYPE[:MORE_CHOSE] or
