@@ -5,7 +5,6 @@ class ReportErrorsController < ApplicationController
   include REXML
 
   def index
-   
     error_sql="select id,question_id from report_errors where status=0"
     unless params["error_type"].nil?|| params["error_type"]==""
       session[:error_type]=params["error_type"]
@@ -58,7 +57,9 @@ class ReportErrorsController < ApplicationController
 
 
   def modify_status
-    ReportError.find(params[:id].to_i).update_attributes(:status=>params[:status].to_i)
+    error_report=ReportError.find(params[:id].to_i)
+    error_report.update_attributes(:status=>params[:status].to_i)
+    Order.create(:user_id=>error_report.user_id,:status=>Order::TYPES[:OTHER],:pay_type=>Order::STATUS[:NOMAL]) if Order.find_by_user_id(error_report.user_id).nil? if params[:status].to_i==1
     page=params[:page]
     my_params = Hash.new
     request.parameters.each {|key,value|my_params[key.to_s]=value}
@@ -70,19 +71,18 @@ class ReportErrorsController < ApplicationController
     my_params.delete("utf8")
     unless page.nil? || page=="" ||page.to_i<1
       url=my_params.sort.map{|k,v|"#{k}=#{v}"}.join("&")
-      redirect_to "/report_errors?#{url}"
     else
       my_params.delete("page")
       url=my_params.sort.map{|k,v|"#{k}=#{v}"}.join("&")
-      redirect_to "/report_errors?#{url}"
     end
+    redirect_to "/report_errors?#{url}"
   end
 
   def other_users
     session[:question_id]=params[:question_id].to_i
     other_sql="select u.email,re.error_type,re.description from report_errors re inner join users u on u.id=re.user_id where re.question_id=#{session[:question_id]}"
     @others=ReportError.paginate_by_sql(other_sql,:per_page =>2, :page => params[:page])
-    respond_with (@thers) do |format|
+    respond_with (@others) do |format|
       format.js
     end
   end
