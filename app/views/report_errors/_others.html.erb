@@ -14,13 +14,19 @@
       <td>报告人</td>
       <td>错误说明</td>
     </tr>
-    <% @others.each do |error| %>
+    <%  unless @others.blank?%>
+      <% @others.each do |error| %>
+        <tr>
+          <td><%= ReportError::ERROR_TYPE[error.error_type] %></td>
+          <td><%= error.email %></td>
+          <td><%= error.description %></td>
+        </tr>
+      <% end  %>
+    <% else %>
       <tr>
-        <td><%= ReportError::ERROR_TYPE[error.error_type] %></td>
-        <td><%= error.email %></td>
-        <td><%= error.description %></td>
+        <td colspan="3">没有其他错误报告</td>
       </tr>
-    <% end unless @others.blank? %>
+    <% end %>
   </table>
   <%= will_paginate_remote(@others ,  "question_id=#{session[:question_id]}" ,{:url => "/report_errors/other_users"}) %>
 </div>

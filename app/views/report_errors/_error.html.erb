@@ -67,5 +67,5 @@ correct_type =error.correct_type
     </script>
   <% end %>
   <div class="answer_true"></div>
-  <div><a href="#" onclick="javascript:show_div('jiexi');">解析</a><a href="#" onclick="javascript:show_div('xiangguan');">相关词汇</a><button class="t_btn" onclick="javascript:window.open('/papers/<%= error.pe_id %>/edit?category=<%= params[:category] %>')">编辑</button></div>
+  <div><a href="#" onclick="javascript:$('.error_jiexi_tab').css('display','none');show_div('#jiexi');">解析</a><a href="#" onclick="javascript:$('.error_jiexi_tab').css('display','none');show_div('#xiangguan');">相关词汇</a><button class="t_btn" onclick="javascript:window.open('/papers/<%= error.pe_id %>/edit?category=<%= params[:category] %>')">编辑</button></div>
 </div>
