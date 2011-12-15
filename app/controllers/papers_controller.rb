@@ -70,6 +70,10 @@ class PapersController < ApplicationController
       tag_name = @post[:question_tags].strip.split(" ")
       @question.question_tags(Tag.create_tag(tag_name))
     end
+    if !@post[:question_words].nil? and @post[:question_words].strip != ""
+      words = @post[:question_words].strip.split(" ")
+      @question.question_words(words)
+    end
     #存储xml文件
     paper = Paper.find(params[:id].to_i)
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
@@ -77,7 +81,7 @@ class PapersController < ApplicationController
     problem_element = doc.elements[@post[:problems_xpath]].add_element("problem")
     manage_element(problem_element,{:description=>@post[:problem_description],:title=>@post[:problem_title],:category=>@post[:category],:questions=>""},{:id=>@problem.id,:question_type=>@post[:question_type]})
     question_element = problem_element.elements["questions"].add_element("question")
-    manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>@post[:question_tags],:words=>"",:analysis=>@post[:question_analysis]},{:id=>@question.id,:score=>@post[:question_score],:correct_type=>@post[:correct_type]})
+    manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>@post[:question_tags],:words=>@post[:question_words],:analysis=>@post[:question_analysis]},{:id=>@question.id,:score=>@post[:question_score],:correct_type=>@post[:correct_type]})
     write_xml(doc,url)
     redirect_to "/papers/#{params[:id]}/edit?category=#{@post[:category]}"
   end
@@ -132,10 +136,6 @@ class PapersController < ApplicationController
       problem_id = doc.elements[@post[:questions_xpath]].parent.attributes["id"].to_i
       @question = Question.create(:problem_id=>problem_id,:description=>@post[:question_description],:answer=>@post[:question_answer],:correct_type=>@post[:correct_type],:analysis=>@post[:question_analysis],:question_attrs=>@post[:question_attrs])
       #创建标签
-      if !@post[:question_tags].nil? and @post[:question_tags].strip != ""
-        tag_name = @post[:question_tags].strip.split(" ")
-        @question.question_tags(Tag.create_tag(tag_name))
-      end
       question_element = doc.elements[@post[:questions_xpath]].add_element("question")
       manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>@post[:question_tags],:words=>@post[:question_words],:analysis=>@post[:question_analysis]},{:correct_type=>@post[:correct_type],:id=>@question.id,:score=>@post[:question_score]})
       write_xml(doc,url)
@@ -146,6 +146,14 @@ class PapersController < ApplicationController
       question_element = doc.elements[question_xpath]
       manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>@post[:question_tags],:words=>@post[:question_words],:analysis=>@post[:question_analysis]},{:score=>@post[:question_score]})
       write_xml(doc,url)
+    end
+    if !@post[:question_tags].nil? and @post[:question_tags].strip != ""
+      tag_name = @post[:question_tags].strip.split(" ")
+      @question.question_tags(Tag.create_tag(tag_name))
+    end
+    if !@post[:question_words].nil? and @post[:question_words].strip != ""
+      words = @post[:question_words].strip.split(" ")
+      @question.question_words(words)
     end
     redirect_to request.referer
   end
@@ -228,9 +236,8 @@ class PapersController < ApplicationController
     if params["added_words"].strip!=""
       @words = Word.find_by_sql(["select * from words where category_id = ? and name like ? and name not in (?)#",category_id,like_params,added_words])
     else
-      @words = Word.find_by_sql(["select * from words where where category_id = ? and name like ?",category_id,like_params])
+      @words = Word.find_by_sql(["select * from words where category_id = ? and name like ?",category_id,like_params])
     end
-    puts @words.count
     respond_to do |format|
       format.html {
         render :partial=>"/papers/words_list" ,:object=>{:words=>@words,:match=>match}
@@ -238,38 +245,38 @@ class PapersController < ApplicationController
     end
   end
 
-    # --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------
+  # --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------
 
-    #将XML文件生成document对象
-    def get_doc(url)
-      file = File.open(url)
-      doc = Document.new(file).root
-      return doc
-    end
-  
-    #处理XML节点
-    #参数解释： element为doc.elements[xpath]产生的对象，content为子内容，attributes为属性
-    def manage_element(element,content={},attributes={})
-      content.each do |key,value|
-        arr , ele = "#{key}".split("/") , element
-        arr.each do |a|
-          ele = ele.elements[a].nil? ? ele.add_element(a) : ele.elements[a]
-        end
-        ele.text.nil? ? ele.add_text("#{value}") : ele.text="#{value}"
-      end
-      attributes.each do |key,value|
-        element.attributes["#{key}"].nil? ? element.add_attribute("#{key}","#{value}") :  element.attributes["#{key}"] = "#{value}"
-      end
-      return element
-    end
-
-    #将document对象生成xml文件
-    def write_xml(doc,url)
-      file = File.new(url, File::CREAT|File::TRUNC|File::RDWR, 0644)
-      file.write(doc)
-      file.close
-    end
-
-    # --------- END ------XML文件操作--------require 'rexml/document'----------include REXML----------
-  
+  #将XML文件生成document对象
+  def get_doc(url)
+    file = File.open(url)
+    doc = Document.new(file).root
+    return doc
   end
+  
+  #处理XML节点
+  #参数解释： element为doc.elements[xpath]产生的对象，content为子内容，attributes为属性
+  def manage_element(element,content={},attributes={})
+    content.each do |key,value|
+      arr , ele = "#{key}".split("/") , element
+      arr.each do |a|
+        ele = ele.elements[a].nil? ? ele.add_element(a) : ele.elements[a]
+      end
+      ele.text.nil? ? ele.add_text("#{value}") : ele.text="#{value}"
+    end
+    attributes.each do |key,value|
+      element.attributes["#{key}"].nil? ? element.add_attribute("#{key}","#{value}") :  element.attributes["#{key}"] = "#{value}"
+    end
+    return element
+  end
+
+  #将document对象生成xml文件
+  def write_xml(doc,url)
+    file = File.new(url, File::CREAT|File::TRUNC|File::RDWR, 0644)
+    file.write(doc)
+    file.close
+  end
+
+  # --------- END ------XML文件操作--------require 'rexml/document'----------include REXML----------
+  
+end

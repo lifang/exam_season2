@@ -2,7 +2,7 @@
 class Question < ActiveRecord::Base
   belongs_to :problem
   has_many :question_tag_relations,:dependent=>:destroy
-  has_many :tags,:through=>:question_tag_relations,:foreign_key=>"tag_id"
+  has_many :tags,:through=>:question_tag_relations,:source => :tag
   has_many :word_question_relations,:dependent=>:destroy
   has_many :words,:through=>:word_question_relations, :source => :word
 
@@ -11,9 +11,16 @@ class Question < ActiveRecord::Base
     :COLLIGATION => 4, :CHARACTER => 5, :MORE_BLANKS => 6 }
   #0 单选题； 1 多选题；2 判断题；3 填空题； 4 综合题； 5 简答题； 6 完型填空
 
+
+  
   def question_tags(tags)
     self.tags = []
     tags.each { |tag| self.tags << tag }
+  end
+
+  def question_words(words)
+    self.words = []
+    words.each {|word| self.words << Word.find_by_name(word) }
   end
 
 end

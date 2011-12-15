@@ -195,6 +195,7 @@
             <%= f.hidden_field :question_attrs ,:class=>"question_attrs_block_#{block_index}"%>
             <%= f.hidden_field :question_type ,:class=>"question_type_block_#{block_index}" ,:value=>"#{Problem::QUESTION_TYPE[:OUTER]}"%>
             <%= f.hidden_field :question_tags ,:class=>"question_tags_block_#{block_index}" %>
+            <%= f.hidden_field :question_words ,:class=>"question_words_block_#{block_index}" %>
             <%= f.hidden_field :init_block ,:value=>block_index %>
             <%= f.hidden_field :init_problem ,:value=>(problem_index+1) %>
             <div class="question_content">
@@ -341,7 +342,7 @@
     </div>
     <div id="already_add_words_div" class="words_ny"></div>
     <input type="hidden" id="addWords_insert_words" />
-    <div><button class="t_btn" onclick="javascript:insert_words('#addWords_insert_words','#post_question_question_words','#post_question_words_div');">插入</button></div>
+    <div><button class="t_btn" onclick="javascript:insert_words('#addWords_insert_words',$('#addWords_words_input').val(),$('#addWords_display').val());">插入</button></div>
   </div>
   <div class="addwords_side">
     <div class="xs_add" id="xs_add_div">

@@ -497,6 +497,7 @@ function display_words_text(words_input,display){
 
 //根据查询内容，载入单词列表
 function ajax_load_words_list(match,added_words){
+    //alert(""+(match=="")+" | "+(added_words=="")+" | "+category_id);
     $.ajax({
         type: "POST",
         url: "/papers/ajax_load_words_list.html",
