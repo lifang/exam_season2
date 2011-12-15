@@ -6,6 +6,7 @@
   :html => {:onsubmit => "return new_word_form()", :multipart => true} do |f|%>
   <div class="text_box">
     <div class="word_text">
+      <input type="hidden" name="word_id" id="word_id" value=""/>
       <input type="hidden" name="category_id" id="category_id" value="<%= params[:category] %>"/>
       <div><label>条目：</label><input name="name" id="name" type="text"/></div>
       <div><label>词性：</label>

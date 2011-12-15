@@ -1,5 +1,5 @@
 #encoding: utf-8
-class WordDiscriminateRelation < ActiveRecord::Base
+class WordQuestionRelation < ActiveRecord::Base
   belongs_to :word
   belongs_to :question
 end

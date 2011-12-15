@@ -1,0 +1,32 @@
+<script type="text/javascript">
+  //用户表格
+  $(function(){
+    $(".user_tb tbody tr:even").css("background","#f2f2f2");
+    $(".tr_bg").css("background","#333");
+
+  })
+</script>
+<span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('.error_tab_list').css('display','none');"/></span>
+<div>
+  <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
+    <tr class="tr_bg">
+      <td>错误类型</td>
+      <td>报告人</td>
+      <td>错误说明</td>
+    </tr>
+    <%  unless @others.blank?%>
+      <% @others.each do |error| %>
+        <tr>
+          <td><%= ReportError::ERROR_TYPE[error.error_type] %></td>
+          <td><%= error.email %></td>
+          <td><%= error.description %></td>
+        </tr>
+      <% end  %>
+    <% else %>
+      <tr>
+        <td colspan="3">没有其他错误报告</td>
+      </tr>
+    <% end %>
+  </table>
+  <%= will_paginate_remote(@others ,  "question_id=#{session[:question_id]}" ,{:url => "/report_errors/other_users"}) %>
+</div>

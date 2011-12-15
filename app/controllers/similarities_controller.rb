@@ -1,5 +1,6 @@
 # encoding: utf-8
 class SimilaritiesController < ApplicationController
+  before_filter :access?
   respond_to :html, :xml, :json
   #真题列表
   def index
@@ -79,7 +80,8 @@ class SimilaritiesController < ApplicationController
   end
 
   def paper_list
-    sql = "select * from papers where category_id = #{session[:category]} and paper_url is not null"
+    sql = "select * from papers where category_id = #{session[:category]}
+       and types != #{Examination::TYPES[:SPECIAL]} and paper_url is not null"
     sql += " and created_at >= '#{session[:mintime]}'" unless session[:mintime].nil? or session[:mintime] == ""
     sql += " and created_at <= '#{session[:maxtime]}'" unless session[:maxtime].nil? or session[:maxtime] == ""
     sql += " and title like '%#{session[:exam_title]}%'" unless (session[:exam_title].nil? or session[:exam_title].strip == "")

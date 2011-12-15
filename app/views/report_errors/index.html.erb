@@ -6,185 +6,67 @@
     answer +=str.split(")")[0]+".";
   }
 </script>
-<%error=@single_error[0] %>
-<div class="error_top">
-  <div><p>【错误类型】</p>
-    <select name="" onchange="javascript:redirect_to(<%= params[:category] %>)">
-      <option <%= "selected" if params[:error_type].nil? %> value="-1">全部</option>
-      <option value="1" <%= "selected" if params[:error_type] == ReportError::TYPE[:TOPOIC].to_s %> >题目错误</option>
-      <option value="2" <%= "selected" if params[:error_type] == ReportError::TYPE[:ANSWER].to_s %> >答案错误</option>
-      <option value="3" <%= "selected" if params[:error_type] == ReportError::TYPE[:ANALISIS].to_s %> >解析错误</option>
-      <option value="4" <%= "selected" if params[:error_type] == ReportError::TYPE[:WORD].to_s %> >词汇错误</option>
-    </select>
-  </div>
-  <div class="error_baog"><p>报告人：<span><%= error.u_name %></span></p><p><a href="javascript:$('.error_tab_list').css('display','block');">共有<%= @others.size %>人报告</a></p></div>
-  <div class="error_explain">错误说明：
-    <span><%= error.r_desc %></span>
-  </div>
-  <%= form_for :error_list,:url=>"/report_errors/modify_status",:html=>{:id=>"error_form"} do %>
-    <input type="hidden" value="<%= params[:error_type] %>" id="error_type" name="error_type"/>
-    <input type="hidden" value="<%= params[:category] %>" id="category" name="category"/>
-    <input type="hidden" value="" id="status" name="status"/>
-    <input type="hidden" value="<%= error.error_id %>" name="id"/>
-    <input type="hidden" value="<%= @num %>" id="num" />
-  <% end %>
-  <div><button class="t_btn" onclick="javascript:modify_status(<%= error.error_id %>,1)">改好了</button><button class="t_btn" onclick="javascript:modify_status(<%= error.error_id %>,0)">忽略</button></div>
-  <div>
-    <span class="updown" onclick="javascript:window.location='/report_errors?category=<%= params[:category] %>&offset=<%= (params[:offset].nil?||params[:offset].to_i==1)? 1:params[:offset].to_i-1 %>'"><img src="/assets/icon_up.png"/></span>
-    <span class="updown" onclick="javascript:window.location='/report_errors?category=<%= params[:category] %>&offset=<%= (params[:offset].to_i+1== @num)? @num-1:params[:offset].nil? ? 1 : params[:offset].to_i+1 %>'"><img src="/assets/icon_down.png" /></span>
-  </div>
-</div>
 
-<div class="error_box">
-  <div class="error_text_h">
-    <p><%=error.pe_title %></p>
-    <h2>第<%=params[:page].nil? ? 1:params[:page].to_i %>题（共<%=@num %>题）</h2>
+<% if @errors.blank? %>
+  <div class="error_top">
+    <%= render :partial=>"/report_errors/types" %>
+    <%= "没有错误报告"   %>
   </div>
-  <div class="error_nr">
-    <%= error.p_title.to_s.html_safe  %>
+<% else %>
+  <%error=@single_error[0] %>
+  <div class="error_top">
+    <%= render :partial=>"/report_errors/types" %>
+    <div class="error_baog"><p>报告人：<span><%= error.u_name %></span></p><p><a href="javascript:$('.error_tab_list').css('display','block');">共有<%= @others %>人报告</a></p></div>
+    <div class="error_explain">错误说明：
+      <span><%= error.r_desc %></span>
+    </div>
+    <%= form_for :error_list,:url=>"/report_errors/modify_status",:html=>{:id=>"error_form"} do %>
+      <input type="hidden" value="<%=session[:error_type]%>" id="error_type" name="error_type"/>
+      <input type="hidden" value="<%= params[:category] %>" id="category" name="category"/>
+      <input type="hidden" value="" id="status" name="status"/>
+      <input type="hidden" value="<%= error.error_id %>" name="id" id="id"/>
+    <% end %>
+    <div><button class="t_btn" onclick="javascript:modify_status(1)">改好了</button><button class="t_btn" onclick="javascript:modify_status(2)">忽略</button></div>
+    <div>
+      <span class="updown" onclick="javascript:window.location='/report_errors?category=<%= params[:category] %>&page=<%= @last %><%=
+      unless session[:error_type].nil?
+        "&error_type=#{session[:error_type]}"
+            end %>'"><img src="/assets/icon_up.png"/></span>
+      <span class="updown" onclick="javascript:window.location='/report_errors?category=<%= params[:category] %>&page=<%=@next  %><%=
+      unless session[:error_type].nil?
+        "&error_type=#{session[:error_type]}"
+            end %>'"><img src="/assets/icon_down.png" /></span>
+    </div>
   </div>
-</div>
-<% question=
-  attrs_str =error.question_attrs
-attrs_array = attrs_str.split(";-;") unless attrs_str.nil?
-answers=[]
-error.answer.split(";|;").collect { |item| answers << item.strip }
-correct_type =error.correct_type
-analysis=error.analysis
-%>
-<div class="error_box">
-  <div class="error_problem">
-    <% unless  error.description.nil? or error.description == "" %>
-      <% if correct_type.to_i == Question::CORRECT_TYPE[:MORE_BLANKS] %>
-        <div><%= question.elements["description"].text.to_s.html_safe %>
-    <%#*gsub("Question_x_dropplace", "Question_#{question_answer.attributes["id"]}_dropplace")  %>
-    <%#*<script type="text/javascript">%>
-    <%#*droppable_result('<%= answers.join(",") %>', '<%#= user_answers.join(",") %>', <%#= question_answer.attributes["id"] %>);%>
-    <%#*</script>%>
-        </div>
-      <% else %>
+  <div class="error_box">
+    <div class="error_text_h">
+      <p><%=error.pe_title %></p>
+      <h2>第<%=params[:page].nil? ? 1:params[:page].to_i+1 %>题（共<%=@num %>题）</h2>
+    </div>
+    <div class="error_nr">
+      <%= error.p_title.to_s.html_safe  %>
+    </div>
+  </div>
+  <div class="error_box">
+    <div class="error_problem">
+      <% unless  error.description.nil? or error.description == "" %>
         <div> <%= error.description.to_s.html_safe  %></div>
       <% end %>
-    <% end %>
-    <div class="er_pr_an">
-      <% if (correct_type.to_i == Question::CORRECT_TYPE[:MORE_CHOSE] or
-            correct_type.to_i == Question::CORRECT_TYPE[:SINGLE_CHOSE]) %>
-        <ul>
-          <%
-          (0..attrs_array.length-1).each do |i|
-            is_answer = answers.include?(attrs_array[i].strip)
-          %>
-            <li>
-              <% if correct_type.to_i == Question::CORRECT_TYPE[:MORE_CHOSE] %>
-                <input type="checkbox" name="question_attr_<%=error.error_id %>" id="question_attr_<%= i %>" disabled/>
-              <% elsif correct_type.to_i == Question::CORRECT_TYPE[:SINGLE_CHOSE] %>
-                <input type="radio" name="question_attr_<%=error.error_id %>"    id="question_attr_<%= i %>"disabled/>
-              <% end %>&nbsp;&nbsp;
-              <% if is_answer %>
-                <script type="text/javascript">
-                  get_answer('<%= attrs_array[i].strip %>')
-                </script>
-              <% end %>
-              <%= attrs_array[i] %>
-            </li>
-          <% end %>
-        </ul>
-      <% elsif correct_type.to_i == Question::CORRECT_TYPE[:JUDGE] %>
-        <ul>
-          <li>
-            <input type="radio" disabled/><label>对</label>
-          </li>
-          <li>
-            <input type="radio" disabled /><label>错</label>
-          </li>
-        </ul>
-        <script type="text/javascript">
-          get_answer('<%= answers[0]==0 ? "错":"对" %>')
-        </script>
-      <% elsif correct_type.to_i == Question::CORRECT_TYPE[:SINGLE_CALK] %>
-        <div>
-          <input name="answer" type="text" value="" disabled/>
-        </div>
-        <script type="text/javascript">
-          get_answer('<%= answers[0] %>')
-        </script>
-      <% elsif correct_type.to_i == Question::CORRECT_TYPE[:CHARACTER] %>
-        <div>
-          <textarea cols="" rows=""readonly></textarea>
-        </div>
-        <script type="text/javascript">
-          get_answer('<%= answers[0] %>')
-        </script>
-      <% elsif correct_type.to_i == Question::CORRECT_TYPE[:MORE_BLANKS] %>
-        <div>
-          <textarea disabled cols="" rows="" style="height:24px;"></textarea>
-        </div>
-        <% all_answer="" %>
-        <% answers.each do |answer| %>
-          <% all_answer += "#{answer};" %>
-        <% end %>
-        <script type="text/javascript">
-          get_answer('<%= all_answer %>')
-        </script>
-      <% end %>
-      <div class="answer_true"></div>
-      <div><a href="#" onclick="javascript:show_div('jiexi');">解析</a><a href="#" onclick="javascript:show_div('xiangguan');">相关词汇</a><button class="t_btn">编辑</button></div>
-    </div>
-  </div>
-</div>
-<div class="error_jiexi_tab" id="jiexi">
-  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('#jiexi').css('display','none');" /></span>
-  <div class="xs_add"><%=  (analysis.nil?||analysis="")? "此题没有解析":analysis %></div>
-</div>
-<div class="error_jiexi_tab" id="xiangguan">
-  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('#xiangguan').css('display','none');" /></span>
-  <% if error.name.nil?&&error.types.nil? %>
-    <center> <%= "没有相关词汇" %></center>
-  <% else %>
-    <div class="xs_add">
-      <h2><%= error.name %></h2><span><%= Word::TYPES[error.types] %></span><span><%=error.phonetic  %></span>
-      <a href="#"><img src="/assets/icon_lb.png" onmouseover="javascript:listen()" /></a>
-      <div id="jplayer_1"></div>
       <script type="text/javascript">
-        (function(){
-          jQuery("#jplayer_1").jPlayer({
-            swfPath: "/javascripts/jplayer",
-            supplied: "mp3",
-            wmode: "window"
-          });
-        })(jQuery)
-        function listen(){
-          $('#jplayer_1').jPlayer('setMedia',
-          {mp3: '<%=Constant::SERVER_PATH+error.enunciate_url %>'});
-          $('#jplayer_1').jPlayer('play');
-        }
+        setCookie("init_block",<%= @block_postion %>);
+        setCookie("init_problem",<%= @problem_postion %>);
       </script>
-      <div class="size_16"><%= error.en_mean %></div>
-      <div><%= error.ch_mean %></div>
-      <div class="word_liju">- <%= error.ws_des %></div>
+      <%= render :partial=>"/report_errors/error",:object=>error %>
     </div>
-  <% end %>
-</div>
-<div class="error_tab_list">
-  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('.error_tab_list').css('display','none');"/></span>
-  <div>
-    <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
-      <tr class="tr_bg">
-        <td>错误类型</td>
-        <td>报告人</td>
-        <td>错误说明</td>
-      </tr>
-      <% @others.each do |error| %>
-        <tr>
-          <td><%= ReportError::ERROR_TYPE[error.error_type] %></td>
-          <td><%= error.email %></td>
-          <td><%= error.description %></td>
-        </tr>
-      <% end unless @others.blank? %>
-    </table>
-    <%= will_paginate @others ,:previous_label=>"<", :next_label=>">", :inner_window => 1 %>
   </div>
-</div>
-<script type="text/javascript">
-  $(".answer_true").html(answer);
-</script>
+  <div class="error_jiexi_tab" id="jiexi">
+    <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('#jiexi').css('display','none');" /></span>
+    <div class="xs_add"><%=  (error.analysis.nil?||error.analysis=="")? "此题没有解析":error.analysis %></div>
+  </div>
+  <%= render :partial=>"/report_errors/detail",:object=>@question %>
+  <div class="error_tab_list"></div>
+  <script type="text/javascript">
+    $(".answer_true").html(answer);
+    get_others(<%= error.question_id %>);
+  </script>
+<% end %>

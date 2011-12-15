@@ -14,12 +14,13 @@ RailsTest3::Application.routes.draw do
   resources :report_errors do
     collection do
       post :modify_status
+      get :other_users
     end
     member do
 
     end
   end
-  
+  resources :specials
   resources :categories
   resources :notices do
     collection do

@@ -23,6 +23,6 @@ namespace :user do
           :total_num => "#{action.total_count.to_i},#{action.log_count.to_i},#{action.practice_count.to_i},#{action.exam_count.to_i},#{action.recite_count.to_i},#{action.study_play_count.to_i}")
       end
     end unless all_type_action.blank?
-    puts all_type_action.length.to_s + " update"
+    puts "user_action_logs end " + all_type_action.length.to_s + " update"
   end
 end
