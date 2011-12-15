@@ -19,10 +19,21 @@ function word_common_check() {
         tishi_alert("请输入单词例句，且内容的长度不能超过250个字符。");
         return false;
     }
+    if ($("#enunciate_url").val() != null && $("#enunciate_url").val() != "") {
+        var file_type = $("#enunciate_url").val().toString().split(".");
+        if ((file_type[1].toString() != "mp3") && (file_type[1].toString() != "MP3")) {
+            tishi_alert("请选择格式为mp3的音频文件。");
+            return false;
+        }
+    }
+    
+    return true;
 }
 
 function new_word_form() {
-    return word_common_check();
+    if (!word_common_check()) {
+        return false;
+    }
     if (checkspace($("#enunciate_url").val())) {
         tishi_alert("请选择单词发音的音频文件。");
         return false;

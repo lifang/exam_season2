@@ -433,7 +433,7 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 .hui_bg { background: #e1e1e1; padding-left: 10px; height: 24px; line-height: 24px; margin: 5px 0;}
 .xs_add span { padding: 0 5px;}
 
-.xs_add { margin-top: 20px; line-height: 24px;}
+.xs_add { margin-top: 20px; line-height: 24px;text-align: center;}
 .xs_add h2 { font-size: 18px;}
 
 /*发送消息tab*/

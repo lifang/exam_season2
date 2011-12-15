@@ -13,10 +13,10 @@
     <%= "没有错误报告"   %>
   </div>
 <% else %>
-  <%error=@single_error[0] %>
+  <%error=@info[0] %>
   <div class="error_top">
     <%= render :partial=>"/report_errors/types" %>
-    <div class="error_baog"><p>报告人：<span><%= error.u_name %></span></p><p><a href="javascript:$('.error_tab_list').css('display','block');">共有<%= @others %>人报告</a></p></div>
+    <div class="error_baog"><p>报告人：<span><%= error.name %></span></p><p><a href="javascript:$('.error_tab_list').css('display','block');">共有<%=@info[7] %>人报告</a></p></div>
     <div class="error_explain">错误说明：
       <span><%= error.r_desc %></span>
     </div>
@@ -24,7 +24,7 @@
       <input type="hidden" value="<%=session[:error_type]%>" id="error_type" name="error_type"/>
       <input type="hidden" value="<%= params[:category] %>" id="category" name="category"/>
       <input type="hidden" value="" id="status" name="status"/>
-      <input type="hidden" value="<%= error.error_id %>" name="id" id="id"/>
+      <input type="hidden" value="<%= error.id %>" name="id" id="id"/>
     <% end %>
     <div><button class="t_btn" onclick="javascript:modify_status(1)">改好了</button><button class="t_btn" onclick="javascript:modify_status(2)">忽略</button></div>
     <div>
@@ -40,30 +40,30 @@
   </div>
   <div class="error_box">
     <div class="error_text_h">
-      <p><%=error.pe_title %></p>
-      <h2>第<%=params[:page].nil? ? 1:params[:page].to_i+1 %>题（共<%=@num %>题）</h2>
+      <p><%=@info[2].text unless @info[2].nil? %></p>
+      <h2>第<%=@info[5] %>题（共<%=@info[6] %>题）</h2>
     </div>
     <div class="error_nr">
-      <%= error.p_title.to_s.html_safe  %>
+      <%= @info[3].text.to_s.html_safe unless @info[3].nil?  %>
     </div>
   </div>
+  <% question_title=@info[1].elements["/question/title"] %>
   <div class="error_box">
     <div class="error_problem">
-      <% unless  error.description.nil? or error.description == "" %>
-        <div> <%= error.description.to_s.html_safe  %></div>
-      <% end %>
+      <div> <%=question_title.text unless question_title.nil? %></div>
       <script type="text/javascript">
-        setCookie("init_block",<%= @block_postion %>);
-        setCookie("init_problem",<%= @problem_postion %>);
+        setCookie("init_block",<%= @info[4]%>);
+        setCookie("init_problem",<%=@info[5] %>);
       </script>
-      <%= render :partial=>"/report_errors/error",:object=>error %>
+      <%= render :partial=>"/report_errors/error",:object=>@info %>
     </div>
   </div>
+  <% analysis=@info[1].elements["/question/analisis"]  %>
   <div class="error_jiexi_tab" id="jiexi">
     <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('#jiexi').css('display','none');" /></span>
-    <div class="xs_add"><%=  (error.analysis.nil?||error.analysis=="")? "此题没有解析":error.analysis %></div>
+    <div class="xs_add"><%=  analysis.nil? ? "此题没有解析":analysis.text %></div>
   </div>
-  <%= render :partial=>"/report_errors/detail",:object=>@question %>
+  <%= render :partial=>"/report_errors/detail",:object=>@word %>
   <div class="error_tab_list"></div>
   <script type="text/javascript">
     $(".answer_true").html(answer);

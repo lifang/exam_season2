@@ -65,10 +65,10 @@ namespace :operate do
   def write_img(url,index)  #上传图片
     all_dir = ""
     file_name ="#{Time.now.strftime("%Y%m%d").to_s}_#{index}.jpg"
-    all_dir = "#{File.expand_path(Rails.root)}/public/charts/#{Time.now.strftime("%Y%m%d").to_s}/"
-    unless File.directory?(all_dir)
-      Dir.mkdir(all_dir)
-    end
+    dir = "#{File.expand_path(Rails.root)}/public/chart_datas"
+    Dir.mkdir(dir) unless File.directory?(dir)
+    all_dir = "#{dir}/#{Time.now.strftime("%Y%m%d").to_s}/"
+    Dir.mkdir(all_dir) unless File.directory?(all_dir)
     file_url="#{all_dir}#{file_name}"
     open(url) do |fin|
       File.open(file_url, "wb+") do |fout|
@@ -77,8 +77,10 @@ namespace :operate do
         end
       end
     end
-    image_url="/charts/#{Time.now.strftime("%Y%m%d").to_s}/#{file_name}"
-    Chart.create(:created_at=>Time.now.strftime("%Y-%m-%d").to_s,:types=>index,:image_url=>image_url) unless Chart.find(:first,:conditions =>"created_at='#{Time.now.strftime("%Y-%m-%d")}' and image_url='#{image_url}'") if File.exists?(file_url)
+    image_url="/chart_datas/#{Time.now.strftime("%Y%m%d").to_s}/#{file_name}"
+    Chart.create(:created_at=>Time.now.strftime("%Y-%m-%d").to_s,:types=>index,:image_url=>image_url) unless
+    Chart.find(:first,:conditions =>"created_at='#{Time.now.strftime("%Y-%m-%d")}' and image_url='#{image_url}'") if
+    File.exists?(file_url)
     puts "Chart #{index} success generated"
   end
 

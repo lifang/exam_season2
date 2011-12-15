@@ -76,7 +76,6 @@ $(function(){
             return false;
         }
         if (all_tasks.length==0){
-            alert(1);
             if (!confirm("暂时不添加新任务?")){
                 return false;
             }
