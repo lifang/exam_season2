@@ -3,8 +3,8 @@ class StatisticsController < ApplicationController
   require 'spreadsheet'
 
   def index
-    @count_num=Statistic.find_by_sql("select * from statistics order by created_at desc limit 1")[0]
-    charts=Chart.find_by_sql("select max(image_url) image_url,types from charts group by types")
+    @count_num=Statistic.find(:first, :order => "created_at desc")
+    charts=Chart.find_by_sql("select max(created_at), image_url, types from charts group by types")
     @chart_url={}
     charts.collect {|chart| @chart_url[chart.types]=chart.image_url }
   end

@@ -134,58 +134,54 @@ class SimulationsController < ApplicationController
 
 
   def count_detail
-    exam_user_total =ExamUser.get_paper(params[:id].to_i)
-    unmarked=0
-    marking=0
-    marked=0
-    total_score=0
+    examination = Examination.find(params[:id].to_i)
+    
+    exam_user_total = ExamUser.get_paper(params[:id].to_i)
+    unmarked = 0
+    marking = 0
+    marked = 0
+    total_score = 0
     exam_user_total.each do |e|
-      marking +=1 if e.relation_id and e.is_marked!=1
-      unmarked +=1  unless e.relation_id
-      if e.is_marked==1
-        unless e.total_score.nil?
-          marked +=1
-          total_score+= e.total_score
-        end
+      marking += 1 if e.relation_id and e.is_marked != RaterUserRelation::MARK[:YES]
+      unmarked += 1  unless e.relation_id
+      if e.is_marked == RaterUserRelation::MARK[:YES] and !e.total_score.nil?
+        marked += 1
+        total_score += e.total_score
       end
-    end unless  exam_user_total.blank?
-    averge_score="未统计"
-    averge_score=(total_score*1.0)/marked unless marked==0
-    unmarked_num=unmarked+marking
-    exam_user_one=Statistic.exam_user_count(params[:id].to_i)
-    examination=Examination.find(params[:id])
-    url=Constant::PUBLIC_PATH + Constant::SIMULATION_DIR
-    unless File.directory?(url)               #判断dir目录是否存在，不存在则创建 下3行
-      Dir.mkdir(url)
-    end
-    file_name="/#{Time.now.to_date.to_s}_#{params[:id]}.xls"
-    file_url=url+file_name
+    end unless exam_user_total.blank?
+    averge_score = (marked == 0) ? "未统计" : (total_score*1.0/marked)
+    unmarked_num = unmarked + marking
+    exam_user_one = Statistic.exam_user_count(params[:id].to_i)
+    
+    url = Constant::PUBLIC_PATH + Constant::SIMULATION_DIR
+    Dir.mkdir(url) unless File.directory?(url)  #判断dir目录是否存在，不存在则创建 下3行
+    file_name="/#{Time.now.strftime("%Y%m%d%H%M").to_s}_#{params[:id]}.xls"
+    file_url = url + file_name
+    
     unless File.exist?(file_url)
       Spreadsheet.client_encoding = "UTF-8"
       book = Spreadsheet::Workbook.new
       sheet = book.create_worksheet
-      sheet.row(0).concat ["","","#{examination.title}"]
-      show_unmarked="#{unmarked_num}"
-      show_unmarked += ",其中#{marking}份正批阅" unless marking==0
-      sheet.row(1).concat ["前一天考生人数","前一天考生人数","所有考生","未批阅","平均分"]
-      sheet.row(2).concat ["#{exam_user_one[0]}","#{exam_user_one[1]}","#{exam_user_one[2]}",show_unmarked,averge_score]
+      sheet.row(0).concat ["","","#{examination.title.to_s}"]
+      show_unmarked = (marking == 0) ? "#{unmarked_num}" : "#{unmarked_num},其中#{marking}份正批阅"
+      sheet.row(1).concat ["前一天考生人数", "前三天考生人数", "所有考生", "未批阅", "平均分"]
+      sheet.row(2).concat ["#{exam_user_one[0]}","#{exam_user_one[1]}","#{exam_user_one[2]}",show_unmarked, averge_score]
       sheet.row(4).concat ["","分数报告"]
-      exam_users =ExamUser.score_users(params[:id].to_i)
+      exam_users = ExamUser.score_users(params[:id].to_i)
       unless exam_users.blank?
         sheet.row(5).concat ["用户名","邮箱","分数"]
         exam_users.each_with_index do |user, index|
-          if user.is_marked==1
-            unless user.total_score.nil?
-              sheet.row(index+6).concat ["#{user.name}", "#{user.email}","#{user.total_score}"]
-            else
-              sheet.row(index+6).concat ["#{user.name}", "#{user.email}","得分暂无"]
-            end
+          if user.relation_id
+            score_text = (user.is_marked == RaterUserRelation::MARK[:YES] and !user.total_score.nil?) ?
+              user.total_score : "批阅中"
+          else
+            score_text = (user.order_id) ? "未批阅" : "非VIP用户"
           end
-          sheet.row(index+6).concat ["#{user.name}", "#{user.email}","未批阅"]  unless user.relation_id
-          sheet.row(index+6).concat ["#{user.name}", "#{user.email}","批阅中"]  if user.relation_id and user.is_marked!=1
+          score_text = "未交卷" unless user.is_submited
+          sheet.row(index+6).concat ["#{user.name}", "#{user.email}","#{score_text}"]
         end
       else
-        sheet.row(6).concat ["没有考生"]
+        sheet.row(6).concat ["暂无考生"]
       end
       book.write file_url
     end
