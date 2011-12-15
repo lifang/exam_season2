@@ -1,3 +1,4 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <script type="text/javascript" >
   //定义初始化变量
   if(!(getCookie("init_paper")!=null&&getCookie("init_paper")==<%= params[:id] %>)){
@@ -126,7 +127,6 @@
 
               <div class="clear"></div>
               <div class="question_list_box">
-                <!-- 追加小题的FORM框 -->
                 <div class="question_list" id="question_list_<%=  block_index %>_<%=  problem_index %>"></div>
 
                 <% question_index = 0; problem.elements["questions"].each_element do |question|; question_index += 1 %>
@@ -139,11 +139,13 @@
                       <div class="q_l_word"><p class="q_w_p"><%= question.elements["questionattrs"].text!="" && question.elements["questionattrs"].text!=nil ? question.elements["questionattrs"].text.split(";-;").join("/") : correct_type==Question::CORRECT_TYPE[:JUDGE] ? judge_str[question.elements["answer"].text] : question.elements["answer"].text %></p><p class="q_w_img"><img alt="icon_shu"   src="/assets/icon_shu.png"/></p></div>
                       <div class="q_l_word"><p class="q_w_p"><em>限定词的用法</em></p><p>分值：<span class="red"><%= question.attributes["score"] unless question.attributes["score"].nil? %></span></p></div>
                     </div>
-                    <div class="q_l_answer" onselectstart="return false;" ondblclick="javascript:select_correct_type('#q_l_answer_',<%= block_index %>,<%= problem_index %>,<%= question_index %>,<%= correct_type %>,'<%= question.elements['answer'].text if question.elements['answer'] %>','<%= question.elements['questionattrs'].text if question.elements['questionattrs'] %>','<%= question.elements['description'].text if question.elements['description'] %>','<%= question.elements['analysis'].text if question.elements['analysis'] %>','<%= question.attributes['score'] if question.attributes['score'] %>','<%= question.elements['tags'].text if question.elements['tags'] %>','<%= question.elements['words'].text if question.elements['words'] %>',$(this).closest('.q_l_answer'));">
+                    <div class="q_l_answer" onselectstart="return false;" onerror="javascript:select_correct_type('#q_l_answer_',<%= block_index %>,<%= problem_index %>,<%= question_index %>,<%= correct_type %>,$(this).find('#display_question_answer').text(),$(this).find('#display_question_attrs').text(),$(this).find('#display_question_description').text(),$(this).find('#display_question_analysis').text(),$(this).find('#display_question_score').text(),$(this).find('#display_question_tags').text(),$(this).find('#display_question_words').text(),$(this).closest('.q_l_answer'));">
                       <div class="qa_h">小题描述
-                        <div class="qa_textarea_div"><%= question.elements["description"].text unless question.elements["description"].nil? %></div>
+                        <div class="qa_textarea_div" id="display_question_description"><%= question.elements["description"].text unless question.elements["description"].nil? %></div>
                       </div>
                       <div class="qa_h"><span class="yl_bc"></span>答案
+                        <div style="display:none;" id="display_question_answer" ><%= answer %></div>
+                        <div style="display:none;" id="display_question_attrs" ><%= question.elements["questionattrs"].text if question.elements["questionattrs"] %></div>
                         <div class="qa_textarea_div">
                           <% if correct_type == Question::CORRECT_TYPE[:SINGLE_CALK] || correct_type == Question::CORRECT_TYPE[:CHARACTER] %>
                             <%= answer unless answer.nil? %>
@@ -157,28 +159,30 @@
                         </div>
                       </div>
                       <div class="qa_h">解析
-                        <div class="qa_textarea_div"><%= question.elements["analysis"].text unless question.elements["analysis"].nil? %></div>
+                        <div class="qa_textarea_div" id="display_question_analysis"><%= question.elements["analysis"].text unless question.elements["analysis"].nil? %></div>
                       </div>
                       <div class="q_label">
+                        <div style="display:none;" id="display_question_tags" ><%= question.elements['tags'].text if question.elements['tags'] %></div>
                         <div><strong>知识点标签</strong></div>
                         <% if question.elements['tags'] && question.elements['tags'].text ; question.elements['tags'].text.split(" ").each do |tag| %>
                             <%= tag %> <% end else %> 未添加标签 <% end %>
                       </div>
                       <div class="q_label">
+                        <div style="display:none;" id="display_question_words" ><%= question.elements['words'].text if question.elements['words'] %></div>
                         <div><strong>词汇</strong></div>
                         <% if question.elements['words'] && question.elements['words'].text ; question.elements['words'].text.split(" ").each do |word| %>
                             <%= word %><% end else %> 未添加词汇<% end %>
                       </div>
                       <div class="clear"></div>
-                      <div class="qa_h">分值: <span class="red"><%= question.attributes["score"] unless question.attributes["score"].nil? %></span></div>
+                      <div class="qa_h">分值: <span class="red" id="display_question_score"><%= question.attributes["score"] unless question.attributes["score"].nil? %></span></div>
                       <div class="qa_h">
-                        <button class="t_btn" onclick="javascript:select_correct_type('#q_l_answer_',<%= block_index %>,<%= problem_index %>,<%= question_index %>,<%= correct_type %>,'<%= question.elements['answer'].text if question.elements['answer'] %>','<%= question.elements['questionattrs'].text if question.elements['questionattrs'] %>','<%= question.elements['description'].text if question.elements['description'] %>','<%= question.elements['analysis'].text if question.elements['analysis'] %>','<%= question.attributes['score'] if question.attributes['score'] %>','<%= question.elements['tags'].text if question.elements['tags'] %>','<%= question.elements['words'].text if question.elements['words'] %>',$(this).closest('.q_l_answer'));" >编辑</button>
+                        <button class="t_btn" onclick="javascript:$(this).closest('.q_l_answer').trigger('onerror');" >编辑</button>
                       </div>
                     </div>
                     <div class="edit_question_form" id="q_l_answer_<%= block_index %>_<%= problem_index %>_<%= question_index %>"></div>
                   </div>
                 <% end if problem.elements["questions"] #questions循环结束 %>
-                <div class="hold_250_height" style="height:250px;"></div>
+                <div class="hold_320_height" style="height:320px;"></div>
               </div>
             </div>
           </div>
@@ -306,9 +310,9 @@
       <div class="qa_h">分值 <input name="post_question[question_score]" id="post_question_question_score" type="text" /></div>
       <div class="qa_h">
         &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" class="t_btn">保存</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="t_btn" onclick="javascript:$('#post_question_loader').append($('#post_question_div'));">取消</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="t_btn" onclick="javascript:close_post_question_form();">取消</button>
       </div>
-    <% end #追加、编辑 question 表单 END%>
+    <% end #新建、编辑 question 表单 END%>
   </div>
 </div>
 
