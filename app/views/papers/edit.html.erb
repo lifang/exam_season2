@@ -130,7 +130,7 @@
                 <div class="question_list" id="question_list_<%=  block_index %>_<%=  problem_index %>"></div>
 
                 <% question_index = 0; problem.elements["questions"].each_element do |question|; question_index += 1 %>
-                  <% answer = question.elements["answer"].text %><% correct_type = question.attributes["correct_type"].to_i %>
+                  <% answer = question.elements["answer"].text if question.elements["answer"] %><% correct_type = question.attributes["correct_type"].to_i %>
                   <input type="hidden" value="<%= correct_type %>" class="correct_type" id="correct_type" />
 
                   <div class="question_list">
@@ -148,9 +148,9 @@
                           <% if correct_type == Question::CORRECT_TYPE[:SINGLE_CALK] || correct_type == Question::CORRECT_TYPE[:CHARACTER] %>
                             <%= answer unless answer.nil? %>
                           <% elsif correct_type == Question::CORRECT_TYPE[:SINGLE_CHOSE] %>
-                            <ul><% question.elements["questionattrs"].text.split(";-;").each do |attr| %><li><input name="" type="radio" disabled="true" value="" <% if answer.split(";|;").include?(attr) %>checked="true"<% end %> /> <%= attr %> </li><% end %></ul>
+                            <ul><% question.elements["questionattrs"].text.split(";-;").each do |attr| %><li><input name="" type="radio" disabled="true" value="" <% if answer && answer.split(";|;").include?(attr) %>checked="true"<% end %> /> <%= attr %> </li><% end if question.elements["questionattrs"] %></ul>
                           <% elsif correct_type == Question::CORRECT_TYPE[:MORE_CHOSE] %>
-                            <ul><% question.elements["questionattrs"].text.split(";-;").each do |attr| %><li><input name="" type="checkbox" disabled="true" value="" <% if answer.split(";|;").include?(attr) %>checked="true"<% end %> /> <%= attr %> </li><% end %></ul>
+                            <ul><% question.elements["questionattrs"].text.split(";-;").each do |attr| %><li><input name="" type="checkbox" disabled="true" value="" <% if answer && answer.split(";|;").include?(attr) %>checked="true"<% end %> /> <%= attr %> </li><% end if question.elements["questionattrs"] %></ul>
                           <% elsif correct_type == Question::CORRECT_TYPE[:JUDGE] %>
                             <ul><li><input name="" type="radio" value="" disabled="true" <% if answer=="1" %>checked="true"<% end %> /> 是/对</li><li><input name="" type="radio" disabled="true" value="" <% if answer=="0" %>checked="true"<% end %> /> 否/错</li></ul>
                           <% end #小题分类显示结束 %>
