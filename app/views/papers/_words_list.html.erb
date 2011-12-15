@@ -1,0 +1,8 @@
+<% object = words_list %>
+
+<ul>
+  <% object[:words].each do |word| %>
+    <li><a href="javascript:void(0);"><%= word.name %></a></li>
+  <% end %>
+    <% if object[:match]!="" %><li><a href="javascript:void(0);">从网上抓取<%= object[:match] %></a></li><% end %>
+</ul>
