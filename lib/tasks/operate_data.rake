@@ -47,7 +47,7 @@ namespace :operate do
     num << detail.shift(4).join(",")
     attrs={:register=>num[0],:action=>num[1],:pay=>num[2],:money=>num[3],:created_at=>1.day.ago.strftime("%Y-%m-%d"),:login=>num[4]}
     stat=Statistic.find_by_created_at(1.day.ago.strftime("%Y-%m-%d"))
-    if stat.blank?
+    if stat.nil?
       Statistic.create(attrs)
       puts "create success"
     else
