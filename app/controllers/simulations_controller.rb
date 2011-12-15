@@ -3,8 +3,8 @@ class SimulationsController < ApplicationController
   before_filter :access?
   respond_to :html, :xml, :json
   require 'spreadsheet'
+
   #模考列表
-  
   def index
     category_id = params[:category].to_i
     sql = "select e.id, e.title, e.is_free,e.price,e.start_at_time,e.is_published,e.start_end_time from examinations e
@@ -50,7 +50,8 @@ class SimulationsController < ApplicationController
       exam_rater=ExamRater.create(:email=>params[:email],:examination_id=>@examination,:author_code => proof_code(6))
       UserMailer.rater_affirm(exam_rater,Examination.find(@examination)).deliver
     end
-    @exam_rater=ExamRater.find_by_sql("select er.examination_id, er.email from exam_raters er where er.examination_id = #{@examination}")
+    @exam_rater=ExamRater.find_by_sql("select er.examination_id, er.email from exam_raters er
+      where er.examination_id = #{@examination}")
     @exam_rater << @examination
     respond_with (@exam_rater) do |format|
       format.js
@@ -60,7 +61,8 @@ class SimulationsController < ApplicationController
   def delete_rater
     @examination=params[:examination_id]
     ExamRater.where("email='#{params[:email]}' and examination_id=#{@examination}")[0].delete
-    @exam_rater=ExamRater.find_by_sql("select er.examination_id, er.email from exam_raters er where er.examination_id = #{@examination}")
+    @exam_rater=ExamRater.find_by_sql("select er.examination_id, er.email from exam_raters er
+      where er.examination_id = #{@examination}")
     @exam_rater << @examination
     respond_with (@exam_rater) do |format|
       format.js
@@ -76,9 +78,8 @@ class SimulationsController < ApplicationController
         :types => Examination::TYPES[:SIMULATION],:start_end_time=>params[:end_date],
         :start_at_time=>params[:from_date]
       }
-      if params[:fee].to_i==Examination::IS_FREE[:YES]
-        is_free=Examination::IS_FREE[:YES]
-      else
+      is_free=Examination::IS_FREE[:YES]
+      unless params[:fee].to_i==Examination::IS_FREE[:YES]
         is_free=Examination::IS_FREE[:NO]
         options.merge!(:price=>params[:total_price].to_i) if params[:fee].to_i==2
       end
@@ -109,18 +110,13 @@ class SimulationsController < ApplicationController
         :types => Examination::TYPES[:SIMULATION],:start_end_time=>params[:end_date],
         :start_at_time=>params[:from_date]
       }
-      if params[:fee].to_i==Examination::IS_FREE[:YES]
-        is_free=Examination::IS_FREE[:YES]
-        options.merge!(:price=>"")
-      else
-        is_free=Examination::IS_FREE[:NO]
-        if params[:fee].to_i==2
-          options.merge!(:price=>params[:total_price].to_i)
-        else
-          options.merge!(:price=>"")
-        end
+      is_free = Examination::IS_FREE[:YES]
+      price = nil
+      unless params[:fee].to_i == Examination::IS_FREE[:YES]
+        is_free = Examination::IS_FREE[:NO]
+        price = params[:total_price].to_i if params[:fee].to_i == 2
       end
-      options.merge!(:is_free=>is_free)
+      options.merge!(:is_free=>is_free, :price => price)
       simulation_exam=Examination.find(params[:id])
       simulation_exam.update_attributes!(options)
       simulation_exam.update_paper("update", papers.to_a)
@@ -131,7 +127,6 @@ class SimulationsController < ApplicationController
     end
 
   end
-
 
   def count_detail
     examination = Examination.find(params[:id].to_i)
