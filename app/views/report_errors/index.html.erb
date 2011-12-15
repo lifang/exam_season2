@@ -16,7 +16,7 @@
   <%error=@info[0] %>
   <div class="error_top">
     <%= render :partial=>"/report_errors/types" %>
-    <div class="error_baog"><p>报告人：<span><%= error.name %></span></p><p><a href="javascript:$('.error_tab_list').css('display','block');">共有<%=@info[7] %>人报告</a></p></div>
+    <div class="error_baog"><p>报告人：<span><%= error.name %></span></p><p><a href="javascript:show_div('.error_tab_list');">共有<%=@info[7] %>人报告</a></p></div>
     <div class="error_explain">错误说明：
       <span><%= error.r_desc %></span>
     </div>
@@ -47,10 +47,10 @@
       <%= @info[3].text.to_s.html_safe unless @info[3].nil?  %>
     </div>
   </div>
-  <% question_title=@info[1].elements["/question/title"] %>
+  <%  question_desc=@info[1].elements["description"] %>
   <div class="error_box">
     <div class="error_problem">
-      <div> <%=question_title.text unless question_title.nil? %></div>
+      <div> <%=@info[1].attributes["id"]+"."+question_desc.text.to_s.html_safe unless question_desc.nil? %></div>
       <script type="text/javascript">
         setCookie("init_block",<%= @info[4]%>);
         setCookie("init_problem",<%=@info[5] %>);
