@@ -1,9 +1,9 @@
 <div class="error_jiexi_tab" id="xiangguan">
   <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('#xiangguan').css('display','none');" /></span>
-  <% if detail.words.blank? %>
+  <% if detail.blank? %>
     <center> <%= "没有相关词汇" %></center>
   <% else %>
-    <% detail.words.each do |word| %>
+    <% detail.each do |word| %>
       <div class="xs_add">
         <h2><%= word.name %></h2><span><%= Word::TYPES[word.types] %></span><span><%=word.phonetic  %></span>
         <a href="#"><img src="/assets/icon_lb.png" onclick="javascript:listen()" /></a>
