@@ -25,11 +25,8 @@ class ReportErrorsController < ApplicationController
     end
     @num=ReportError.count(:id,:conditions=>num_sql)
     @errors=ReportError.find_by_sql(error_sql)
-    error=@errors[1]
+    error=@errors[0]
     @next=params[:page].to_i==@num-1 ? @num-1:params[:page].to_i+1
-    if @errors.size==1
-      error= @errors[0]
-    end
     if @num==1
       @last=0
       @next=0
@@ -37,22 +34,27 @@ class ReportErrorsController < ApplicationController
     if @last.to_i<0
       @last=0
     end
-    begin
-      @others=ReportError.count(:id,:conditions=>"question_id=#{error.question_id}")
-      sql="select re.id error_id,re.question_id,re.description r_desc,p.id p_id,q.*,pe.paper_url,u.name u_name,p.title p_title,pe.title pe_title,pe.id pe_id,pe.total_question_num num from report_errors re inner join users u on u.id=re.user_id inner join
-         questions q on q.id=re.question_id inner join problems p on p.id=q.problem_id inner join papers pe on pe.id=re.paper_id  where re.id=#{error.id}"     
-      @single_error=ReportError.find_by_sql(sql)
-      url=Constant::PAPER_XML_PATH+@single_error[0].paper_url
+#    begin
+      others=ReportError.count(:id,:conditions=>"question_id=#{error.question_id}")
+      sql="select re.id,re.question_id,re.description r_desc,re.paper_id,pe.paper_url,u.name from
+       report_errors re inner join users u on u.id=re.user_id  inner join papers pe on pe.id=re.paper_id  where re.id=#{error.id}"
+      single_error=ReportError.find_by_sql(sql)
+      url=Constant::PAPER_XML_PATH+single_error[0].paper_url
       doc= open_file(url)
-      problem=doc.elements["/paper/blocks//problems/problem[@id='#{@single_error[0].p_id}']"]
+      question=doc.elements["/paper/blocks//problems//questions/question[@id='#{single_error[0].question_id}']"]
+      problem=question.parent.parent
+      title=doc.elements["/paper/base_info/title"]
+      description=problem.elements["description"]
       blocks=doc.get_elements("/paper/blocks//block")
-      @block_postion=blocks.index(problem.parent.parent)+1
+      block_postion=blocks.index(problem.parent.parent)+1
       problems=doc.get_elements("/paper/blocks//problems//problem")
-      @problem_postion=problems.index(problem)+1
-      @question=Question.find(error.question_id)
-    rescue
-      @errors=[]
-    end
+      problem_postion=problems.index(problem)+1
+      @info=[single_error[0],question,title,description,block_postion,problem_postion,problems.size,others]
+      puts @info
+      @word=Word.find_by_sql("select * from words w inner join word_question_relations wq on w.id=wq.word_id where wq.question_id=#{error.question_id}")
+#    rescue
+#      @errors=[]
+#    end
   end
 
 
