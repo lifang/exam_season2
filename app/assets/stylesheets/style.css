@@ -202,6 +202,8 @@ span.mk_span_w { color: #000;}
 	text-align: center;
 }
 .info_ul li a.hover { height: 31px; background: #FFF; border: 1px #139DD3 solid; border-bottom: none; font-weight: bold;}
+
+.xx_btn { position: absolute; top: 0px; right: 6px; cursor: pointer;}
 .add_a {
     height: 32px;
 	line-height: 32px;
