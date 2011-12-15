@@ -56,12 +56,12 @@ class Word < ActiveRecord::Base
     contents =Iconv.conv("GB2312//IGNORE", "UTF-8", contents)
     puts "page aready"
     doc_utf = Hpricot(contents)
-    puts "start"
+    #词性
     pos = doc_utf.search('div[@class=webtop-g]').search('span[@class=pos]').inner_html unless
-      doc_utf.search('span[@class=pos]').nil?     #词性
-    puts pos
-    
-    infos = doc_utf.search('span[@class=n-g]')      #获取释义和例句
+    doc_utf.search('span[@class=pos]').nil?     
+
+    #获取释义和例句
+    infos = doc_utf.search('span[@class=n-g]')
     descriptions = {}   #释义为key，例句为value
     ds = []
     if infos.inner_html.to_s.strip == ""
@@ -95,13 +95,44 @@ class Word < ActiveRecord::Base
         end unless infos[0].search("span[@class=x]").inner_html.to_s.strip == ""
       end
     end
+    #获取音标和音频
+    info = doc_utf.search('div[@class=ei-g]').search('span[@class=i]')
+    unless info.search('/img').attr('onclick').nil?
+      img = info.search('/img').attr('onclick').split("'")[1]
+      uri = "http://oald8.oxfordlearnersdictionaries.com" +img
+      puts uri
+      file_name = ""
+      open(uri) do |fin|
+        file_name = uri.split('.').reverse[0]
+        all_dir = "#{Rails.root}/public/mp3/"
+        FileUtils.makedirs all_dir    #建目录
+        puts 'begin download pic'
+        File.open("#{all_dir}#{word}.#{file_name}", "wb+") do |fout|
+          while buf = fin.read(1024) do
+            fout.write buf
+            STDOUT.flush
+          end
+        end
+        puts 'download pic over'
+      end
+      yinbiao = info.inner_html.force_encoding('UTF-8').gsub(/<[^{><}]*>/, "")
+      puts yinbiao
+    end
 
-    
+    #中文词义
+    url_ch = "http://hk.dictionary.yahoo.com/dictionary?p="
+    agent = Mechanize.new
+    ch_page = agent.get(url_ch + "#{word}")
+    doc_utf = Hpricot(ch_page.body)
+    ch_infos = doc_utf.search('div[@id=summary-card]').search('div[@class=summary]').search('div[@class=description]')
+    ch_ds = []
+    infos.each do |block|
+      d = block.inner_html.gsub(/<[^{><}]*>/, "").gsub(", ", ";").gsub(",", ";")
+      ch_ds << d
+    end
 
-
-    puts "create"
     ds.each do |d|
-      puts "#{word},#{pos},#{d},#{descriptions[d]}"
+      puts "#{word},#{pos},#{d}, #{ch_ds[0]},#{yinbiao},/mp3/#{word}.#{file_name}, #{descriptions[d]}"
     end unless ds.blank?
 
   end

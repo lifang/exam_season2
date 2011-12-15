@@ -43,19 +43,24 @@ $(function() {
 //试卷编辑小题，点击出现详细内容，关闭编辑表单
 $(function(){
     $(".q_l_text").bind("click",function(){
+        // 手工测得 question_list 的 高度为 65 ，样式改动，需调整
+        var final_scrollTop = 65 * ($(this).closest(".question_list_box").children(".question_list").index($(this).closest(".question_list"))-1) ;
+        $(this).closest(".question_list_box").scrollTop(final_scrollTop);
         var $answer = $(this).next(".q_l_answer");
         if(check_edit()){
-            if(confirm("你当前处于编辑状态，如果你取消编辑，所有未保存的内容将全部丢失，你要取消编辑么？")){
+            if(confirm("你当前处于编辑状态，如果你取消编辑，所有未保存的内容将全部丢失，你确定要继续当前操作么？")){
                 $("#post_question_loader").append($('#post_question_div'));
-            }else{
-                return false;
+                $(".q_l_answer:visible").hide();
+                $answer.slideDown(1200);
             }
+            return false;
         }
         if($answer.is(":visible")){
-            $answer.hide();
+            $answer.slideUp(1200);
         }
         else{
-            $answer.show();
+            $(".q_l_answer:visible").hide();
+            $answer.slideDown(1200);
         }
     })
 })
@@ -186,7 +191,6 @@ function tishi_alert(str){
     var body = jQuery("body");
     body.append(div);
     show_flash_div();
-
 }
 
 //判断是否空或者全部是空格

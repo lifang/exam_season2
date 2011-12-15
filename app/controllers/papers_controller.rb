@@ -52,7 +52,6 @@ class PapersController < ApplicationController
       block = doc.elements["blocks"].add_element("block")
       manage_element(block,{"base_info/title"=>block_name,"base_info/description"=>block_description,"problems"=>""},{"total_score"=>"0","total_num"=>"0","time"=>block_time,"start_time"=>block_start_time})
     end
-
     write_xml(doc,url)
     redirect_to request.referer
   end
@@ -69,6 +68,10 @@ class PapersController < ApplicationController
       tag_name = @post[:question_tags].strip.split(" ")
       @question.question_tags(Tag.create_tag(tag_name))
     end
+    if !@post[:question_words].nil? and @post[:question_words].strip != ""
+      words = @post[:question_words].strip.split(" ")
+      @question.question_words(words)
+    end
     #存储xml文件
     paper = Paper.find(params[:id].to_i)
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
@@ -76,7 +79,7 @@ class PapersController < ApplicationController
     problem_element = doc.elements[@post[:problems_xpath]].add_element("problem")
     manage_element(problem_element,{:description=>@post[:problem_description],:title=>@post[:problem_title],:category=>@post[:category],:questions=>""},{:id=>@problem.id,:question_type=>@post[:question_type]})
     question_element = problem_element.elements["questions"].add_element("question")
-    manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>"",:analysis=>@post[:question_analysis]},{:id=>@question.id,:score=>@post[:question_score],:correct_type=>@post[:correct_type]})
+    manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>@post[:question_tags],:words=>@post[:question_words],:analysis=>@post[:question_analysis]},{:id=>@question.id,:score=>@post[:question_score],:correct_type=>@post[:correct_type]})
     write_xml(doc,url)
     redirect_to "/papers/#{params[:id]}/edit?category=#{@post[:category]}"
   end
@@ -131,20 +134,24 @@ class PapersController < ApplicationController
       problem_id = doc.elements[@post[:questions_xpath]].parent.attributes["id"].to_i
       @question = Question.create(:problem_id=>problem_id,:description=>@post[:question_description],:answer=>@post[:question_answer],:correct_type=>@post[:correct_type],:analysis=>@post[:question_analysis],:question_attrs=>@post[:question_attrs])
       #创建标签
-      if !@post[:question_tag].nil? and @post[:question_tag].strip != ""
-        tag_name = @post[:tag].strip.split(" ")
-        @question.question_tags(Tag.create_tag(tag_name))
-      end
       question_element = doc.elements[@post[:questions_xpath]].add_element("question")
-      manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>"",:analysis=>@post[:question_analysis]},{:correct_type=>@post[:correct_type],:id=>@question.id,:score=>@post[:question_score]})
+      manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>@post[:question_tags],:words=>@post[:question_words],:analysis=>@post[:question_analysis]},{:correct_type=>@post[:correct_type],:id=>@question.id,:score=>@post[:question_score]})
       write_xml(doc,url)
     else
       question_xpath = @post[:questions_xpath]+"/question[#{@post[:question_index]}]"
       @question=Question.find(doc.elements[question_xpath].attributes["id"])
       @question.update_attributes(:description=>@post[:question_description],:answer=>@post[:question_answer],:question_attrs=>@post[:question_attrs],:analysis=>@post[:question_analysis])
       question_element = doc.elements[question_xpath]
-      manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>"",:analysis=>@post[:question_analysis]},{:score=>@post[:question_score]})
+      manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>@post[:question_tags],:words=>@post[:question_words],:analysis=>@post[:question_analysis]},{:score=>@post[:question_score]})
       write_xml(doc,url)
+    end
+    if !@post[:question_tags].nil? and @post[:question_tags].strip != ""
+      tag_name = @post[:question_tags].strip.split(" ")
+      @question.question_tags(Tag.create_tag(tag_name))
+    end
+    if !@post[:question_words].nil? and @post[:question_words].strip != ""
+      words = @post[:question_words].strip.split(" ")
+      @question.question_words(words)
     end
     redirect_to request.referer
   end
@@ -183,9 +190,14 @@ class PapersController < ApplicationController
 
   def ajax_load_tags_list
     match = params["match"].strip
+    added_tags = params["added_tags"].split(" ")
     like_params = "%#{match}%"
     negation = Tag.find_by_name(match).blank?
-    @tags = Tag.find_by_sql(["select * from tags where name like ?",like_params])
+    if params["added_tags"].strip!=""
+      @tags = Tag.find_by_sql(["select * from tags where name like ? and name not in (?)#",like_params,added_tags])
+    else
+      @tags = Tag.find_by_sql(["select * from tags where name like ?",like_params])
+    end
     respond_to do |format|
       format.html {
         render :partial=>"/papers/tags_list" ,:object=>{:tags=>@tags,:negation=>negation,:match=>match}
@@ -197,14 +209,40 @@ class PapersController < ApplicationController
   #ajax 选择题目类型，载入 _post_question_attrs_module 部分
   def select_correct_type
     correct_type , question_answer , question_attrs=params["correct_type"].to_i , params["question_answer"] , params["question_attrs"]
-    #    puts "correct_type = #{correct_type}"
-    #    puts "question_attrs = #{question_attrs}"
-    #    puts "question_answer = #{question_answer}"
     @object={:correct_type=>correct_type,:answer=>question_answer,:question_attrs=>question_attrs}
     render :partial=>"post_question_attrs_module",:object=>@object
   end
 
-  
+  #ajax 插入标签时，用户选中不存在的标签，则新建该标签记录
+  def ajax_insert_new_tag
+    tag_name = params[:tag_name]
+    puts tag_name
+    Tag.create_tag([tag_name])
+    respond_to do |format|
+      format.json {
+        data={:message=>'新标签创建成功'}
+        render:json=>data
+      }
+    end
+  end
+
+  def ajax_load_words_list
+    match = params["match"].strip
+    added_words = params["added_words"].split(" ")
+    category_id = params["category_id"].to_i
+    like_params = "#{match}%"
+    if params["added_words"].strip!=""
+      @words = Word.find_by_sql(["select * from words where category_id = ? and name like ? and name not in (?)#",category_id,like_params,added_words])
+    else
+      @words = Word.find_by_sql(["select * from words where category_id = ? and name like ?",category_id,like_params])
+    end
+    respond_to do |format|
+      format.html {
+        render :partial=>"/papers/words_list" ,:object=>{:words=>@words,:match=>match}
+      }
+    end
+  end
+
   # --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------
 
   #将XML文件生成document对象
