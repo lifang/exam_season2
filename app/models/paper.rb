@@ -13,7 +13,7 @@ class Paper < ActiveRecord::Base
 
   # 试卷筛选 + 分页    通过paper_js_url 是否为空 判断是否通过审核
   def Paper.search_mothod(category_id,checked, per_page, page)
-    sql = "select * from papers where category_id = #{category_id}"
+    sql = "select * from papers where types != #{Examination::TYPES[:SPECIAL]} and category_id = #{category_id}"
     sql += " and paper_js_url is null" if checked==CHECKED[:NO]
     sql += " and paper_js_url is not null" if checked==CHECKED[:YES]
     sql += " order by created_at desc"

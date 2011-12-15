@@ -39,18 +39,17 @@ class ReportErrorsController < ApplicationController
       sql="select re.id,re.question_id,re.description r_desc,re.paper_id,pe.paper_url,u.name from
        report_errors re inner join users u on u.id=re.user_id  inner join papers pe on pe.id=re.paper_id  where re.id=#{error.id}"
       single_error=ReportError.find_by_sql(sql)
-      url=Constant::PAPER_XML_PATH+single_error[0].paper_url
+      url=Constant::PUBLIC_PATH+single_error[0].paper_url
       doc= open_file(url)
       question=doc.elements["/paper/blocks//problems//questions/question[@id='#{single_error[0].question_id}']"]
       problem=question.parent.parent
       title=doc.elements["/paper/base_info/title"]
-      description=problem.elements["description"]
+      problem_title=problem.elements["title"]
       blocks=doc.get_elements("/paper/blocks//block")
       block_postion=blocks.index(problem.parent.parent)+1
       problems=doc.get_elements("/paper/blocks//problems//problem")
       problem_postion=problems.index(problem)+1
-      @info=[single_error[0],question,title,description,block_postion,problem_postion,problems.size,others]
-      puts @info
+      @info=[single_error[0],question,title,problem_title,block_postion,problem_postion,problems.size,others]
       @word=Word.find_by_sql("select * from words w inner join word_question_relations wq on w.id=wq.word_id where wq.question_id=#{error.question_id}")
     rescue
       @errors=[]
@@ -62,7 +61,8 @@ class ReportErrorsController < ApplicationController
     error_report=ReportError.find(params[:id].to_i)
     error_report.update_attributes(:status=>params[:status].to_i)
     Order.create(:user_id=>error_report.user_id,:status=>Order::TYPES[:OTHER],
-      :pay_type=>Order::STATUS[:NOMAL]) if Order.find_by_user_id(error_report.user_id).nil? if params[:status].to_i==1
+      :pay_type=>Order::STATUS[:NOMAL]) if params[:status].to_i == ReportError::STATUS[:OVER] and
+      Order.find_by_user_id(error_report.user_id).nil?
     page=params[:page]
     my_params = Hash.new
     request.parameters.each {|key,value|my_params[key.to_s]=value}
@@ -73,10 +73,10 @@ class ReportErrorsController < ApplicationController
     my_params.delete("authenticity_token")
     my_params.delete("utf8")
     unless page.nil? || page=="" ||page.to_i<1
-      url=my_params.sort.map{|k,v|"#{k}=#{v}"}.join("&")
+      url=my_params.sort.map{|k,v|"#{k}=#{v}" unless (v.nil? or v.empty?)}.join("&")
     else
       my_params.delete("page")
-      url=my_params.sort.map{|k,v|"#{k}=#{v}"}.join("&")
+      url=my_params.sort.map{|k,v|"#{k}=#{v}" unless (v.nil? or v.empty?)}.join("&")
     end
     redirect_to "/report_errors?#{url}"
   end

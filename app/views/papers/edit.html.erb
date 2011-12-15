@@ -176,7 +176,7 @@
                     </div>
                     <div class="edit_question_form" id="q_l_answer_<%= block_index %>_<%= problem_index %>_<%= question_index %>"></div>
                   </div>
-                <% end #questions循环结束 %>
+                <% end unless problem.elements["questions"].nil? #questions循环结束 %>
               </div>
             </div>
           </div>

@@ -5,10 +5,12 @@ class CategoriesController < ApplicationController
   #[get][collection]科目列表页面
   def index
     if is_admin?
-      @categories=Category.paginate(:per_page=>4,:page=>params[:page])
+      @categories=Category.paginate(:per_page => 4, :page => params[:page])
     else
       if is_paper_creater?
-        @categories=Category.paginate_by_sql("select c.* from categories c inner join category_manages cm on cm.category_id=c.id where cm.user_id=#{cookies[:user_id]} order by c.id asc",:per_page=>4,:page=>params[:page])
+        @categories=Category.paginate_by_sql("select c.* from categories c 
+        inner join category_manages cm on cm.category_id = c.id
+        where cm.user_id = #{cookies[:user_id]} order by c.id asc", :per_page => 4, :page => params[:page])
       end
     end
     unless @categories.blank?
@@ -25,7 +27,6 @@ class CategoriesController < ApplicationController
     end
 
   end
-
   
   #[get][member]科目的编辑页面
   def edit
@@ -36,7 +37,7 @@ class CategoriesController < ApplicationController
   #[post][member]编辑科目基本信息，名称和价格
   def edit_post
     @category=Category.find(params[:id])
-    @category.update_attributes(:name=>params["name"],:price=>params["price"])
+    @category.update_attributes(:name=>params["name"],:price=>params["price"], :next_time => params[:next_time])
     redirect_to "/categories"
   end
 
@@ -49,7 +50,7 @@ class CategoriesController < ApplicationController
   #[post][collection]新建科目
   def new_post
     price = params["price"].nil? ? 0 : params["price"].to_i
-    @category=Category.new(:name=>params["name"],:price=>price)
+    @category=Category.new(:name=>params["name"],:price=>price, :next_time => params[:next_time])
     puts params["name"]+"  "+params["price"]
     flash[:notice]="新建科目出错" unless @category.save
     redirect_to "/categories"
@@ -92,7 +93,8 @@ class CategoriesController < ApplicationController
 
   # 设置用户的身份 （用处：add_manage）
   def set_role(user_id,role)
-    UserRoleRelation.create(:user_id=>user_id,:role_id=>role) if UserRoleRelation.find_by_sql("select id from user_role_relations where user_id=#{user_id} and role_id=#{role}").blank?
+    UserRoleRelation.create(:user_id=>user_id,:role_id=>role) if
+      UserRoleRelation.find_by_sql("select id from user_role_relations where user_id=#{user_id} and role_id=#{role}").blank?
   end
   
   #[get][member]删除科目管理员。

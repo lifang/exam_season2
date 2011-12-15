@@ -3,13 +3,21 @@
 </div>
 <div class="text_box">
   <% if @categories.blank? %>
-  <p>你当前不是任何一个科目的管理员，若有问题请咨询系统管理员。</p>
+    <p>你当前不是任何一个科目的管理员，若有问题请咨询系统管理员。</p>
   <% end %>
-    <% @categories.each do |category| %>
-      <div class="kemu_box">
-        <h1><%= category.name %></h1>
-        <div><%= category.price %>元</div>
-        <div>管理员：<%unless @category_manages[category.id].nil?%><% @category_manages[category.id].each do |manage| %><span class="bj_span"><%= manage[0] %><a href="/categories/<%= manage[1] %>/delete_manage" onclick="javascript:return confirm('你确认删除该管理员么？');"><font color="red">[X]</font></a></span><% end %><% end %> </div>
+  <% @categories.each do |category| %>
+    <div class="kemu_box">
+      <h1><%= category.name %></h1>
+      <div><%= category.price %>元
+        <span class="km_date"><%= category.next_time.strftime("%Y-%m-%d") if category.next_time %></span>
+      </div>
+      <div>管理员：<%unless @category_manages[category.id].nil?%><% @category_manages[category.id].each do |manage| %>
+            <span class="bj_span"><%= manage[0] %><% if is_admin? %>
+                <a href="/categories/<%= manage[1] %>/delete_manage"
+                   onclick="javascript:return confirm('你确认删除该管理员么？');"><font color="red">[X]</font></a><% end %>
+            </span><% end %><% end %>
+      </div>
+      <% if is_admin? %>
         <div>
           <%= form_for :create ,:url=>"/categories/#{category.id}/add_manage", :html=>{:onsubmit=>"return validate_add_manage(#{category.id});"} do |f| %>
             <input name="email" id="add_manage_email_textfield_<%= category.id %>" type="text"/>
@@ -17,10 +25,11 @@
             <input type="submit" value="添加管理员" class="t_btn"></input>
           <% end %>
         </div>
-        <div class="km_a"><a href="/papers?category=<%= category.id %>">管理</a><a href="/categories/<%= category.id %>/edit">修改</a></div>
-      </div>
+      <% end %>
+      <div class="km_a"><a href="/papers?category=<%= category.id %>">管理</a><a href="/categories/<%= category.id %>/edit">修改</a></div>
+    </div>
   <% end %>
-    <div class="clear space20"></div>
-    <%=  will_paginate @categories ,:previous_label=>" &lt;", :next_label=>" &gt;", :inner_window => 1 %>
+  <div class="clear space20"></div>
+  <%=  will_paginate @categories ,:previous_label=>" &lt;", :next_label=>" &gt;", :inner_window => 1 %>
 </div>
 
