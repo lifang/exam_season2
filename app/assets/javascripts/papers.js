@@ -337,7 +337,7 @@ function load_add_label(tags_input,display){
     $("#t_se_input_tags").val("");
     $("#t_se_input_tags").focus();
     display_tags_text(tags_input,display);
-    ajax_load_tags_list('',$(tags_input).val()); //初始化可选标签列表
+    //ajax_load_tags_list('',$(tags_input).val()); //初始化可选标签列表
 }
 
 //关闭标签管理框
@@ -461,8 +461,10 @@ function load_addWords(words_input,display){
     $("#words_list_ajax_loader").empty();
     $("#t_se_input_words").val("");
     $("#t_se_input_words").focus();
+    $("#addWords_insert_words").val($(words_input).val());
+    $("#xs_add_div").hide(); //未选中单词，详细信息隐藏
     display_words_text(words_input,display);
-    ajax_load_words_list('',$(words_input).val())
+    //ajax_load_words_list('',$(words_input).val());
 }
 
 function close_addWords(){
@@ -478,7 +480,7 @@ function display_words_text(words_input,display){
     $("#already_add_words_div").empty();
     for(var i=0;i<origin_words_arr.length;i++){
         if(origin_words_arr[i]!=""){
-            $("#already_add_words_div").html($("#already_add_words_div").html()+"<div>"+origin_words_arr[i]+" <a href='javascript:void(0);'>[删除]</a></div>");
+            $("#already_add_words_div").html($("#already_add_words_div").html()+"<div>"+origin_words_arr[i]+" <a href='javascript:void(0);'  onclick='javascript:delete_word(\""+origin_words_arr[i]+"\")'>[删除]</a></div>");
         }
     }
     //显示到编辑表单框
@@ -501,16 +503,20 @@ function ajax_load_words_list(match,added_words){
         dataType: "html",
         data : {
             "match" : match,
-            "added_words" : added_words
+            "added_words" : added_words,
+            "category_id" : category_id
         },
         beforeSend: function(){
             $("#words_list_ajax_loader").html($("#ajax_loader").html());
         },
         success : function(data){
             $("#words_list_ajax_loader").html(data);
+            $(".single_word_li:eq(0)").trigger("click");
         }
     });
 }
+
+
 
 
 

@@ -50,9 +50,10 @@ $(function(){
         if(check_edit()){
             if(confirm("你当前处于编辑状态，如果你取消编辑，所有未保存的内容将全部丢失，你确定要继续当前操作么？")){
                 $("#post_question_loader").append($('#post_question_div'));
-            }else{
-                return false;
+                $(".q_l_answer:visible").hide();
+                $answer.slideDown(1200);
             }
+            return false;
         }
         if($answer.is(":visible")){
             $answer.slideUp(1200);

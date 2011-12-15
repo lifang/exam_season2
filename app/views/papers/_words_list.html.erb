@@ -2,7 +2,9 @@
 
 <ul>
   <% object[:words].each do |word| %>
-    <li><a href="javascript:void(0);"><%= word.name %></a></li>
+  <input type="hidden" id="word_phonetic_<%= word.id %>" value="<%= word.phonetic %>" ></input>
+    <li><a class="single_word_li" href="javascript:void(0);"
+           onclick="javascript:show_single_word_detail($(this),'<%= word.name %>','<%= word.en_mean %>','<%= word.ch_mean %>','<%= Word::TYPES[word.types] %>',$('#word_phonetic_<%= word.id %>').val(),'<%= word.enunciate_url %>');" ><%= word.name %></a></li>
   <% end %>
-    <% if object[:match]!="" %><li><a href="javascript:void(0);">从网上抓取<%= object[:match] %></a></li><% end %>
+    <% if object[:match]!="" %><li><a class="single_word_li" href="javascript:void(0);">从网上抓取<%= object[:match] %></a></li><% end %>
 </ul>

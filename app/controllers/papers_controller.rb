@@ -223,11 +223,12 @@ class PapersController < ApplicationController
   def ajax_load_words_list
     match = params["match"].strip
     added_words = params["added_words"].split(" ")
+    category_id = params["category_id"].to_i
     like_params = "#{match}%"
     if params["added_words"].strip!=""
-      @words = Word.find_by_sql(["select * from words where name like ? and name not in (?)#",like_params,added_words])
+      @words = Word.find_by_sql(["select * from words where category_id = ? and name like ? and name not in (?)#",category_id,like_params,added_words])
     else
-      @words = Word.find_by_sql(["select * from tags where name like ?",like_params])
+      @words = Word.find_by_sql(["select * from words where where category_id = ? and name like ?",category_id,like_params])
     end
     puts @words.count
     respond_to do |format|

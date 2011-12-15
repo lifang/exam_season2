@@ -7,6 +7,7 @@
   }
   var init_block=<%= cookies[:init_block].nil? ? 1 : cookies[:init_block] %>;
   var init_problem=<%= cookies[:init_problem].nil? ? 1 : cookies[:init_problem] %>;
+  var category_id = <%= params[:category] %>;
 
   // 设置几个DIV居中显示
   $(function(){set_center('.part_info');set_center('.add_label');set_center('.addWords')})
@@ -179,7 +180,7 @@
                     <div class="edit_question_form" id="q_l_answer_<%= block_index %>_<%= problem_index %>_<%= question_index %>"></div>
                   </div>
                 <% end #questions循环结束 %>
-                  <div class="hold_250_height" style="height:250px;"></div>
+                <div class="hold_250_height" style="height:250px;"></div>
               </div>
             </div>
           </div>
@@ -300,7 +301,7 @@
       <div class="q_label">
         <div><strong>词汇</strong></div>
         <div id="post_question_words_div"></div>
-        <a href="javascript:void(0);" onclick="load_addWords('#post_question_question_tags','#post_question_tags_div');">词汇管理</a>
+        <a href="javascript:void(0);" onclick="load_addWords('#post_question_question_words','#post_question_words_div');">词汇管理</a>
       </div>
       <div class="clear"></div>
       <div class="qa_h">分值 <input name="post_question[question_score]" id="post_question_question_score" type="text" /></div>
@@ -315,7 +316,7 @@
 <!-- 标签管理框 -->
 <div class="add_label">
   <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:close_add_label();" /></span>
-  <div><input name="" type="text" onchange="javascipt:$(function(){ajax_load_tags_list($('#t_se_input_tags').val(),$($('#add_label_tags_input').val()).val())})" id="t_se_input_tags" class="t_se_input" /><button class="t_search" ></button></div>
+  <div><input name="" type="text" onkeydown="javascript:$(function(){if(event.keyCode==13){ajax_load_tags_list($('#t_se_input_tags').val(),$($('#add_label_tags_input').val()).val())}});" id="t_se_input_tags" class="t_se_input" /><button  onclick="javascipt:$(function(){ajax_load_tags_list($('#t_se_input_tags').val(),$($('#add_label_tags_input').val()).val())});" class="t_search" ></button></div>
   <input type="hidden" id="add_label_tags_input" />
   <input type="hidden" id="add_label_display" />
   <div>可选标签</div>
@@ -332,33 +333,82 @@
 <div class="addWords">
   <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:close_addWords();" /></span>
   <div class="addwords_side">
-    <div><input name="" type="text" onchange="javascipt:$(function(){ajax_load_words_list($('#t_se_input_words').val(),$($('#addWords_words_input').val()).val())})" id="t_se_input_words" class="t_se_input" /><button class="t_search"></button></div>
+    <div><input name="" type="text" onkeydown="javascript:$(function(){if(event.keyCode==13){ajax_load_words_list($('#t_se_input_words').val(),$($('#addWords_words_input').val()).val())}});" id="t_se_input_words" class="t_se_input" /><button onclick="javascipt:$(function(){ajax_load_words_list($('#t_se_input_words').val(),$($('#addWords_words_input').val()).val())})" class="t_search"></button></div>
     <input type="hidden" id="addWords_words_input" />
     <input type="hidden" id="addWords_display" />
     <div class="words_ny">
-      <ul id="words_list_ajax_loader">
-        <li><a href="#">adapt1</a></li>
-        <li><a href="#">adapt1</a></li>
-        <li><a href="#">从网上抓取adapt1</a></li>
-      </ul>
+      <ul id="words_list_ajax_loader"></ul>
     </div>
     <div id="already_add_words_div" class="words_ny"></div>
-    <div><button class="t_btn">插入</button></div>
+    <input type="hidden" id="addWords_insert_words" />
+    <div><button class="t_btn" onclick="javascript:insert_words('#addWords_insert_words','#post_question_question_words','#post_question_words_div');">插入</button></div>
   </div>
   <div class="addwords_side">
-    <div class="xs_add">
-      <div class="hui_bg"><a href="#">选用</a><span>V.</span><span>to get used to</span></div>
-      <div class="hui_bg"><a href="#">选用</a><span>V.</span><span>to get used to</span></div>
-    </div>
-    <div class="xs_add">
-      <h2>alert</h2><span>n.</span><span>[əˈlə:t]</span><a href="#"><img src="/assets/icon_lb.png" /></a>
-      <div class="size_16">to get used to</div>
-      <div>习惯,习惯的</div>
-      <div class="word_liju">- He is a man alert in problem.</div>
-      <div><button class="t_btn">修改</button><button class="t_btn">选择</button></div>
+    <div class="xs_add" id="xs_add_div">
+      <input type="hidden" id="single_word_enunciate_url" value=""/>
+      <h2 id="single_word_name" class="single_word_element"></h2><span id="single_word_types" class="single_word_element">n.</span><span id="single_word_phonetic" class="single_word_element"></span><a href="javascript:void(0);"><img src="/assets/icon_lb.png" onclick="javascript:$(function(){alert($('#single_word_enunciate_url').val())});" /></a>
+      <div id="single_word_en_mean" class="size_16 single_word_element"></div>
+      <div id="single_word_ch_mean" class="single_word_element"></div>
+      <div class="word_liju" style="display:none;">- He is a man alert in problem.</div><br/>
+      <div><button class="t_btn">修改</button><button class="t_btn" onclick="javascirpt:$(function(){select_word($('#single_word_name').html())});">选择</button></div>
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+  //词汇管理框，点击单一小题，右侧显示单词的详细信息
+  function show_single_word_detail(jqery_ele,name,en_mean,ch_mean,types,phonetic,enunciate_url){
+    //alert(""+name+" "+en_mean+" "+ch_mean+" "+types+" "+phonetic+" "+enunciate_url);
+    $(".single_word_li").removeClass("hover");
+    jqery_ele.addClass("hover");
+    $(".single_word_element").html("");
+    $("#single_word_name").html(name);
+    $("#single_word_en_mean").html(en_mean);
+    $("#single_word_ch_mean").html(ch_mean);
+    $("#single_word_types").html(types);
+    $("#single_word_phonetic").html(phonetic);
+    $("#single_word_enunciate_url").val(enunciate_url);
+    $("#xs_add_div").show();
+  }
+
+  //词汇管理框，选择词汇
+  function select_word(word){
+    var origin_words = $("#addWords_insert_words").val().split(" ");
+    for(var i=0;i<origin_words.length;i++){
+      if(origin_words[i]==word){
+        tishi_alert("你选择的单词已经在列表中");
+        return false;
+      }
+    }
+    origin_words.push(word);
+    $("#addWords_insert_words").val(origin_words.join(" "));
+    $("#already_add_words_div").html($("#already_add_words_div").html()+"<div>"+word+" <a href='javascript:void(0);' onclick='javascript:delete_word(\""+word+"\")'>[删除]</a></div>");
+  }
+
+  //词汇管理框 删除词汇
+  function delete_word(word){
+    var origin_tags_arr = $("#addWords_insert_words").val().split(" ");
+    var result_tags_arr = new Array;
+    for(var i=0;i<origin_tags_arr.length;i++){
+      if(origin_tags_arr[i]!=word){
+        result_tags_arr.push(origin_tags_arr[i]);
+      }
+    }
+    $("#addWords_insert_words").val(result_tags_arr.join(" "));
+    $("#already_add_words_div").empty();
+    for(var i=0;i<result_tags_arr.length;i++){
+      $("#already_add_words_div").html($("#already_add_words_div").html()+"<div>"+result_tags_arr[i]+" <a href='javascript:void(0);' onclick='javascript:delete_word(\""+result_tags_arr[i]+"\")'>[删除]</a></div>");
+    }
+  }
+
+  //词汇管理框 插入词汇，更新form值
+  function insert_words(origin_words_input,target_words_input,display){
+    $(target_words_input).val($(origin_words_input).val());
+    display_words_text(target_words_input,display);
+    close_addWords();
+  }
+
+</script>
 
 <!-- ajax载入图片 提前载入以便调用 -->
 <div id="ajax_loader" style="display:none;"><%= image_tag 'ajax-loader.gif' %></div>
