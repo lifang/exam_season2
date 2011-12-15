@@ -26,7 +26,11 @@ class ReportErrorsController < ApplicationController
     @num=ReportError.count(:id,:conditions=>num_sql)
     @errors=ReportError.find_by_sql(error_sql)
     error=@errors[0]
-    @next=params[:page].to_i==@num-1 ? @num-1:params[:page].to_i+1
+    if params[:page].to_i==@num-1
+      @next= @num-1
+    else
+      @next=params[:page].to_i+1
+    end
     if @num==1
       @last=0
       @next=0
