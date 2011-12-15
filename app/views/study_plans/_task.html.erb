@@ -1,7 +1,9 @@
 <% @tasks.each do |plan| %>
   <p class="rw_list"><span>周期：<%= PlanTask::PERIOD_NAMES[plan[0].to_i] %></span>
     <span>任务：<%= PlanTask::TYPES_NAME[plan[1].to_i] %></span><span>数量：<%= plan[2].to_i %></span>
-    <span><a href="#" onclick="javascript:delete_task('<%= "#{plan[0]},#{plan[1]},#{plan[2]}" %>')">[删除]</a></span></p>
+    <span>
+      <a href="javascript:void(0);" onclick="javascript:delete_task('<%= "#{plan[0]},#{plan[1]},#{plan[2]}" %>')">[删除]</a>
+    </span></p>
 <% end unless @tasks.blank? %>
   <input type="hidden" name="info" id="info" value="<%= @tasks.join(",") %>"/>
 

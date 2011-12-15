@@ -26,7 +26,7 @@ class ReportErrorsController < ApplicationController
     @num=ReportError.count(:id,:conditions=>num_sql)
     @errors=ReportError.find_by_sql(error_sql)
     error=@errors[0]
-    @next=params[:page].to_i==@num-1 ? @num-1:params[:page].to_i+1
+    @next = params[:page].to_i == @num-1 ? @num-1:params[:page].to_i+1
     if @num==1
       @last=0
       @next=0
@@ -34,7 +34,7 @@ class ReportErrorsController < ApplicationController
     if @last.to_i<0
       @last=0
     end
-#    begin
+    begin
       others=ReportError.count(:id,:conditions=>"question_id=#{error.question_id}")
       sql="select re.id,re.question_id,re.description r_desc,re.paper_id,pe.paper_url,u.name from
        report_errors re inner join users u on u.id=re.user_id  inner join papers pe on pe.id=re.paper_id  where re.id=#{error.id}"
@@ -52,16 +52,17 @@ class ReportErrorsController < ApplicationController
       @info=[single_error[0],question,title,description,block_postion,problem_postion,problems.size,others]
       puts @info
       @word=Word.find_by_sql("select * from words w inner join word_question_relations wq on w.id=wq.word_id where wq.question_id=#{error.question_id}")
-#    rescue
-#      @errors=[]
-#    end
+    rescue
+      @errors=[]
+    end
   end
 
 
   def modify_status
     error_report=ReportError.find(params[:id].to_i)
     error_report.update_attributes(:status=>params[:status].to_i)
-    Order.create(:user_id=>error_report.user_id,:status=>Order::TYPES[:OTHER],:pay_type=>Order::STATUS[:NOMAL]) if Order.find_by_user_id(error_report.user_id).nil? if params[:status].to_i==1
+    Order.create(:user_id=>error_report.user_id,:status=>Order::TYPES[:OTHER],
+      :pay_type=>Order::STATUS[:NOMAL]) if Order.find_by_user_id(error_report.user_id).nil? if params[:status].to_i==1
     page=params[:page]
     my_params = Hash.new
     request.parameters.each {|key,value|my_params[key.to_s]=value}
@@ -82,7 +83,8 @@ class ReportErrorsController < ApplicationController
 
   def other_users
     session[:question_id]=params[:question_id].to_i
-    other_sql="select u.email,re.error_type,re.description from report_errors re inner join users u on u.id=re.user_id where re.question_id=#{session[:question_id]}"
+    other_sql="select u.email,re.error_type,re.description from report_errors re
+      inner join users u on u.id=re.user_id where re.question_id=#{session[:question_id]}"
     @others=ReportError.paginate_by_sql(other_sql,:per_page =>2, :page => params[:page])
     respond_with (@others) do |format|
       format.js
