@@ -19,9 +19,6 @@ function redirect(category_id) {
 function get_others(question_id){
     $.ajax({
         async:true,
-        success:function(request){
-        //            $("#spinner_add_"+exam_id).css("display","none");
-        },
         data:{
             question_id :question_id
         },
