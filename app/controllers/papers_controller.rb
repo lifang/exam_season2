@@ -198,7 +198,7 @@ class PapersController < ApplicationController
     like_params = "%#{match}%"
     negation = Tag.find_by_name(match).blank?
     if params["added_tags"].strip!=""
-      @tags = Tag.find_by_sql(["select * from tags where name like ? and name not in (?)#",like_params,added_tags])
+      @tags = Tag.find_by_sql(["select * from tags where name like ? and name not in (?)",like_params,added_tags])
     else
       @tags = Tag.find_by_sql(["select * from tags where name like ?",like_params])
     end
@@ -236,7 +236,7 @@ class PapersController < ApplicationController
     category_id = params["category_id"].to_i
     like_params = "#{match}%"
     if params["added_words"].strip!=""
-      @words = Word.find_by_sql(["select * from words where category_id = ? and name like ? and name not in (?)#",category_id,like_params,added_words])
+      @words = Word.find_by_sql(["select * from words where category_id = ? and name like ? and name not in (?)",category_id,like_params,added_words])
     else
       @words = Word.find_by_sql(["select * from words where category_id = ? and name like ?",category_id,like_params])
     end
@@ -249,10 +249,10 @@ class PapersController < ApplicationController
 
   #审核 创建试卷的js文件
   def examine
-    @paper = Paper.find(params[:id].to_i)
+    paper_id = parmas["paper_id"]
+    @paper = Paper.find(paper_id)
     @paper.create_paper_url(@paper.create_paper_js, "#{Time.now.strftime("%Y%m%d")}", "js", "paperjs")
-    
-    redirect_to papers_url
+    redirect_to request.referer
   end
 
   # --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------

@@ -375,9 +375,6 @@ function ajax_edit_paper_title(paper_id,title){
         data : {
             "title" : title
         },
-        beforeSend: function(){
-        // $(".p_name:eq(1)").html($("#ajax_loader").html());
-        },
         success : function(data){
             $(".p_name:eq(1)").html(data.title);
         }
@@ -391,9 +388,6 @@ function ajax_edit_paper_time(paper_id,time){
         dataType: "json",
         data : {
             "time" : time
-        },
-        beforeSend: function(){
-        //  $(".p_time:eq(1)").html($("#ajax_loader").html());
         },
         success : function(data){
             $(".p_time:eq(1)").html(data.time);
@@ -411,7 +405,7 @@ function load_add_label(tags_input,display){
     $("#t_se_input_tags").val("");
     $("#t_se_input_tags").focus();
     display_tags_text(tags_input,display);
-//ajax_load_tags_list('',$(tags_input).val()); //初始化可选标签列表
+    ajax_load_tags_list('',$(tags_input).val()); //初始化可选标签列表
 }
 
 //关闭标签管理框
@@ -538,7 +532,7 @@ function load_addWords(words_input,display){
     $("#addWords_insert_words").val($(words_input).val());
     $("#xs_add_div").hide(); //未选中单词，详细信息隐藏
     display_words_text(words_input,display);
-//ajax_load_words_list('',$(words_input).val());
+    ajax_load_words_list('',$(words_input).val());
 }
 
 function close_addWords(){
@@ -571,7 +565,6 @@ function display_words_text(words_input,display){
 
 //根据查询内容，载入单词列表
 function ajax_load_words_list(match,added_words){
-    //alert(""+(match=="")+" | "+(added_words=="")+" | "+category_id);
     $.ajax({
         type: "POST",
         url: "/papers/ajax_load_words_list.html",
@@ -593,7 +586,6 @@ function ajax_load_words_list(match,added_words){
 
 //词汇管理框，点击单一小题，右侧显示单词的详细信息
 function show_single_word_detail(jqery_ele,name,en_mean,ch_mean,types,phonetic,enunciate_url){
-    //alert(""+name+" "+en_mean+" "+ch_mean+" "+types+" "+phonetic+" "+enunciate_url);
     $(".single_word_li").removeClass("hover");
     jqery_ele.addClass("hover");
     $(".single_word_element").html("");

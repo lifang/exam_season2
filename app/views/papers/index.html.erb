@@ -16,13 +16,28 @@
     <div class="t_list">
       <div class="text_btn">
         <button class="t_btn" onclick="javascript:window.location.href='/papers/<%= paper.id %>/edit?category=<%= params["category"] %>'">编辑</button>
-        <button class="t_btn">审核</button>
+        <button class="t_btn" onclick="$(function(){javascript:examine(<%= paper.id %>,$('#paper_status_<%= paper.id %>'))});">审核</button>
         <button class="t_btn">预览</button>
       </div>
       <h2><%= paper.title %></h2>
-      <span><%= paper.paper_js_url.nil? ? "未审核" : "已审核" %></span>
+      <span id="paper_status_<%= paper.id %>"><%= paper.paper_js_url.nil? ? "未审核" : "已审核" %></span>
     </div>
   <% end %>
   <%=will_paginate @papers ,:previous_label=>" &lt;", :next_label=>" &gt;", :inner_window => 1 %>
 
 </div>
+<script type="text/javascript">
+  function examine(paper_id,jquery_ele) {
+    $.ajax({
+      type: "GET",
+      url: "/papers/"+ paper_id +"/examine",
+      dataType: "json",
+      data : {
+        "paper_id" : paper_id
+      },
+      success : function(data){
+        jquery_ele.html("已审核");
+      }
+    });
+  }
+</script>

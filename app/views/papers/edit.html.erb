@@ -145,7 +145,7 @@
                   <input type="hidden" value="<%= correct_type %>" class="correct_type" id="correct_type" />
 
                   <div class="question_list">
-                    <div class="q_l_text">
+                    <div  onselectstart="return false;" class="q_l_text">
                       <% judge_str = {"1"=>"是/对","0"=>"否/错"}   #定义 判断题 "1"=>"是/对"  "0"=>"否/错" %>
                       <div class="q_l_word"><p class="q_w_p"><%= question.elements["questionattrs"].text!="" && question.elements["questionattrs"].text!=nil ? question.elements["questionattrs"].text.split(";-;").join("/") : correct_type==Question::CORRECT_TYPE[:JUDGE] ? judge_str[question.elements["answer"].text] : question.elements["answer"].text %></p><p class="q_w_img"><img alt="icon_shu"   src="/assets/icon_shu.png"/></p></div>
                       <div class="q_l_word"><p class="q_w_p"><em>限定词的用法</em></p><p>分值：<span class="red"><%= question.attributes["score"] unless question.attributes["score"].nil? %></span></p></div>

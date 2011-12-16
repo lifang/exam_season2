@@ -267,13 +267,13 @@ span.mk_span_w { color: #000;}
 .p_time { color: #333; width: 40px; margin-left: 20px;}
 
 
-
 /*弹出层----------*/
 .add_label { width: 300px; padding: 10px; background: #FFF; border: 3px #999 solid; position: fixed;z-index:900;display:none;}
 .add_label div { line-height: 24px; margin: 5px 0;}
 .add_word_box { width: 298px; height: 100px; border: 1px #CCC solid; margin: 2px 0;overflow:auto;}
 .add_word_box li { float: left; margin: 5px; font-size: 16px; width:45%;}
 .add_word_box li a { padding-left: 5px;}
+
 
 .part_info { width: 400px; padding: 10px; background: #FFF; border: 3px #999 solid; position: fixed;z-index:900;display:none;}
 .part_info table { background: #CCC;}
@@ -282,6 +282,7 @@ span.mk_span_w { color: #000;}
 
 /*备考弹出层--------------------*/
 .zhezhao { width:100%; left:0; position:absolute; top:0; background:#000000; opacity:0.5; filter:alpha(opacity=50); z-index:888;display: none; height: 100%;position:fixed; }
+
 
 
 /*用户列表*/
