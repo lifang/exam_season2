@@ -15,6 +15,23 @@ function select_checked(dom,category_id){
     }
 }
 
+//创建试卷第一步验证
+function paper_info(){
+    var title=$("#title").val();
+    var time=$("#time").val();
+    if (title=="" ||title.length==0||title.length>50){
+        tishi_alert("试卷名称不能为空，长度不超过50个字符")
+        return false;
+    }else{
+        if (isNaN(parseInt(time))||parseInt(time)<=0){
+            tishi_alert("请输入正确的试卷长度")
+            return false;
+        }
+    }
+    
+   
+}
+
 // 设置DIV根据浏览器宽度，居中
 function set_center(jq_params){
     if (jQuery(jq_params) != null) {
@@ -99,7 +116,8 @@ function load_edit_block(block_xpath,block_name,block_description,block_start_ti
     if(block_time!="0" && block_time!=""){
         $("#block_time_radio2").attr("checked","true").val(block_time);
         $("#block_time").removeAttr("disabled").val(block_time);
-    }else{
+    }
+    else{
         $("#block_time_radio1").attr("checked","true").val('0');
         $("#block_time").attr("disabled","disabled").val('0');
     }

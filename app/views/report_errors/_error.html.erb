@@ -52,4 +52,8 @@ answer.text.split(";|;").collect { |item| answers << item.strip } unless answer.
   <% end %>
 </div>
 <div class="answer_true"><div> <%=  all_answer.to_s.html_safe %></div></div>
-<div class="answer_a"><a href="#" onclick="javascript:$('.error_jiexi_tab').css('display','none');show_div('#jiexi');">解析</a><a href="#" onclick="javascript:$('.error_jiexi_tab').css('display','none');show_div('#xiangguan');">相关词汇</a><button class="t_btn" onclick="javascript:window.open('/papers/<%= error[0].paper_id %>/edit?category=<%= params[:category] %>')">编辑</button></div>
+<div class="answer_a">
+  <a href="javascript:void(0);" onclick="javascript:$('.error_jiexi_tab').css('display','none');show_div('#jiexi');">解析</a>
+  <a href="javascript:void(0);" onclick="javascript:$('.error_jiexi_tab').css('display','none');show_div('#xiangguan');">相关词汇</a>
+  <button class="t_btn" onclick="javascript:window.open('/papers/<%= error[0].paper_id %>/edit?category=<%= params[:category] %>&init_block=<%=error[4]  %>&init_problem=<%= error[8] %>')">编辑</button>
+</div>
