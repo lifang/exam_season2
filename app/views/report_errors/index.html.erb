@@ -50,10 +50,6 @@
   <div class="error_box">
     <div class="error_problem">
       <div> <%=@info[1].attributes["id"]+"."+question_desc.text.to_s.html_safe unless question_desc.nil? %></div>
-      <script type="text/javascript">
-        setCookie("init_block",<%= @info[4]%>);
-        setCookie("init_problem",<%=@info[5] %>);
-      </script>
       <%= render :partial=>"/report_errors/error",:object=>@info %>
     </div>
   </div>
