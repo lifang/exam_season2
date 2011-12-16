@@ -1,10 +1,10 @@
 <%= javascript_include_tag 'kindeditor/kindeditor.js'  %>
 <script type="text/javascript" >
   //定义初始化变量
-  if(!(getCookie("init_paper")!=null&&getCookie("init_paper")==<%= params[:id] %>)){
-    setCookie("init_paper",<%= params[:id] %>);
-    setCookie("init_block",1);
-    setCookie("init_problem",1);
+  if(!(getCookie("init_paper")!= null && getCookie("init_paper")=="<%= params[:id] %>")){
+    setCookie("init_paper","<%= params[:id] %>");
+    setCookie("init_block","1");
+    setCookie("init_problem","1");
   }
   var init_block=<%= cookies[:init_block].nil? ? 1 : cookies[:init_block] %>;
   var init_problem=<%= cookies[:init_problem].nil? ? 1 : cookies[:init_problem] %>;
