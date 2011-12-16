@@ -49,7 +49,9 @@ class ReportErrorsController < ApplicationController
       block_postion=blocks.index(problem.parent.parent)+1
       problems=doc.get_elements("/paper/blocks//problems//problem")
       problem_postion=problems.index(problem)+1
-      @info=[single_error[0],question,title,problem_title,block_postion,problem_postion,problems.size,others]
+      block_problem=problem.parent.parent.get_elements("problems//problem")
+      init_problem=block_problem.index(problem)+1
+      @info=[single_error[0],question,title,problem_title,block_postion,problem_postion,problems.size,others,init_problem]
       @word=Word.find_by_sql("select * from words w inner join word_question_relations wq on w.id=wq.word_id where wq.question_id=#{error.question_id}")
     rescue
       @errors=[]
