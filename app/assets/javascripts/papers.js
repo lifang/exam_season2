@@ -32,6 +32,46 @@ function set_center(jq_params){
     }
 }
 
+//小题的jquery效果 简单显示 => 详细显示
+$(function(){
+    $(".q_l_text").bind("click",function(){
+        if(check_edit()){
+            if(confirm("你当前处于编辑状态，如果你取消编辑，所有未保存的内容将全部丢失，你确定要继续当前操作么？")){
+                $("#post_question_loader").append($('#post_question_div'));
+            }else{
+                return false;
+            }
+        }
+        // 手工测得 question_list 的 高度为 65 ，样式改动，需调整
+        $(".q_l_text:hidden").show();
+        $(".q_l_answer:visible").hide();
+        var final_scrollTop = 65 * ($(this).closest(".question_list_box").children(".question_list").index($(this).closest(".question_list"))-1) ;
+        $(this).closest(".question_list_box").scrollTop(final_scrollTop);
+        var $answer = $(this).next(".q_l_answer");
+        $(this).slideUp(400,function(){
+            $answer.slideDown(800)
+        });
+    })
+})
+
+//小题的jquery效果  详细显示 => 简单显示
+$(function(){
+    $(".q_l_answer[id!=post_question_div]").bind("dblclick",function(){
+        // 手工测得 question_list 的 高度为 65 ，样式改动，需调整
+        var final_scrollTop = 65 * ($(this).closest(".question_list_box").children(".question_list").index($(this).closest(".question_list"))-1) ;
+        $(this).closest(".question_list_box").scrollTop(final_scrollTop);
+        $(this).slideUp(1000,function(){
+            $(this).siblings(".q_l_text").slideDown(400);
+        });
+    })
+})
+
+
+//判断用户在问题编辑页面是否处于编辑状态
+function check_edit(){
+    return $("#post_question_loader>#post_question_div").length == 0;
+}
+
 //停止事件冒泡
 function stop_bunble(){
     if(event.stopPropagation){
@@ -245,17 +285,41 @@ function select_correct_type(ele_str,block_index,problem_index,question_index,co
         "question_attrs" : question_attrs
     },
     function(){
+        // 手工测得 question_list 的 高度为 65 ，样式改动，需调整
         var location = question_index=="" ?  ele_str+block_index+"_"+problem_index : ele_str+block_index+"_"+problem_index+"_"+question_index;
-        $("#post_question_div").hide();
-        $(location).append($("#post_question_div"));  //载入form
-        $("#post_question_div").slideDown(1200);
+        if(hidden_div!=null && hidden_div!=""){
+            var final_scrollTop = 65 * (hidden_div.closest(".question_list_box").children(".question_list").index(hidden_div.closest(".question_list"))-1) ;
+            hidden_div.closest(".question_list_box").scrollTop(final_scrollTop);
+            hidden_div.slideUp(800,function(){
+                $("#post_question_div").hide();
+                $(location).append($("#post_question_div"));  //载入form
+                $("#post_question_div").slideDown(1200);
+            });
+        }else{
+            $("#post_question_div").hide();
+            $(location).append($("#post_question_div"));  //载入form
+            $("#post_question_div").slideDown(1200);
+        } // 显示框 和 编辑框 切换显示
         var questions_xpath = "/paper/blocks/block["+block_index+"]/problems/problem["+problem_index+"]/questions" //构造 questions_xpath , 作为下一个方法的变量
         fill_post_question_form(questions_xpath,question_index,question_answer,question_attrs,question_description,question_analysis,question_score,question_tags,question_words); //初始化表单值
         add_event_on_post_question_form(correct_type);  //初始化表单事件
-        if(hidden_div!=null && hidden_div!=""){
-            hidden_div.hide();
-        }  //隐藏显示小题的DIV
     });
+}
+
+//关闭编辑小题框
+function close_post_question_form(){
+    // 手工测得 question_list 的 高度为 65 ，样式改动，需调整
+    var this_index = ($('#post_question_div').closest(".question_list_box").children(".question_list").index($('#post_question_div').closest(".question_list")));
+    var final_scrollTop = 65 * (this_index-1) ;
+    $('#post_question_div').closest(".question_list_box").scrollTop(final_scrollTop);
+    $('#post_question_div').slideUp(1000,function(){
+        if(this_index>0){
+            $(".q_l_text:hidden").slideDown(400);
+        }
+        $('#post_question_loader').append($('#post_question_div'));
+        $('#post_question_div').show();
+    })
+    
 }
 
 //初始化 post_question 表单 值
@@ -337,7 +401,7 @@ function load_add_label(tags_input,display){
     $("#t_se_input_tags").val("");
     $("#t_se_input_tags").focus();
     display_tags_text(tags_input,display);
-    //ajax_load_tags_list('',$(tags_input).val()); //初始化可选标签列表
+//ajax_load_tags_list('',$(tags_input).val()); //初始化可选标签列表
 }
 
 //关闭标签管理框
@@ -464,7 +528,7 @@ function load_addWords(words_input,display){
     $("#addWords_insert_words").val($(words_input).val());
     $("#xs_add_div").hide(); //未选中单词，详细信息隐藏
     display_words_text(words_input,display);
-    //ajax_load_words_list('',$(words_input).val());
+//ajax_load_words_list('',$(words_input).val());
 }
 
 function close_addWords(){
