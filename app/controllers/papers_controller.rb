@@ -1,5 +1,6 @@
 class PapersController < ApplicationController
   before_filter :access?
+  before_filter :is_category_in?
   require 'rexml/document'
   include REXML
   

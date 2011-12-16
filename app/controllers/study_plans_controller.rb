@@ -1,6 +1,7 @@
 # encoding: utf-8
 class StudyPlansController < ApplicationController
   respond_to :html, :xml, :json
+  before_filter :is_category_in?
 
   def index
     @study=StudyPlan.find_by_category_id(params[:category].to_i)

@@ -1,6 +1,7 @@
 # encoding: utf-8
 class CategoriesController < ApplicationController
   before_filter :access?
+  before_filter :is_category_in?
 
   #[get][collection]科目列表页面
   def index

@@ -1,6 +1,7 @@
 #encoding: utf-8
 class SpecialsController < ApplicationController
   before_filter :access?
+  before_filter :is_category_in?
 
   def index
     @tags = Examination.find_by_sql(["select t.id tag_id, t.name, e.id examination_id, etr.id etr_id

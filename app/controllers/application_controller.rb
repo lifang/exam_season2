@@ -32,4 +32,11 @@ class ApplicationController < ActionController::Base
     return doc
   end
 
+  def is_category_in?
+    unless Category.find_by_id(params[:category])
+      flash[:notice] = "请选择目前系统中已有的科目。"
+      redirect_to categories_path
+    end if params[:category]
+  end
+
 end
