@@ -83,7 +83,7 @@ class ReportErrorsController < ApplicationController
 
   def other_users
     session[:question_id]=params[:question_id].to_i
-    other_sql="select u.email,re.error_type,re.description from report_errors re
+    other_sql="select u.name,re.error_type,re.description from report_errors re
       inner join users u on u.id=re.user_id where re.question_id=#{session[:question_id]}"
     @others=ReportError.paginate_by_sql(other_sql,:per_page =>2, :page => params[:page])
     respond_with (@others) do |format|
