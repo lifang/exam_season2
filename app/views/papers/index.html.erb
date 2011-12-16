@@ -16,11 +16,11 @@
     <div class="t_list">
       <div class="text_btn">
         <button class="t_btn" onclick="javascript:window.location.href='/papers/<%= paper.id %>/edit?category=<%= params["category"] %>'">编辑</button>
-        <button class="t_btn" <% if paper.paper_js_url %>disabled="disabled"<% end %> id="examine_btn_<%= paper.id %>" onclick="$(function(){javascript:examine(<%= paper.id %>,$('#examine_btn_<%= paper.id %>'),$('#paper_status_<%= paper.id %>'))});">审核</button>
+<% if paper.status %><img alt="cet-4" src="/assets/t_pic.png" /><% else %><button class="t_btn" id="examine_btn_<%= paper.id %>" onclick="$(function(){javascript:examine(<%= paper.id %>,$('#examine_btn_<%= paper.id %>'),$('#paper_status_<%= paper.id %>'))});">审核</button><% end %>
         <button class="t_btn">预览</button>
       </div>
       <h2><%= paper.title %></h2>
-      <span id="paper_status_<%= paper.id %>"><%= paper.paper_js_url.nil? ? "未审核" : "已审核" %></span>
+      <span id="paper_status_<%= paper.id %>"><%= paper.status? ? "已审核" : "未审核" %></span>
     </div>
   <% end %>
   <%=will_paginate @papers ,:previous_label=>" &lt;", :next_label=>" &gt;", :inner_window => 1 %>

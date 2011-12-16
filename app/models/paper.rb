@@ -14,11 +14,13 @@ class Paper < ActiveRecord::Base
   # 未审核、已审核、所有 
   CHECKED={:NO=>0,:YES=>1,:ALL=>2}
 
+  STATUS={0=>"未审核",1=>"已审核"}
+
   # 试卷筛选 + 分页    通过paper_js_url 是否为空 判断是否通过审核
   def Paper.search_mothod(category_id,checked, per_page, page)
     sql = "select * from papers where types != #{Examination::TYPES[:SPECIAL]} and category_id = #{category_id}"
-    sql += " and paper_js_url is null" if checked==CHECKED[:NO]
-    sql += " and paper_js_url is not null" if checked==CHECKED[:YES]
+    sql += " and status = #{CHECKED[:NO]} " if checked==CHECKED[:NO]
+    sql += " and status = #{CHECKED[:YES]}" if checked==CHECKED[:YES]
     sql += " order by created_at desc"
     puts "#{sql}"
     return Paper.paginate_by_sql(sql, :per_page =>per_page, :page => page)
@@ -37,9 +39,9 @@ class Paper < ActiveRecord::Base
     f.write("#{str.force_encoding('UTF-8')}")
     f.close
     if file_type == "xml"
-      self.paper_url = super_path + file_name
+      self.paper_url = "/"+super_path + file_name
     else
-      self.paper_js_url = super_path + file_name
+      self.paper_js_url = "/"+super_path + file_name
     end
     self.save
   end
@@ -84,7 +86,7 @@ class Paper < ActiveRecord::Base
 
   #生成试卷的json
   def create_paper_js
-    file=File.open "#{Constant::PUBLIC_PATH}/#{self.paper_url}"
+    file=File.open "#{Constant::PUBLIC_PATH}#{self.paper_url}"
     doc = Document.new(file)
     file.close
     doc.root.elements["blocks"].each_element do |block|

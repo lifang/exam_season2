@@ -32,17 +32,15 @@ function validate_category_form(str){
 }
 
 //审核
-  function examine(paper_id,this_ele,jquery_ele) {
+function examine(paper_id,this_ele,jquery_ele) {
+    this_ele.attr("onclick","javascript:tishi_alert('请不要重复审核');");
     $.ajax({
-      type: "GET",
-      url: "/papers/"+ paper_id +"/examine.json",
-      dataType: "json",
-      beforeSend : function(){
-        this_ele.attr("disabled","true");
-      },
-      success : function(data){
-        jquery_ele.html("已审核");
-        tishi_alert(data.message);
-      }
+        type: "GET",
+        url: "/papers/"+ paper_id +"/examine.json",
+        dataType: "json",
+        success : function(data){
+            jquery_ele.html("已审核");
+            tishi_alert(data.message);
+        }
     });
-  }
+}
