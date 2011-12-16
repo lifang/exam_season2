@@ -12,7 +12,6 @@ class PapersController < ApplicationController
 
   #[get][collection] 新建试卷页面
   def new
-    
   end
 
   #[post][collection] 新建试卷
@@ -21,7 +20,8 @@ class PapersController < ApplicationController
       :title=>params[:title].strip, :types => Examination::TYPES[:OLD_EXAM], 
       :category_id => params[:category])
     category = Category.find(params[:category])
-    @paper.create_paper_url(@paper.xml_content({"category_name" => category.name}), "#{Time.now.strftime("%Y%m%d")}", "xml") unless category.nil?
+    @paper.create_paper_url(@paper.xml_content({"category_name" => category.name}),
+      "#{Time.now.strftime("%Y%m%d")}", "xml") unless category.nil?
     redirect_to "/papers/#{@paper.id}/edit?category=#{params[:category]}"
   end
 
@@ -29,10 +29,8 @@ class PapersController < ApplicationController
   def edit
     @paper = Paper.find(params[:id].to_i)
     begin
-      file = File.open("#{Constant::PAPER_XML_PATH}/#{@paper.paper_url}")
-      @xml=Document.new(file).root
-      file.close
-      @tags=Tag.all
+      @xml = get_doc("#{Constant::PAPER_XML_PATH}/#{@paper.paper_url}")
+      @tags = Tag.all
     rescue
       flash[:error] = "当前试卷不能正常打开，请检查试卷是否正常。"
       redirect_to request.referer
@@ -41,16 +39,19 @@ class PapersController < ApplicationController
 
   #[post][member] 模块表单
   def post_block
-    block_xpath , block_name ,block_description , block_time , block_start_time = params["block_xpath"]  , params["block_name"] , params["block_description"] , params["time"] , params["start_time"]
+    block_xpath , block_name ,block_description , block_time , block_start_time = 
+      params["block_xpath"]  , params["block_name"] , params["block_description"] , params["time"] , params["start_time"]
     paper = Paper.find(params[:id].to_i)
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     if block_xpath != ""
-      block=doc.elements[block_xpath]
-      manage_element(block,{"base_info/title"=>block_name,"base_info/description"=>block_description},{"time"=>block_time,"start_time"=>block_start_time})
+      block = doc.elements[block_xpath]
+      manage_element(block,{"base_info/title"=>block_name,"base_info/description"=>block_description},
+        {"time"=>block_time,"start_time"=>block_start_time})
     else
       block = doc.elements["blocks"].add_element("block")
-      manage_element(block,{"base_info/title"=>block_name,"base_info/description"=>block_description,"problems"=>""},{"total_score"=>"0","total_num"=>"0","time"=>block_time,"start_time"=>block_start_time})
+      manage_element(block,{"base_info/title"=>block_name,"base_info/description"=>block_description,"problems"=>""},
+        {"total_score"=>"0","total_num"=>"0","time"=>block_time,"start_time"=>block_start_time})
     end
     write_xml(doc,url)
     redirect_to request.referer
@@ -198,7 +199,7 @@ class PapersController < ApplicationController
     like_params = "%#{match}%"
     negation = Tag.find_by_name(match).blank?
     if params["added_tags"].strip!=""
-      @tags = Tag.find_by_sql(["select * from tags where name like ? and name not in (?)#",like_params,added_tags])
+      @tags = Tag.find_by_sql(["select * from tags where name like ? and name not in (?)",like_params,added_tags])
     else
       @tags = Tag.find_by_sql(["select * from tags where name like ?",like_params])
     end
@@ -236,7 +237,7 @@ class PapersController < ApplicationController
     category_id = params["category_id"].to_i
     like_params = "#{match}%"
     if params["added_words"].strip!=""
-      @words = Word.find_by_sql(["select * from words where category_id = ? and name like ? and name not in (?)#",category_id,like_params,added_words])
+      @words = Word.find_by_sql(["select * from words where category_id = ? and name like ? and name not in (?)",category_id,like_params,added_words])
     else
       @words = Word.find_by_sql(["select * from words where category_id = ? and name like ?",category_id,like_params])
     end
@@ -249,10 +250,10 @@ class PapersController < ApplicationController
 
   #审核 创建试卷的js文件
   def examine
-    @paper = Paper.find(params[:id].to_i)
+    paper_id = parmas["paper_id"]
+    @paper = Paper.find(paper_id)
     @paper.create_paper_url(@paper.create_paper_js, "#{Time.now.strftime("%Y%m%d")}", "js", "paperjs")
-    
-    redirect_to papers_url
+    redirect_to request.referer
   end
 
   # --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------
