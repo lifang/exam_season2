@@ -15,10 +15,10 @@
         <div>任务：<div id="real_tasks"><% @plans.each do |plan| %>
               <p class="rw_list" id="task_<%= plan.id %>"><span>周期：<%= PlanTask::PERIOD_NAMES[plan.period_types] %></span><span>任务：
                   <%= PlanTask::TYPES_NAME[plan.task_types] %></span><span>数量：<%= plan.num %></span><span>
-                  <a href="#" onclick="javascript:delete_real_task(<%= plan.id %>);">[删除]</a></span></p>
+                  <a href="javascript:void(0);" onclick="javascript:delete_real_task(<%= plan.id %>);">[删除]</a></span></p>
             <% end unless @plans.blank? %></div>
           <div id="tasks"></div>
-          <a href="javascript:show_div('.add_renwu');" class="gl_add_a">添加任务</a>
+          <a href="javascript:void(0);" onclick="javascript:show_div('.add_renwu');" class="gl_add_a">添加任务</a>
         </div>
         <div><button class="t_btn">提交更新</button></div>
       <% end %>

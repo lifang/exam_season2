@@ -1,9 +1,7 @@
 class PapersController < ApplicationController
-
+  before_filter :access?
   require 'rexml/document'
   include REXML
-
-  before_filter :access?
   
   #[get][collection] 试卷列表
   def index

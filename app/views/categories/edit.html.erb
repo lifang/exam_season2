@@ -1,4 +1,4 @@
-
+<%= javascript_include_tag "/assets/My97DatePicker/WdatePicker.js" %>
   <div class="main_title">
     <div class="m_t_h">编辑科目</div>
   </div>
@@ -6,7 +6,11 @@
     <div class="bianji_ny">
       <%= form_for :edit,:url=>"/categories/#{params[:id]}/edit_post",:html=>{:onsubmit=>"return validate_category_form('edit')"} do |f| %>
        <div>科目名称 <input name="name" id="category_name" type="text" value="<%= @category.name %>"/></div>
-        <div>付费标准 <input name="price" id="category_price" type="text" value="<%= @category.price %>"/></div>
+        <div>高级用户付费标准 <input name="price" id="category_price" type="text" value="<%= @category.price %>"/></div>
+        <div>下一考试日期 
+          <input name="next_time" id="next_time" readonly type="text" class="Wdate" onClick="WdatePicker()" 
+                 value="<%= @category.next_time.strftime("%Y-%m-%d") if @category.next_time %>"/>
+        </div>
         <div><button class="t_btn">完成</button></div>
       <% end %>
     </div>
