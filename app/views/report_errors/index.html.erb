@@ -1,12 +1,5 @@
 <%= javascript_include_tag "report_error" %>
 <%= javascript_include_tag "jplayer/jquery.jplayer.min" %>
-<script type="text/javascript">
-  var answer=""
-  function get_answer(str){alert(str);
-    answer +=str.split(")")[0]+".";
-  }
-</script>
-
 <% if @errors.blank? %>
   <div class="error_top">
     <%= render :partial=>"/report_errors/types" %>
@@ -67,7 +60,7 @@
   <% analysis=@info[1].elements["analysis"]  %>
   <div class="error_jiexi_tab" id="jiexi">
     <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('#jiexi').css('display','none');" /></span>
-    <div class="xs_add"><%=  analysis.nil? ? "此题没有解析":analysis.text %></div>
+    <div class="xs_add"><center><%=  (analysis.nil?||analysis.text.nil?||analysis.text=="") ? "此题没有解析":analysis.text %></center></div>
   </div>
   <%= render :partial=>"/report_errors/detail",:object=>@word %>
   <div class="error_tab_list"></div>
