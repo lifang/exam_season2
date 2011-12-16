@@ -128,9 +128,8 @@ function generate_flash_div(style) {
 function show_flash_div() {
     $('.tishi_tab').stop(null,true);
     generate_flash_div(".tishi_tab");
-    $('.tishi_tab').fadeOut("slow",function(){
-        $(this).remove();
-    });
+    setTimeout(function(){ jQuery('.tishi_tab').fadeTo("slow",0); }, 2500);
+    setTimeout(function(){ $('.tishi_tab').remove(); }, 3000);
 }
 
 //创建元素

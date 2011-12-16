@@ -6,8 +6,10 @@
     setCookie("init_block","1");
     setCookie("init_problem","1");
   }
-  var init_block=<%= cookies[:init_block].nil? ? 1 : cookies[:init_block] %>;
-  var init_problem=<%= cookies[:init_problem].nil? ? 1 : cookies[:init_problem] %>;
+  var init_block = <%= params[:init_block].nil? or params[:init_block].empty? ?
+    (cookies[:init_block].nil? ? 1 : cookies[:init_block]) : params[:init_block] %>;
+  var init_problem = <%= (params[:init_problem].nil? or params[:init_problem].empty?) ?
+    (cookies[:init_problem].nil? ? 1 : cookies[:init_problem]) : params[:init_problem] %>;
   var category_id = <%= params[:category] %>;
 
   // 设置几个DIV居中显示
