@@ -250,10 +250,14 @@ class PapersController < ApplicationController
 
   #审核 创建试卷的js文件
   def examine
-    paper_id = parmas["paper_id"]
-    @paper = Paper.find(paper_id)
+    @paper = Paper.find(params[:id])
     @paper.create_paper_url(@paper.create_paper_js, "#{Time.now.strftime("%Y%m%d")}", "js", "paperjs")
-    redirect_to request.referer
+    respond_to do |format|
+      format.json {
+        data={:message=>'试卷审核成功'}
+        render :json=>data
+      }
+    end
   end
 
   # --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------
