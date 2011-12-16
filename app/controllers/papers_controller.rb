@@ -18,7 +18,7 @@ class PapersController < ApplicationController
   def create
     @paper=Paper.create(:creater_id=>cookies[:user_id],
       :title=>params[:title].strip, :types => Examination::TYPES[:OLD_EXAM], 
-      :category_id => params[:category])
+      :category_id => params[:category],:time=>params[:time])
     category = Category.find(params[:category])
     @paper.create_paper_url(@paper.xml_content({"category_name" => category.name}),
       "#{Time.now.strftime("%Y%m%d")}", "xml") unless category.nil?

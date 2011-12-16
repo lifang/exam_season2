@@ -48,7 +48,7 @@ class Paper < ActiveRecord::Base
   def xml_content(options = {})
     content = "<?xml version='1.0' encoding='UTF-8'?>"
     content += <<-XML
-      <paper id='#{self.id}' total_num='0' total_score='0'>
+      <paper id='#{self.id}' total_num='0' total_score='0' time='#{self.time}'>
         <base_info>
           <title>#{self.title.force_encoding('ASCII-8BIT')}</title>
           <category>#{self.category_id}</category>

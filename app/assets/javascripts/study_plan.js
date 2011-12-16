@@ -89,8 +89,6 @@ $(function(){
 function delete_real_task(id){
     var delete_ids=$("#delete_task_ids").val();
     var ids="";
-    if (confirm("确认删除此任务？"))
-    {
         if (delete_ids==""||delete_ids.length==0){
             ids=id;
         }else{
@@ -110,6 +108,5 @@ function delete_real_task(id){
             type:'post'
         });
         return false;
-    }
 }
 
