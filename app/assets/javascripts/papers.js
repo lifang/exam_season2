@@ -36,7 +36,8 @@ function set_center(jq_params){
 $(function(){
     $(".q_l_text").bind("click",function(){
         if(check_edit()){
-            if(confirm("你当前处于编辑状态，如果你取消编辑，所有未保存的内容将全部丢失，你确定要继续当前操作么？")){
+            var form_position = $("#post_question_div").parent().attr("id").replace('question_list_','').replace('q_l_answer_','').split('_');
+            if(confirm("系统检测到您正在第 "+form_position[0]+" 部分，第 "+form_position[1]+" 大题处编辑小题。\n如果你取消编辑，所有未保存的内容将全部丢失。\n您确定要取消么？")){
                 $("#post_question_loader").append($('#post_question_div'));
             }else{
                 return false;
@@ -270,6 +271,12 @@ function rescue_null(object){
 ////ajax载入小题类型，拼凑完整表单(post_question 表单)
 function select_correct_type(ele_str,block_index,problem_index,question_index,correct_type,question_answer,question_attrs,question_description,question_analysis,question_score,question_tags,question_words,hidden_div){
     //如果参数为null,转化为""
+    if(check_edit()){
+        var form_position = $("#post_question_div").parent().attr("id").replace('question_list_','').replace('q_l_answer_','').split('_');
+        if(!confirm("系统检测到您正在第"+form_position[0]+"部分，第"+form_position[1]+"大题处编辑小题。\n如果你取消编辑，所有未保存的内容将全部丢失。\n您确定要取消么？")){
+            return false;
+        }
+    }
     question_answer=rescue_null(question_answer);
     question_attrs=rescue_null(question_attrs);
     question_description=rescue_null(question_description);
@@ -277,7 +284,7 @@ function select_correct_type(ele_str,block_index,problem_index,question_index,co
     question_score=rescue_null(question_score);
     question_tags=rescue_null(question_tags);
     question_words=rescue_null(question_words);
-    hidden_div=rescue_null(hidden_div);
+    hidden_div=rescue_null(hidden_div);   //编辑小题时有值，追加小题时为空
     $('#post_question_attrs_module').load('/papers/select_correct_type',
     {
         "correct_type" : correct_type,
@@ -287,7 +294,7 @@ function select_correct_type(ele_str,block_index,problem_index,question_index,co
     function(){
         // 手工测得 question_list 的 高度为 65 ，样式改动，需调整
         var location = question_index=="" ?  ele_str+block_index+"_"+problem_index : ele_str+block_index+"_"+problem_index+"_"+question_index;
-        if(hidden_div!=null && hidden_div!=""){
+        if(hidden_div!=""){
             var final_scrollTop = 65 * (hidden_div.closest(".question_list_box").children(".question_list").index(hidden_div.closest(".question_list"))-1) ;
             hidden_div.closest(".question_list_box").scrollTop(final_scrollTop);
             hidden_div.slideUp(800,function(){
@@ -296,6 +303,9 @@ function select_correct_type(ele_str,block_index,problem_index,question_index,co
                 $("#post_question_div").slideDown(1200);
             });
         }else{
+            $(location).closest(".question_list_box").scrollTop(0);
+            $(".q_l_answer:visible").hide();
+            $("q_l_text:hidden").show();
             $("#post_question_div").hide();
             $(location).append($("#post_question_div"));  //载入form
             $("#post_question_div").slideDown(1200);
@@ -579,6 +589,60 @@ function ajax_load_words_list(match,added_words){
             $(".single_word_li:eq(0)").trigger("click");
         }
     });
+}
+
+//词汇管理框，点击单一小题，右侧显示单词的详细信息
+function show_single_word_detail(jqery_ele,name,en_mean,ch_mean,types,phonetic,enunciate_url){
+    //alert(""+name+" "+en_mean+" "+ch_mean+" "+types+" "+phonetic+" "+enunciate_url);
+    $(".single_word_li").removeClass("hover");
+    jqery_ele.addClass("hover");
+    $(".single_word_element").html("");
+    $("#single_word_name").html(name);
+    $("#single_word_en_mean").html(en_mean);
+    $("#single_word_ch_mean").html(ch_mean);
+    $("#single_word_types").html(types);
+    $("#single_word_phonetic").html(phonetic);
+    $("#single_word_enunciate_url").val(enunciate_url);
+    $("#xs_add_div").show();
+}
+
+//词汇管理框，选择词汇
+function select_word(word){
+    var origin_words = $("#addWords_insert_words").val().split(" ");
+    for(var i=0;i<origin_words.length;i++){
+        if(origin_words[i]==word){
+            tishi_alert("你选择的单词已经在列表中");
+            return false;
+        }
+    }
+    origin_words.push(word);
+    $("#addWords_insert_words").val(origin_words.join(" "));
+    $("#already_add_words_div").html($("#already_add_words_div").html()+"<div>"+word+" <a href='javascript:void(0);' onclick='javascript:delete_word(\""+word+"\")'>[删除]</a></div>");
+}
+
+//词汇管理框 删除词汇
+function delete_word(word){
+    var origin_tags_arr = $("#addWords_insert_words").val().split(" ");
+    var result_tags_arr = new Array;
+    for(var i=0;i<origin_tags_arr.length;i++){
+        if(origin_tags_arr[i]!=word && origin_tags_arr[i]!=""){
+            result_tags_arr.push(origin_tags_arr[i]);
+        }
+    }
+    $("#addWords_insert_words").val(result_tags_arr.join(" "));
+    $("#already_add_words_div").empty();
+    for(var i=0;i<result_tags_arr.length;i++){
+        if(result_tags_arr[i]!=""){
+            $("#already_add_words_div").html($("#already_add_words_div").html()+"<div>"+result_tags_arr[i]+" <a href='javascript:void(0);' onclick='javascript:delete_word(\""+result_tags_arr[i]+"\")'>[删除]</a></div>");
+        }
+    }
+}
+
+//词汇管理框 插入词汇，更新form值
+function insert_words(origin_words_input,target_words_input,display){
+    $(target_words_input).val($(origin_words_input).val());
+    display_words_text(target_words_input,display);
+    close_addWords();
 }
 
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%= javascript_include_tag 'kindeditor/kindeditor.js'  %>
 <script type="text/javascript" >
   //定义初始化变量
   if(!(getCookie("init_paper")!=null&&getCookie("init_paper")==<%= params[:id] %>)){
@@ -11,8 +11,8 @@
   var category_id = <%= params[:category] %>;
 
   // 设置几个DIV居中显示
-  $(function(){set_center('.part_info');set_center('.add_label');set_center('.addWords')})
-
+  $(function(){set_center('.part_info');set_center('.add_label');set_center('.addWords')});
+  
 </script>
 
 <div class="main_title">
@@ -100,6 +100,17 @@
               <div id="show_problem_description_<%= block_index %>_<%= problem_index %>" class="qu_con_explain" onselectstart="return false;" ondblclick="javascript:$('#edit_problem_description_<%= block_index %>_<%= problem_index %>').show();$(this).hide();$('#edit_problem_description_textarea_<%= block_index %>_<%= problem_index %>').val($(this).text()).focus();"><%= problem.elements["description"].text if problem.elements["description"] %></div>
               <div class="qc_h"><span class="yl_bc"><a href="#">插入标记</a> | <a href="#">插入录音</a> | <a href="#">插入图片</a></span>题目内容</div>
               <div id="edit_problem_title_<%= block_index %>_<%= problem_index %>" style="display:none;"><textarea id="edit_problem_title_textarea_<%= block_index %>_<%= problem_index %>" cols="" rows=""  class="qc_textarea2" onchange="javascript:ajax_edit_problem_title(<%= params[:id] %>,<%= block_index %>,<%= problem_index %>,$(this).val());" onblur="$('#edit_problem_title_<%= block_index %>_<%= problem_index %>').hide();$('#show_problem_title_<%= block_index %>_<%= problem_index %>').show();"></textarea></div>
+ <!--
+              <script type="text/javascript">
+                KE.show({
+                  id : 'edit_problem_title_<%= block_index %>_<%= problem_index %>',
+                  items : [
+                    'undo', 'redo', 'fontname', 'fontsize', 'textcolor', 'bgcolor', 'bold', 'italic', 'underline',
+                    'removeformat', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                    'insertunorderedlist']
+                });
+              </script>
+ -->
               <div id="show_problem_title_<%= block_index %>_<%= problem_index %>" class="qu_con_content" onselectstart="return false;" ondblclick="javascript:$('#edit_problem_title_<%= block_index %>_<%= problem_index %>').show();$(this).hide();$('#edit_problem_title_textarea_<%= block_index %>_<%= problem_index %>').val($(this).text()).focus();"><%= problem.elements["title"].text if problem.elements["title"] %></div>
             </div>
 
@@ -358,60 +369,6 @@
   </div>
 </div>
 
-<script type="text/javascript">
-  //词汇管理框，点击单一小题，右侧显示单词的详细信息
-  function show_single_word_detail(jqery_ele,name,en_mean,ch_mean,types,phonetic,enunciate_url){
-    //alert(""+name+" "+en_mean+" "+ch_mean+" "+types+" "+phonetic+" "+enunciate_url);
-    $(".single_word_li").removeClass("hover");
-    jqery_ele.addClass("hover");
-    $(".single_word_element").html("");
-    $("#single_word_name").html(name);
-    $("#single_word_en_mean").html(en_mean);
-    $("#single_word_ch_mean").html(ch_mean);
-    $("#single_word_types").html(types);
-    $("#single_word_phonetic").html(phonetic);
-    $("#single_word_enunciate_url").val(enunciate_url);
-    $("#xs_add_div").show();
-  }
-
-  //词汇管理框，选择词汇
-  function select_word(word){
-    var origin_words = $("#addWords_insert_words").val().split(" ");
-    for(var i=0;i<origin_words.length;i++){
-      if(origin_words[i]==word){
-        tishi_alert("你选择的单词已经在列表中");
-        return false;
-      }
-    }
-    origin_words.push(word);
-    $("#addWords_insert_words").val(origin_words.join(" "));
-    $("#already_add_words_div").html($("#already_add_words_div").html()+"<div>"+word+" <a href='javascript:void(0);' onclick='javascript:delete_word(\""+word+"\")'>[删除]</a></div>");
-  }
-
-  //词汇管理框 删除词汇
-  function delete_word(word){
-    var origin_tags_arr = $("#addWords_insert_words").val().split(" ");
-    var result_tags_arr = new Array;
-    for(var i=0;i<origin_tags_arr.length;i++){
-      if(origin_tags_arr[i]!=word){
-        result_tags_arr.push(origin_tags_arr[i]);
-      }
-    }
-    $("#addWords_insert_words").val(result_tags_arr.join(" "));
-    $("#already_add_words_div").empty();
-    for(var i=0;i<result_tags_arr.length;i++){
-      $("#already_add_words_div").html($("#already_add_words_div").html()+"<div>"+result_tags_arr[i]+" <a href='javascript:void(0);' onclick='javascript:delete_word(\""+result_tags_arr[i]+"\")'>[删除]</a></div>");
-    }
-  }
-
-  //词汇管理框 插入词汇，更新form值
-  function insert_words(origin_words_input,target_words_input,display){
-    $(target_words_input).val($(origin_words_input).val());
-    display_words_text(target_words_input,display);
-    close_addWords();
-  }
-
-</script>
 
 <!-- ajax载入图片 提前载入以便调用 -->
 <div id="ajax_loader" style="display:none;"><%= image_tag 'ajax-loader.gif' %></div>

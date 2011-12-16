@@ -26,10 +26,20 @@
           <% end %>
         </div>
       <% end %>
-      <div class="km_a"><a href="/papers?category=<%= category.id %>">管理</a><a href="/categories/<%= category.id %>/edit">修改</a></div>
+      <div class="km_a">
+        <a href="/papers?category=<%= category.id %>">管理</a>
+        <a href="/categories/<%= category.id %>/edit">修改</a>
+      </div>
     </div>
   <% end %>
   <div class="clear space20"></div>
   <%=  will_paginate @categories ,:previous_label=>" &lt;", :next_label=>" &gt;", :inner_window => 1 %>
 </div>
 
+<script type="text/javascript" >
+
+  function examine(paper_id) {
+    window.location.href="/papers/"+ paper_id +"/create_all_paper";
+  }
+
+</script>
