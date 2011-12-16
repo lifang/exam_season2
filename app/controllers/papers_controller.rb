@@ -99,7 +99,8 @@ class PapersController < ApplicationController
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     problem_element = doc.elements["/paper/blocks/block[#{params[:block_index]}]/problems/problem[#{params[:problem_index]}]"]
-    Problem.find(problem_element.attributes["id"]).update_attribute("description",params[:description])
+    @problem = problem_element.attributes["id"]=="" ? nil : Problem.find(problem_element.attributes["id"])
+    @problem.update_attribute("description",params[:description]) if @problem
     manage_element(problem_element,{:description=>params[:description]},{})
     write_xml(doc,url)
     respond_to do |format|
@@ -116,7 +117,8 @@ class PapersController < ApplicationController
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     problem_element = doc.elements["/paper/blocks/block[#{params[:block_index]}]/problems/problem[#{params[:problem_index]}]"]
-    Problem.find(problem_element.attributes["id"]).update_attribute("title",params[:title])
+    @problem = problem_element.attributes["id"].nil? ? nil : Problem.find(problem_element.attributes["id"])
+    @problem.update_attribute("title",params[:title]) if @problem
     manage_element(problem_element,{:title=>params[:title]},{})
     write_xml(doc,url)
     respond_to do |format|
@@ -163,7 +165,8 @@ class PapersController < ApplicationController
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     base_info_element = doc.elements["/paper/base_info"]
-    Paper.find(params[:id]).update_attribute("title",params[:title])
+    @paper = Paper.find(params[:id])
+    @paper.update_attribute("title",params[:title]) if @paper
     manage_element(base_info_element,{:title=>params[:title]},{})
     write_xml(doc,url)
     respond_to do |format|
@@ -179,7 +182,8 @@ class PapersController < ApplicationController
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     base_info_element = doc.elements["/paper/base_info"]
-    Paper.find(params[:id]).update_attribute("time",params[:time])
+    @paper = Paper.find(params[:id])
+    @paper.update_attribute("time",params[:time]) if @paper
     manage_element(base_info_element,{:time=>params[:time]},{})
     write_xml(doc,url)
     respond_to do |format|
@@ -243,6 +247,14 @@ class PapersController < ApplicationController
         render :partial=>"/papers/words_list" ,:object=>{:words=>@words,:match=>match}
       }
     end
+  end
+
+  #审核 创建试卷的js文件
+  def examine
+    @paper = Paper.find(params[:id].to_i)
+    @paper.create_paper_url(@paper.create_paper_js, "paperjs", "js")
+    @paper.update_num_score
+    redirect_to papers_url
   end
 
   # --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------
