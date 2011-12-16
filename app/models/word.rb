@@ -1,11 +1,21 @@
 #encoding: utf-8
 class Word < ActiveRecord::Base
+  require 'net/https'
+  require 'uri'
+  require 'mechanize'
+  require 'hpricot'
+  require 'open-uri'
+  require 'rubygems'
+  require 'fileutils'
+  require 'rexml/document'
+  include REXML
+  
   belongs_to :category
   has_many :word_sentences
   has_many :word_question_relations,:dependent=>:destroy
   has_many :questions,:through=>:word_question_relations, :source => :question
   has_many :word_discriminate_relations,:dependent => :destroy
-  has_many :discriminates,:through=>:word_discriminate_relations, :source => :discriminate
+  has_many :discriminates,:through=>:word_discriminate_relations, :source => :discriminate  
 
   TYPES = {0 => "n.", 1 => "v.", 2 => "pron.", 3 => "adj.", 4 => "adv.",
     5 => "num.", 6 => "art.", 7 => "prep.", 8 => "conj.", 9 => "interj.", 10 => "u = ", 11 => "c = ", 12 => "pl = "}
@@ -35,6 +45,96 @@ class Word < ActiveRecord::Base
       f.write(file_path.read)
     end
     return filename
+  end
+
+  #从网络上下载单词
+  def self.get_word_from_web(word)
+    url = "http://oald8.oxfordlearnersdictionaries.com/dictionary/"
+    agent = Mechanize.new
+    page = agent.get(url + "#{word}")
+    contents =Iconv.conv("UTF-8//IGNORE", "GB2312",page.body )
+    contents =Iconv.conv("GB2312//IGNORE", "UTF-8", contents)
+    puts "page aready"
+    doc_utf = Hpricot(contents)
+    #词性
+    pos = doc_utf.search('div[@class=webtop-g]').search('span[@class=pos]').inner_html unless
+    doc_utf.search('span[@class=pos]').nil?     
+
+    #获取释义和例句
+    infos = doc_utf.search('span[@class=n-g]')
+    descriptions = {}   #释义为key，例句为value
+    ds = []
+    if infos.inner_html.to_s.strip == ""
+      d = doc_utf.search("span[@class=d]").inner_html.gsub(/<[^{><}]*>/, "")  #释义
+      ds << d
+      doc_utf.search("span[@class=x]").each do |sentence|
+        if descriptions[d].nil? or descriptions[d].length < sentence.inner_html.gsub(/<[^{><}]*>/, "").length
+          descriptions[d] = sentence.inner_html.gsub(/<[^{><}]*>/, "")
+        end
+      end unless doc_utf.search("span[@class=x]").inner_html.to_s.strip == ""
+    else
+      puts infos.length
+      infos.each do |block|
+        unless block.search('/img').length == 0
+          d = block.search("span[@class=d]").inner_html.gsub(/<[^{><}]*>/, "")
+          ds << d
+          block.search("span[@class=x]").each do |sentence|
+            if descriptions[d].nil? or descriptions[d].length < sentence.inner_html.gsub(/<[^{><}]*>/, "").length
+              descriptions[d] = sentence.inner_html.gsub(/<[^{><}]*>/, "")
+            end
+          end unless block.search("span[@class=x]").inner_html.to_s.strip == ""
+        end
+      end
+      if ds.blank?
+        d = infos[0].search("span[@class=d]").inner_html.gsub(/<[^{><}]*>/, "")
+        ds << d
+        infos[0].search("span[@class=x]").each do |sentence|
+          if descriptions[d].nil? or descriptions[d].length < sentence.inner_html.gsub(/<[^{><}]*>/, "").length
+            descriptions[d] = sentence.inner_html.gsub(/<[^{><}]*>/, "")
+          end
+        end unless infos[0].search("span[@class=x]").inner_html.to_s.strip == ""
+      end
+    end
+    #获取音标和音频
+    info = doc_utf.search('div[@class=ei-g]').search('span[@class=i]')
+    unless info.search('/img').attr('onclick').nil?
+      img = info.search('/img').attr('onclick').split("'")[1]
+      uri = "http://oald8.oxfordlearnersdictionaries.com" +img
+      puts uri
+      file_name = ""
+      open(uri) do |fin|
+        file_name = uri.split('.').reverse[0]
+        all_dir = "#{Rails.root}/public/mp3/"
+        FileUtils.makedirs all_dir    #建目录
+        puts 'begin download pic'
+        File.open("#{all_dir}#{word}.#{file_name}", "wb+") do |fout|
+          while buf = fin.read(1024) do
+            fout.write buf
+            STDOUT.flush
+          end
+        end
+        puts 'download pic over'
+      end
+      yinbiao = info.inner_html.force_encoding('UTF-8').gsub(/<[^{><}]*>/, "")
+      puts yinbiao
+    end
+
+    #中文词义
+    url_ch = "http://hk.dictionary.yahoo.com/dictionary?p="
+    agent = Mechanize.new
+    ch_page = agent.get(url_ch + "#{word}")
+    doc_utf = Hpricot(ch_page.body)
+    ch_infos = doc_utf.search('div[@id=summary-card]').search('div[@class=summary]').search('div[@class=description]')
+    ch_ds = []
+    infos.each do |block|
+      d = block.inner_html.gsub(/<[^{><}]*>/, "").gsub(", ", ";").gsub(",", ";")
+      ch_ds << d
+    end
+
+    ds.each do |d|
+      puts "#{word},#{pos},#{d}, #{ch_ds[0]},#{yinbiao},/mp3/#{word}.#{file_name}, #{descriptions[d]}"
+    end unless ds.blank?
+
   end
 
 end

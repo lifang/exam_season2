@@ -27,7 +27,6 @@ module Constant
   PAPER_XML_PATH = "#{Rails.root}/public"
   #运营数据目录
   DIR_ROOT="/data"
-
   #模考统计
   SIMULATION_DIR="/simulas"
   #运营数据操作类型

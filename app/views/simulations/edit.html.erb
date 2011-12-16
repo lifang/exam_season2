@@ -8,10 +8,10 @@
   <div class="bianji_ny">
     <%= form_for :exam_info ,:url=>"/simulations/#{@single_exam.id}/update_rater",:html=>{:id=>"exam_info"} do %>
       <div>名称 <input name="title" type="text" id="title" value="<%= @single_exam.title %>"/></div>
-      <div>日期 <input name="from_date"  id="from_date" class="Wdate"
+      <div>日期 <input name="from_date"  id="from_date" class="Wdate" readonly
                      value="<%= @single_exam.start_at_time.strftime("%Y-%m-%d") unless @single_exam.start_at_time.nil? %>"
                      type="text" onClick="WdatePicker();" />
-        至 <input name="end_date" class="Wdate"
+        至 <input name="end_date" class="Wdate" readonly
                  value="<%= @single_exam.start_end_time.strftime("%Y-%m-%d") unless @single_exam.start_end_time.nil? %>"
                  id="end_date" type="text"  onClick="WdatePicker();" /></div>
       <div id="selected_papers">

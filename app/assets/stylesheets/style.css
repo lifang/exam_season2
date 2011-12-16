@@ -279,6 +279,10 @@ span.mk_span_w { color: #000;}
 .part_info table textarea { width: 315px; height: 100px;}
 
 
+/*备考弹出层--------------------*/
+.zhezhao { width:100%; left:0; position:absolute; top:0; background:#000000; opacity:0.5; filter:alpha(opacity=50); z-index:888;display: none; height: 100%;position:fixed; }
+
+
 /*用户列表*/
 .user_search { float: right; margin: 6px 20px 0 0;}
 .user_list {}
@@ -417,11 +421,11 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 .see_mess_xx { border: 1px #CCC solid; padding: 10px;}
 
 /*添加词汇----------*/
-.addWords { width: 440px; padding: 10px; border: 3px #999 solid; background: #FFF; overflow: hidden; position: fixed;}
+.addWords { width: 440px; padding: 10px; border: 3px #999 solid; background: #FFF; overflow: hidden; position: fixed;z-index: 900;display:none;}
 .addwords_side { width: 220px; float: left;}
-.words_ny { width: 200px; height: 100px; margin: 5px 0; overflow: hidden; border: 1px #CCC solid;}
+.words_ny { width: 200px; height: 100px; margin: 5px 0; overflow: auto; border: 1px #CCC solid;}
 .words_ny li { height: 24px; line-height: 24px;}
-.words_ny li a {width: 190px; height: 24px; display: block; padding-left: 10px; color: #333;}
+.words_ny li a {width: 170px; height: 24px; display: block; padding-left: 10px; color: #333;}
 .words_ny li a:hover { background: #09C; color: #FFF;}
 .words_ny li a.hover { background: #09C; color: #FFF;}
 .words_ny div { margin:5px;}

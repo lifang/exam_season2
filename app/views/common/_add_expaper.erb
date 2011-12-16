@@ -9,8 +9,8 @@
     <%= form_for :similarity_form, :url => "/similarities/get_papers?category=#{params[:category]}", :remote => true do |f| -%>
       <h3>试卷查询：</h3>
       <div><label>创建时间：</label>
-        从<input name="mintime" id="mintime" type="text" size="15" class="Wdate" onClick="WdatePicker()"/>
-        到<input name="maxtime" id="maxtime" type="text" size="15" class="Wdate" onClick="WdatePicker()"/>
+        从<input name="mintime" id="mintime" readonly type="text" size="15" class="Wdate" onClick="WdatePicker()"/>
+        到<input name="maxtime" id="maxtime" readonly type="text" size="15" class="Wdate" onClick="WdatePicker()"/>
       </div>
       <div><label>试卷标题：</label>
         <input name="exam_title" id="exam_title" type="text" />

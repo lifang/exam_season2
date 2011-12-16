@@ -26,11 +26,7 @@ class ReportErrorsController < ApplicationController
     @num=ReportError.count(:id,:conditions=>num_sql)
     @errors=ReportError.find_by_sql(error_sql)
     error=@errors[0]
-    if params[:page].to_i==@num-1
-      @next= @num-1
-    else
-      @next=params[:page].to_i+1
-    end
+    @next = params[:page].to_i == @num-1 ? @num-1:params[:page].to_i+1
     if @num==1
       @last=0
       @next=0
@@ -64,7 +60,9 @@ class ReportErrorsController < ApplicationController
   def modify_status
     error_report=ReportError.find(params[:id].to_i)
     error_report.update_attributes(:status=>params[:status].to_i)
-    Order.create(:user_id=>error_report.user_id,:status=>Order::TYPES[:OTHER],:pay_type=>Order::STATUS[:NOMAL]) if Order.find_by_user_id(error_report.user_id).nil? if params[:status].to_i==ReportError.STATUS[:OVER]
+    Order.create(:user_id=>error_report.user_id,:status=>Order::TYPES[:OTHER],
+      :pay_type=>Order::STATUS[:NOMAL]) if params[:status].to_i == ReportError::STATUS[:OVER] and
+      Order.find_by_user_id(error_report.user_id).nil?
     page=params[:page]
     my_params = Hash.new
     request.parameters.each {|key,value|my_params[key.to_s]=value}
@@ -75,17 +73,18 @@ class ReportErrorsController < ApplicationController
     my_params.delete("authenticity_token")
     my_params.delete("utf8")
     unless page.nil? || page=="" ||page.to_i<1
-      url=my_params.sort.map{|k,v|"#{k}=#{v}"}.join("&")
+      url=my_params.sort.map{|k,v|"#{k}=#{v}" unless (v.nil? or v.empty?)}.join("&")
     else
       my_params.delete("page")
-      url=my_params.sort.map{|k,v|"#{k}=#{v}"}.join("&")
+      url=my_params.sort.map{|k,v|"#{k}=#{v}" unless (v.nil? or v.empty?)}.join("&")
     end
     redirect_to "/report_errors?#{url}"
   end
 
   def other_users
     session[:question_id]=params[:question_id].to_i
-    other_sql="select u.name,re.error_type,re.description from report_errors re inner join users u on u.id=re.user_id where re.question_id=#{session[:question_id]}"
+    other_sql="select u.email,re.error_type,re.description from report_errors re
+      inner join users u on u.id=re.user_id where re.question_id=#{session[:question_id]}"
     @others=ReportError.paginate_by_sql(other_sql,:per_page =>2, :page => params[:page])
     respond_with (@others) do |format|
       format.js
