@@ -60,9 +60,9 @@ class Paper < ActiveRecord::Base
     content += <<-XML
       </base_info>
       <blocks>
-        <block id='' time='' total_num='4' total_score='15.0'>
+        <block id='' time='' total_num='4' total_score='106.5'>
             <base_info>
-                <title>first</title>
+                <title>Part I	Writing</title>
                 <description></description>
             </base_info>
             <problems></problems>

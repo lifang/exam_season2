@@ -3,6 +3,7 @@ attrs_array = attrs_str.split(";-;") unless attrs_str.nil?
 correct_type = error[1].attributes["correct_type"]
 answer = error[1].elements["answer"]
 answers = []
+all_answer=""
 answer.text.split(";|;").collect { |item| answers << item.strip } unless answer.nil? or answer.text.nil? %>
 <div class="er_pr_an">
   <% if (correct_type.to_i == Question::CORRECT_TYPE[:MORE_CHOSE] or
@@ -11,6 +12,7 @@ answer.text.split(";|;").collect { |item| answers << item.strip } unless answer.
       <%
       (0..attrs_array.length-1).each do |i|
         is_answer = answers.include?(attrs_array[i].strip)
+        all_answer += attrs_array[i].strip.split(")")[0]+"."  if is_answer
       %>
         <li>
           <% if correct_type.to_i == Question::CORRECT_TYPE[:MORE_CHOSE] %>
@@ -18,53 +20,36 @@ answer.text.split(";|;").collect { |item| answers << item.strip } unless answer.
           <% elsif correct_type.to_i == Question::CORRECT_TYPE[:SINGLE_CHOSE] %>
             <input type="radio"   id="question_attr_<%= i %>"disabled/>
           <% end %>&nbsp;&nbsp;
-          <% if is_answer %>
-            <script type="text/javascript">
-              get_answer('<%= attrs_array[i].strip %>')
-            </script>
-          <% end %>
-          <%= attrs_array[i] %>
-        </li>
-      <% end %>
-    </ul>
-  <% elsif correct_type.to_i == Question::CORRECT_TYPE[:JUDGE] %>
-    <ul>
-      <li>
-        <input type="radio" disabled/><label>对</label>
+        <%= attrs_array[i] %>
       </li>
-      <li>
-        <input type="radio" disabled /><label>错</label>
-      </li>
-    </ul>
-    <script type="text/javascript">
-      get_answer('<%= answers[0]==0 ? "错":"对" %>')
-    </script>
-  <% elsif correct_type.to_i == Question::CORRECT_TYPE[:SINGLE_CALK] %>
-    <div>
-      <input name="answer" type="text" value="" disabled/>
-    </div>
-    <script type="text/javascript">
-      get_answer('<%= answers[0] %>')
-    </script>
-  <% elsif correct_type.to_i == Question::CORRECT_TYPE[:CHARACTER] %>
-    <div>
-      <textarea cols="" rows=""readonly></textarea>
-    </div>
-    <script type="text/javascript">
-      get_answer('<%= answers[0] %>')
-    </script>
-  <% elsif correct_type.to_i == Question::CORRECT_TYPE[:MORE_BLANKS] %>
-    <div>
-      <textarea disabled cols="" rows="" style="height:24px;"></textarea>
-    </div>
-    <% all_answer="" %>
-    <% answers.each do |answer| %>
-      <% all_answer += "#{answer};" %>
     <% end %>
-    <script type="text/javascript">
-      get_answer('<%= all_answer %>')
-    </script>
+  </ul>
+<% elsif correct_type.to_i == Question::CORRECT_TYPE[:JUDGE] %>
+  <ul>
+    <li>
+      <input type="radio" disabled/><label>对</label>
+    </li>
+    <li>
+      <input type="radio" disabled /><label>错</label>
+    </li>
+  </ul>
+  <%  answer=answers[0]==0 ? "错":"对" %>
+<% elsif correct_type.to_i == Question::CORRECT_TYPE[:SINGLE_CALK] %>
+  <div>
+    <input name="answer" type="text" value="" disabled/>
+  </div>
+  <%all_answer= answers[0] %>
+<% elsif correct_type.to_i == Question::CORRECT_TYPE[:CHARACTER] %>
+  <div>
+    <textarea cols="" rows=""readonly></textarea>
+  </div>
+  <%  all_answer= answers[0] %>
+<% elsif correct_type.to_i == Question::CORRECT_TYPE[:MORE_BLANKS] %>
+  <div>
+    <textarea disabled cols="" rows="" style="height:24px;"></textarea>
+  </div>
+ <%  all_answer= answers[0] %>
   <% end %>
-  <div class="answer_true"></div>
-  <div><a href="#" onclick="javascript:$('.error_jiexi_tab').css('display','none');show_div('#jiexi');">解析</a><a href="#" onclick="javascript:$('.error_jiexi_tab').css('display','none');show_div('#xiangguan');">相关词汇</a><button class="t_btn" onclick="javascript:window.open('/papers/<%= error[0].paper_id %>/edit?category=<%= params[:category] %>')">编辑</button></div>
 </div>
+<div class="answer_true"><div> <%=  all_answer.to_s.html_safe %></div></div>
+<div class="answer_a"><a href="#" onclick="javascript:$('.error_jiexi_tab').css('display','none');show_div('#jiexi');">解析</a><a href="#" onclick="javascript:$('.error_jiexi_tab').css('display','none');show_div('#xiangguan');">相关词汇</a><button class="t_btn" onclick="javascript:window.open('/papers/<%= error[0].paper_id %>/edit?category=<%= params[:category] %>')">编辑</button></div>

@@ -82,13 +82,16 @@ class ExaminationTagRelation < ActiveRecord::Base
               :category_id => doc.attributes["id"].to_i, :types => Examination::TYPES[:SPECIAL])
             examination.update_paper("create", [paper])
             ExaminationTagRelation.create(:tag_id => block.attributes["tag_id"].to_i, :examination_id => examination.id)
+            path = "#{Time.now.strftime("%Y%m%d")}"
           else
             paper = Paper.find(exist_examination[0].id)
+            path = paper.paper_url.split("/")[1]
           end
           last_document = Document.new(paper.xml_content)
+          last_document.root.elements["blocks"].delete_element 1
           last_document.root.elements["blocks"].add_element(block)
-          paper.create_paper_url(last_document.to_s, "#{Time.now.strftime("%Y%m%d")}", "xml", "special_paper")
-          paper.create_paper_url(paper.create_paper_js, "#{Time.now.strftime("%Y%m%d")}", "js", "special_paperjs")
+          paper.create_paper_url(last_document.to_s, path, "xml", "special_paper")
+          paper.create_paper_url(paper.create_paper_js, path, "js", "special_paperjs")
         end
       end
     end unless doc.nil?

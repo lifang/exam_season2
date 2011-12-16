@@ -2,7 +2,7 @@
 <%= javascript_include_tag "jplayer/jquery.jplayer.min" %>
 <script type="text/javascript">
   var answer=""
-  function get_answer(str){
+  function get_answer(str){alert(str);
     answer +=str.split(")")[0]+".";
   }
 </script>
@@ -27,15 +27,21 @@
       <input type="hidden" value="<%= error.id %>" name="id" id="id"/>
     <% end %>
     <div><button class="t_btn" onclick="javascript:modify_status(1)">改好了</button><button class="t_btn" onclick="javascript:modify_status(2)">忽略</button></div>
-    <div>
-      <span class="updown" onclick="javascript:window.location='/report_errors?category=<%= params[:category] %>&page=<%= @last %><%=
-      unless session[:error_type].nil?
-        "&error_type=#{session[:error_type]}"
-            end %>'"><img src="/assets/icon_up.png"/></span>
-      <span class="updown" onclick="javascript:window.location='/report_errors?category=<%= params[:category] %>&page=<%=@next  %><%=
-      unless session[:error_type].nil?
-        "&error_type=#{session[:error_type]}"
-            end %>'"><img src="/assets/icon_down.png" /></span>
+    <div><a class="updown" href="javascript:void(0);"
+            <% if params[:page].nil?||params[:page].to_i==0 %>title="第一页"
+            <%else%>
+              onclick="javascript:window.location='/report_errors?category=<%= params[:category] %>&page=<%= @last %><%=
+              unless session[:error_type].nil?
+                "&error_type=#{session[:error_type]}"
+              end %>'"
+            <% end %>><img src="/assets/icon_up.png"/></a>
+      <a class="updown"  <% if params[:page].to_i==@num-1 %>title="最后一页"
+      <%else%>
+           onclick="javascript:window.location='/report_errors?category=<%= params[:category] %>&page=<%= @next %><%=
+           unless session[:error_type].nil?
+             "&error_type=#{session[:error_type]}"
+           end %>'"
+         <% end %>><img src="/assets/icon_down.png" /></a>
     </div>
   </div>
   <div class="error_box">
@@ -58,7 +64,7 @@
       <%= render :partial=>"/report_errors/error",:object=>@info %>
     </div>
   </div>
-  <% analysis=@info[1].elements["/question/analisis"]  %>
+  <% analysis=@info[1].elements["analysis"]  %>
   <div class="error_jiexi_tab" id="jiexi">
     <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('#jiexi').css('display','none');" /></span>
     <div class="xs_add"><%=  analysis.nil? ? "此题没有解析":analysis.text %></div>
@@ -66,7 +72,6 @@
   <%= render :partial=>"/report_errors/detail",:object=>@word %>
   <div class="error_tab_list"></div>
   <script type="text/javascript">
-    $(".answer_true").html(answer);
     get_others(<%= error.question_id %>);
   </script>
 <% end %>
