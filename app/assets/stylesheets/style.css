@@ -97,6 +97,7 @@ img { border: none;}
 .t_list h2 { float: left; font-size: 16px;}
 .text_btn { position: absolute; top: 20px; right: 0px; display: none;}
 .text_btn button { float: left;}
+.text_btn img { float: left;}
 .t_btn {
     margin: 0 5px;
 	width: 81px;
@@ -106,6 +107,7 @@ img { border: none;}
 	border: none;
 	cursor: pointer;
 }
+
 .tl_hover { background: #f7f7f7; border-left: 1px #CCC solid; border-top: 1px #CCC solid; border-bottom: 2px #CCC solid; border-right: 2px #c1c1c1 solid;}
 
 .main_bottom { width: 958px; height: 10px; background: url(/assets/main_bottom.png) no-repeat; position: absolute; bottom: -10px; _bottom: -12px;}
