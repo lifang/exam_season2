@@ -29,7 +29,7 @@ class PapersController < ApplicationController
   def edit
     @paper = Paper.find(params[:id].to_i)
     begin
-      file = File.open("#{Constant::PAPER_XML_PATH}#{@paper.paper_url}")
+      file = File.open("#{Constant::PAPER_XML_PATH}/#{@paper.paper_url}")
       @xml=Document.new(file).root
       file.close
       @tags=Tag.all
@@ -74,7 +74,7 @@ class PapersController < ApplicationController
     end
     #存储xml文件
     paper = Paper.find(params[:id].to_i)
-    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    url="#{Constant::PAPER_XML_PATH}/#{paper.paper_url}"
     doc = get_doc(url)
     problem_element = doc.elements[@post[:problems_xpath]].add_element("problem")
     manage_element(problem_element,{:description=>@post[:problem_description],:title=>@post[:problem_title],:category=>@post[:category],:questions=>""},{:id=>@problem.id,:question_type=>@post[:question_type]})
@@ -94,10 +94,10 @@ class PapersController < ApplicationController
   # [post][member][ajax] 编辑题目说明
   def ajax_edit_problem_description
     paper = Paper.find(params[:id].to_i)
-    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    url="#{Constant::PAPER_XML_PATH}/#{paper.paper_url}"
     doc = get_doc(url)
     problem_element = doc.elements["/paper/blocks/block[#{params[:block_index]}]/problems/problem[#{params[:problem_index]}]"]
-    @problem = problem_element.attributes["id"]=="" ? nil : Problem.find(problem_element.attributes["id"])
+    @problem = problem_element.attributes["id"].nil? ? nil : Problem.find(problem_element.attributes["id"])
     @problem.update_attribute("description",params[:description]) if @problem
     manage_element(problem_element,{:description=>params[:description]},{})
     write_xml(doc,url)
@@ -112,7 +112,7 @@ class PapersController < ApplicationController
   # [post][member][ajax] 编辑题目标题
   def ajax_edit_problem_title
     paper = Paper.find(params[:id].to_i)
-    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    url="#{Constant::PAPER_XML_PATH}/#{paper.paper_url}"
     doc = get_doc(url)
     problem_element = doc.elements["/paper/blocks/block[#{params[:block_index]}]/problems/problem[#{params[:problem_index]}]"]
     @problem = problem_element.attributes["id"].nil? ? nil : Problem.find(problem_element.attributes["id"])
@@ -130,7 +130,7 @@ class PapersController < ApplicationController
   def post_question
     @post = params[:post_question]
     paper = Paper.find(params[:id].to_i)
-    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    url="#{Constant::PAPER_XML_PATH}/#{paper.paper_url}"
     doc = get_doc(url)
     if @post[:question_index]==""   # 当 question_index 为空，就是新建小题，不为空，就是编辑小题
       problem_id = doc.elements[@post[:questions_xpath]].parent.attributes["id"].to_i
@@ -160,7 +160,7 @@ class PapersController < ApplicationController
 
   def ajax_edit_paper_title
     paper = Paper.find(params[:id].to_i)
-    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    url="#{Constant::PAPER_XML_PATH}/#{paper.paper_url}"
     doc = get_doc(url)
     base_info_element = doc.elements["/paper/base_info"]
     @paper = Paper.find(params[:id])
@@ -177,7 +177,7 @@ class PapersController < ApplicationController
 
   def ajax_edit_paper_time
     paper = Paper.find(params[:id].to_i)
-    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    url="#{Constant::PAPER_XML_PATH}/#{paper.paper_url}"
     doc = get_doc(url)
     base_info_element = doc.elements["/paper/base_info"]
     @paper = Paper.find(params[:id])
@@ -250,8 +250,8 @@ class PapersController < ApplicationController
   #审核 创建试卷的js文件
   def examine
     @paper = Paper.find(params[:id].to_i)
-    @paper.create_paper_url(@paper.create_paper_js, "paperjs", "js")
-    @paper.update_num_score
+    @paper.create_paper_url(@paper.create_paper_js, "#{Time.now.strftime("%Y%m%d")}", "js", "paperjs")
+    
     redirect_to papers_url
   end
 
