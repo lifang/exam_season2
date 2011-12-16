@@ -34,7 +34,7 @@ class ReportErrorsController < ApplicationController
     if @last.to_i<0
       @last=0
     end
-#    begin
+    begin
       others=ReportError.count(:id,:conditions=>"question_id=#{error.question_id}")
       sql="select re.id,re.question_id,re.description r_desc,re.paper_id,pe.paper_url,u.name from
        report_errors re inner join users u on u.id=re.user_id  inner join papers pe on pe.id=re.paper_id  where re.id=#{error.id}"
@@ -51,9 +51,9 @@ class ReportErrorsController < ApplicationController
       problem_postion=problems.index(problem)+1
       @info=[single_error[0],question,title,problem_title,block_postion,problem_postion,problems.size,others]
       @word=Word.find_by_sql("select * from words w inner join word_question_relations wq on w.id=wq.word_id where wq.question_id=#{error.question_id}")
-#    rescue
-#      @errors=[]
-#    end
+    rescue
+      @errors=[]
+    end
   end
 
 
