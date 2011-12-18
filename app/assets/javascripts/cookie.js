@@ -25,7 +25,7 @@ function setCookie(name, value) {
 function delCookie(name) {
 	var exp = new Date();
 	exp.setTime (exp.getTime() - 1);
-	var cval = GetCookie (name);
+	var cval = getCookie (name);
 	document.cookie = name + "=" + cval + "; expires="+ exp.toGMTString();
 }
 

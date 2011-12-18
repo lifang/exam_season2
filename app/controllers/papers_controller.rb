@@ -261,6 +261,20 @@ class PapersController < ApplicationController
     end
   end
 
+  def destroy_element
+    paper=Paper.find(params[:id])
+    xpath = "/paper/blocks/block[#{params[:block_index]}]"
+    xpath += "/problems/problem[#{params[:problem_index]}]" if params[:problem_index]
+    xpath += "/questions/question[#{params[:question_index]}]" if params[:question_index]
+    url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
+    doc = get_doc(url)
+    puts "----------------------------------------------"
+    puts xpath
+    doc.delete_element(xpath)
+    write_xml(doc,url)
+    redirect_to request.referer
+  end
+
   # --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------
 
   #将XML文件生成document对象

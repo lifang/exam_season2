@@ -4,7 +4,7 @@ RailsTest3::Application.routes.draw do
     member do
       post :post_block,:create_problem,:post_question
       post :ajax_edit_problem_description,:ajax_edit_problem_title,:ajax_edit_paper_title,:ajax_edit_paper_time
-      get :examine
+      get :examine,:destroy_element
     end
     collection do
       post :select_question_type,:select_correct_type    #ajax

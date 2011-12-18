@@ -323,7 +323,7 @@ function select_correct_type(ele_str,block_index,problem_index,question_index,co
         }else{
             $(location).closest(".question_list_box").scrollTop(0);
             $(".q_l_answer:visible").hide();
-            $("q_l_text:hidden").show();
+            $(".q_l_text:hidden").show();
             $("#post_question_div").hide();
             $(location).append($("#post_question_div"));  //载入form
             $("#post_question_div").slideDown(1200);
