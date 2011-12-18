@@ -1,5 +1,7 @@
 #encoding: utf-8
 class ReportErrorsController < ApplicationController
+  before_filter :access?
+  before_filter :is_category_in?
   respond_to :html, :xml, :json
   require 'rexml/document'
   include REXML

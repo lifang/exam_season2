@@ -1,6 +1,7 @@
 #encoding: utf-8
 class WordsController < ApplicationController
   before_filter :access?
+  before_filter :is_category_in?
   
   def index
     @words = Word.get_words(params[:category].to_i, nil, params[:page])

@@ -1,6 +1,7 @@
 # encoding: utf-8
 class SimulationsController < ApplicationController
   before_filter :access?
+  before_filter :is_category_in?
   respond_to :html, :xml, :json
   require 'spreadsheet'
 
