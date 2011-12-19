@@ -19,7 +19,7 @@
 
 <div class="main_title">
   <span class="yl_bc"><a href="#">预览</a> | <a href="#">保存</a></span>
-  <div class="m_t_h">
+  <div class="m_t_h1">
     <input name="" type="text" class="p_name" style="display:none" onblur="$(this).hide();$('.p_name:eq(1)').show();" onchange="javascript:ajax_edit_paper_title(<%= params[:id] %>,$(this).val());" /><span class="p_name" onselectstart="return false;" ondblclick="javascript:$(this).hide();$('.p_name:eq(0)').val($(this).text()).show().focus();"><%= (@paper.title.nil?||@paper.title.strip=="")==true ? "未命名试卷" : @paper.title %></span>
     <input name="" type="text" class="p_time" style="display:none" onblur="$(this).hide();$('.p_time:eq(1)').show();" onchange="javascript:ajax_edit_paper_time(<%= params[:id] %>,$(this).val());" /><span class="p_time" onselectstart="return false;" ondblclick="javascript:$(this).hide();$('.p_time:eq(0)').val($(this).text()).show().focus();"><%= (@paper.time.nil?) ? "未设置" : @paper.time %></span>（分钟）
   </div>
@@ -430,11 +430,20 @@
     <div class="xs_add" id="xs_add_div">
       <input id="web_word" value="" type="hidden" />
       <input type="hidden" id="single_word_enunciate_url" value=""/>
-      <h2 id="single_word_name" class="single_word_element"></h2><span id="single_word_types" class="single_word_element">n.</span><span id="single_word_phonetic" class="single_word_element"></span><a href="javascript:void(0);"><img src="/assets/icon_lb.png" onclick="javascript:$(function(){alert($('#single_word_enunciate_url').val())});" /></a>
+      <input type="hidden" id="single_word_id" value=""/>
+      <h2 id="single_word_name" class="single_word_element"></h2>
+      <span id="single_word_types" class="single_word_element">n.</span>
+      <span id="single_word_phonetic" class="single_word_element"></span>
+      <a href="javascript:void(0);">
+        <img src="/assets/icon_lb.png" onclick="javascript:$(function(){alert($('#single_word_enunciate_url').val())});" />
+      </a>
       <div id="single_word_en_mean" class="size_16 single_word_element"></div>
       <div id="single_word_ch_mean" class="single_word_element"></div>
-      <div class="word_liju" style="display:none;">- He is a man alert in problem.</div><br/>
-      <div><button class="t_btn">修改</button><button class="t_btn" onclick="javascirpt:$(function(){select_word($('#single_word_name').html())});">选择</button></div>
+      <div class="word_liju" style="display:none;"></div><br/>
+      <div>
+        <button class="t_btn" id="modify_word" onclick="javascript:edit_word(<%= params[:category] %>);" >修改</button>
+        <button class="t_btn" onclick="javascirpt:$(function(){select_word($('#single_word_name').html())});">选择</button>
+      </div>
     </div>
   </div>
 </div>

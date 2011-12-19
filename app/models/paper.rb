@@ -12,14 +12,14 @@ class Paper < ActiveRecord::Base
   default_scope :order => "papers.created_at desc"
 
   # 未审核、已审核、所有 
-  CHECKED={:NO=>0,:YES=>1,:ALL=>2}
+  CHECKED = {:NO => 0, :YES => 1, :ALL => 2}
 
   STATUS={0=>"未审核",1=>"已审核"}
 
   # 试卷筛选 + 分页    通过paper_js_url 是否为空 判断是否通过审核
   def Paper.search_mothod(category_id,checked, per_page, page)
     sql = "select * from papers where types != #{Examination::TYPES[:SPECIAL]} and category_id = #{category_id}"
-    sql += " and status = #{CHECKED[:NO]} " if checked==CHECKED[:NO]
+    sql += " and (status = #{CHECKED[:NO]} or status is null) " if checked==CHECKED[:NO]
     sql += " and status = #{CHECKED[:YES]}" if checked==CHECKED[:YES]
     sql += " order by created_at desc"
     puts "#{sql}"
@@ -28,6 +28,17 @@ class Paper < ActiveRecord::Base
 
   #创建试卷的文件
   def create_paper_url(str, path, file_type, super_path = "paper_xml")
+    file_name = self.write_file(str, path, file_type, super_path)
+    if file_type == "xml"
+      self.paper_url = "/"+super_path + file_name
+    else
+      self.paper_js_url = "/"+super_path + file_name
+    end
+    self.save
+  end
+
+  #写文件
+  def write_file(str, path, file_type, super_path)
     dir = "#{Rails.root}/public/#{super_path}"
     Dir.mkdir(dir) unless File.directory?(dir)
     unless File.directory?(dir + "/" + path)
@@ -38,12 +49,7 @@ class Paper < ActiveRecord::Base
     f=File.new(url,"w+")
     f.write("#{str.force_encoding('UTF-8')}")
     f.close
-    if file_type == "xml"
-      self.paper_url = "/"+super_path + file_name
-    else
-      self.paper_js_url = "/"+super_path + file_name
-    end
-    self.save
+    return file_name
   end
 
   #创建xml文件
@@ -84,11 +90,16 @@ class Paper < ActiveRecord::Base
     self.toggle!(:is_used)
   end
 
-  #生成试卷的json
-  def create_paper_js
+  #打开试卷
+  def open_file
     file=File.open "#{Constant::PUBLIC_PATH}#{self.paper_url}"
     doc = Document.new(file)
     file.close
+    return doc
+  end
+
+  #生成试卷的json
+  def create_paper_js(doc)
     doc.root.elements["blocks"].each_element do |block|
       block.elements["problems"].each_element do |problem|
         problem.elements["questions"].each_element do |question|
@@ -99,5 +110,30 @@ class Paper < ActiveRecord::Base
     end
     return "papers = " + Hash.from_xml(doc.to_s).to_json
   end
+
+
+  #生成试卷的答案
+  def create_paper_answer_js(doc)
+    paper_element = doc.root.clone
+    paper_element.add_element("questions")
+    doc.root.elements["blocks"].each_element do |block|
+      block.elements["problems"].each_element do |problem|
+        problem.elements["questions"].each_element do |question|
+          unless question.nil?
+            q_element = question.clone
+            answer = Element.new("answer")
+            answer.text = question.elements["answer"].text if question.elements["answer"]
+            q_element.add_element(answer)
+            analysis = Element.new("analysis")
+            analysis.text = question.elements["analysis"].text if question.elements["analysis"]
+            q_element.add_element(analysis)
+            paper_element.elements["questions"].add_element(q_element)
+          end
+        end unless problem.elements["questions"].nil?
+      end unless block.elements["problems"].nil?
+    end
+    return "answer = " + Hash.from_xml(paper_element.to_s).to_json
+  end
+
   
 end
