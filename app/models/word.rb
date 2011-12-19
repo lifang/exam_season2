@@ -133,10 +133,7 @@ class Word < ActiveRecord::Base
       d = block.inner_html.gsub(/<[^{><}]*>/, "").gsub(", ", ";").gsub(",", ";")
       ch_ds << d
     end
-    word_info=""
-    ds.each do |d|
-      word_info += "#{word},#{pos},#{d}, #{ch_ds[0].split(".")[1]},#{yinbiao},/mp3/#{word}.#{file_name}, #{descriptions[d]};"
-    end unless ds.blank?
+    word_info = "#{word},;,#{pos},;,#{ds[0]},;,#{ch_ds[0].split(".")[1]},;,#{yinbiao},;,/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{file_name},;,#{descriptions[ds[0]]}"
     puts word_info
     return word_info
   end
