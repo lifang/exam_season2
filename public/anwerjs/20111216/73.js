@@ -1,1 +1,0 @@
-answer = {"paper":{"id":"73","time":"120","total_num":"0","total_score":"0","questions":null}}
