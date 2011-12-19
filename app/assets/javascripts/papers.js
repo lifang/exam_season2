@@ -614,6 +614,7 @@ function show_single_word_detail(jqery_ele,name,en_mean,ch_mean,types,phonetic,e
     $("#single_word_types").html(types);
     $("#single_word_phonetic").html(phonetic);
     $("#web_word").val(web_word);
+    $('.word_liju').html($("#sentence").val());
     $("#single_word_enunciate_url").val(enunciate_url);
     $("#xs_add_div").show();
     if ($("#web_word").val() == "") {
