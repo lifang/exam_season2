@@ -9,7 +9,7 @@
       <option <% if params["checked"]!=nil && params["checked"].to_i==Paper::CHECKED[:NO] %>
           selected="selected" <% end %> value="<%= Paper::CHECKED[:NO] %>">未审核</option>
       <option <% if params["checked"]!=nil && params["checked"].to_i==Paper::CHECKED[:YES] %>
-        selected="selected" <% end %> value="<%= Paper::CHECKED[:YES] %>">已审核</option>
+          selected="selected" <% end %> value="<%= Paper::CHECKED[:YES] %>">已审核</option>
     </select>
   </div>
 </div>
@@ -20,15 +20,15 @@
       <div class="text_btn">
         <button class="t_btn"
                 onclick="javascript:window.location.href='/papers/<%= paper.id %>/edit?category=<%= params["category"] %>'">
-          编辑</button>
-        <% if paper.status %>
+          编辑
+        </button>
+        <% if paper.status || cookies[:user_id].to_i==paper.creater_id  %>
           <img alt="cet-4" src="/assets/t_pic.png" />
         <% else %>
-          <%# unless paper.creater_id == cookies[:user_id].to_i %>
           <button class="t_btn" id="examine_btn_<%= paper.id %>"
                   onclick="$(function(){javascript:examine(<%= paper.id %>,$('#examine_btn_<%= paper.id %>'),$('#paper_status_<%= paper.id %>'))});">
-            审核</button>
-          <%# end %>
+            审核
+          </button>
         <% end %>
         <button class="t_btn">预览</button>
       </div>

@@ -20,6 +20,8 @@ class Word < ActiveRecord::Base
   TYPES = {0 => "n.", 1 => "v.", 2 => "pron.", 3 => "adj.", 4 => "adv.",
     5 => "num.", 6 => "art.", 7 => "prep.", 8 => "conj.", 9 => "interj.", 10 => "u = ", 11 => "c = ", 12 => "pl = "}
   #英语单词词性 名词 动词 代词 形容词 副词 数词 冠词 介词 连词 感叹词 不可数名词 可数名词 复数
+  LEVEL = {1 => "一", 2 => "二", 3 => "三", 4 => "四", 5 => "五", 6 => "六",
+    7 => "七", 8 => "八", 9 => "九", 10 => "十"}  #单词的等级
   
   def self.get_words(category_id, search_text, page)
     sql = "select w.id, w.name from words w where w.category_id = ? "
@@ -52,10 +54,11 @@ class Word < ActiveRecord::Base
     url = "http://oald8.oxfordlearnersdictionaries.com/dictionary/"
     agent = Mechanize.new
     page = agent.get(url + "#{word}")
-    contents =Iconv.conv("UTF-8//IGNORE", "GB2312",page.body )
-    contents =Iconv.conv("GB2312//IGNORE", "UTF-8", contents)
+#    contents =Iconv.conv("UTF-8//IGNORE", "GB2312",page.body )
+#    contents =Iconv.conv("GB2312//IGNORE", "UTF-8", contents)
     puts "page aready"
-    doc_utf = Hpricot(contents)
+    doc_utf = Hpricot(page.body)
+
     #词性
     pos = doc_utf.search('div[@class=webtop-g]').search('span[@class=pos]').inner_html unless
     doc_utf.search('span[@class=pos]').nil?     
@@ -126,15 +129,16 @@ class Word < ActiveRecord::Base
     doc_utf = Hpricot(ch_page.body)
     ch_infos = doc_utf.search('div[@id=summary-card]').search('div[@class=summary]').search('div[@class=description]')
     ch_ds = []
-    infos.each do |block|
+    ch_infos.each do |block|
       d = block.inner_html.gsub(/<[^{><}]*>/, "").gsub(", ", ";").gsub(",", ";")
       ch_ds << d
     end
-
+    word_info=""
     ds.each do |d|
-      puts "#{word},#{pos},#{d}, #{ch_ds[0]},#{yinbiao},/mp3/#{word}.#{file_name}, #{descriptions[d]}"
+      word_info += "#{word},#{pos},#{d}, #{ch_ds[0].split(".")[1]},#{yinbiao},/mp3/#{word}.#{file_name}, #{descriptions[d]};"
     end unless ds.blank?
-
+    puts word_info
+    return word_info
   end
 
 end

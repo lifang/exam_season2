@@ -23,7 +23,7 @@ class WordsController < ApplicationController
       filename = Word.upload_enunciate("/word_datas/#{Time.now.strftime("%Y%m%d")}/", params[:enunciate_url])
       word = Word.create(:category_id => params[:category_id].to_i, :name => params[:name], :types => params[:types].to_i,
         :phonetic => params[:phonetic].strip, :enunciate_url => filename, :en_mean => params[:en_mean],
-        :ch_mean => params[:ch_mean])
+        :ch_mean => params[:ch_mean], :level => params[:level])
        
       sens = params[:sentence].gsub("；", ";").split(";")
       sens.each do |sen|
@@ -70,7 +70,8 @@ class WordsController < ApplicationController
         filename = Word.upload_enunciate("/word_datas/#{word.enunciate_url.split("/")[2]}/", params[:enunciate_url])
       end
       word.update_attributes(:name => params[:name], :types => params[:types].to_i, :enunciate_url => filename,
-        :phonetic => params[:phonetic].strip, :en_mean => params[:en_mean], :ch_mean => params[:ch_mean])
+        :phonetic => params[:phonetic].strip, :en_mean => params[:en_mean], :ch_mean => params[:ch_mean],
+        :level => params[:level])
 
       word.word_sentences.delete_all
       sens = params[:sentence].gsub("；", ";").split(";")
@@ -97,6 +98,19 @@ class WordsController < ApplicationController
     end
     flash[:notice] = "编辑成功"
     redirect_to "/words?category=#{params[:category_id]}"
+  end
+
+  def download_word
+    word_infos=Word.get_word_from_web(params[:word])
+    respond_to do |format|
+      format.html {
+        render :partial=>"/papers/download_word" ,:object=>word_infos
+      }
+    end
+  end
+
+  def create_word
+    
   end
   
 end

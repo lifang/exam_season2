@@ -423,7 +423,7 @@ function load_add_label(tags_input,display){
     $("#t_se_input_tags").val("");
     $("#t_se_input_tags").focus();
     display_tags_text(tags_input,display);
-    ajax_load_tags_list('',$(tags_input).val()); //初始化可选标签列表
+    //ajax_load_tags_list('',$(tags_input).val()); //初始化可选标签列表
 }
 
 //关闭标签管理框
@@ -550,7 +550,7 @@ function load_addWords(words_input,display){
     $("#addWords_insert_words").val($(words_input).val());
     $("#xs_add_div").hide(); //未选中单词，详细信息隐藏
     display_words_text(words_input,display);
-    ajax_load_words_list('',$(words_input).val());
+    //ajax_load_words_list('',$(words_input).val());
 }
 
 function close_addWords(){
@@ -597,7 +597,7 @@ function ajax_load_words_list(match,added_words){
         },
         success : function(data){
             $("#words_list_ajax_loader").html(data);
-            $(".single_word_li:eq(0)").trigger("click");
+            $(".single_word:eq(0)").trigger("click");
         }
     });
 }
@@ -626,6 +626,22 @@ function select_word(word){
             return false;
         }
     }
+     $.ajax({
+        type: "POST",
+        url: "/words/download_word.html",
+        dataType: "html",
+        data : {
+            word : word
+        },
+        beforeSend: function(){
+            $(".single_word_li").html($("#ajax_loader").html());
+        },
+        success : function(data){
+            alert(data);
+            $("#words_list_ajax_loader").html(data);
+            $(".single_word:eq(0)").trigger("click");
+        }
+    });
     origin_words.push(word);
     $("#addWords_insert_words").val(origin_words.join(" "));
     $("#already_add_words_div").html($("#already_add_words_div").html()+"<div>"+word+" <a href='javascript:void(0);' onclick='javascript:delete_word(\""+word+"\")'>[删除]</a></div>");
@@ -664,6 +680,22 @@ function insert_words(origin_words_input,target_words_input,display){
 
 
 
-
+function download_word(word){
+    $.ajax({
+        type: "POST",
+        url: "/words/download_word.html",
+        dataType: "html",
+        data : {
+            word : word
+        },
+        beforeSend: function(){
+            $(".single_word_li").html($("#ajax_loader").html());
+        },
+        success : function(data){
+            $("#words_list_ajax_loader").html(data);
+            $(".single_word:eq(0)").trigger("click");
+        }
+    });
+}
 
 
