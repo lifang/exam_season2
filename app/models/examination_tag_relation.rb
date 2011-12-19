@@ -85,13 +85,15 @@ class ExaminationTagRelation < ActiveRecord::Base
             path = "#{Time.now.strftime("%Y%m%d")}"
           else
             paper = Paper.find(exist_examination[0].id)
-            path = paper.paper_url.split("/")[1]
+            path = (paper.paper_url.nil? or paper.paper_url.empty?) ? "#{Time.now.strftime("%Y%m%d")}" : paper.paper_url.split("/")[2]
           end
           last_document = Document.new(paper.xml_content)
           last_document.root.elements["blocks"].delete_element 1
           last_document.root.elements["blocks"].add_element(block)
           paper.create_paper_url(last_document.to_s, path, "xml", "special_paper")
-          paper.create_paper_url(paper.create_paper_js, path, "js", "special_paperjs")
+          paper_doc = paper.open_file
+          paper.create_paper_url(paper.create_paper_js(paper_doc), path, "js", "special_paperjs")
+          paper.write_file(paper.create_paper_answer_js(paper_doc), path, "js", "special_anwerjs")
         end
       end
     end unless doc.nil?

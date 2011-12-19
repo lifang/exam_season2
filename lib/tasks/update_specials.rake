@@ -8,7 +8,7 @@ namespace :special do
     #根据类型找到对应的试卷，根据试卷生成专项的试题
     papers = Examination.find_by_sql(["select e.category_id, p.paper_url from examinations e
         inner join examination_paper_relations epr on epr.examination_id = e.id
-        inner join papers p on p.id = epr.paper_id where e.is_published = ? and status = ? and e.types = ?",
+        inner join papers p on p.id = epr.paper_id where e.is_published = ? and e.status = ? and e.types = ?",
         Examination::IS_PUBLISHED[:ALREADY], Examination::STATUS[:GOING], Examination::TYPES[:OLD_EXAM]])
     category_papers = {}
     category_ids = []
@@ -21,7 +21,7 @@ namespace :special do
       end
     end unless papers.blank?
     puts "category_ids #{category_ids.join(",")}"
-    begin
+#    begin
       category_ids.each do |c|
         paper_urls = category_papers[c]
         unless paper_urls.nil? or paper_urls.blank?
@@ -31,9 +31,9 @@ namespace :special do
           puts "category #{c}'s special paper end"
         end
       end unless category_ids.blank?
-    rescue
-      puts "special update error"
-    end
+#    rescue
+#      puts "special update error"
+#    end
     
   end
 end

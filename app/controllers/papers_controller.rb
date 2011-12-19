@@ -18,8 +18,8 @@ class PapersController < ApplicationController
   #[post][collection] 新建试卷
   def create
     @paper=Paper.create(:creater_id=>cookies[:user_id],
-      :title=>params[:title].strip, :types => Examination::TYPES[:OLD_EXAM], 
-      :category_id => params[:category],:time=>params[:time])
+      :title => params[:title].strip, :types => Examination::TYPES[:OLD_EXAM], :status => Paper::CHECKED[:NO],
+      :category_id => params[:category], :time => params[:time])
     category = Category.find(params[:category])
     @paper.create_paper_url(@paper.xml_content({"category_name" => category.name}),
       "#{Time.now.strftime("%Y%m%d")}", "xml") unless category.nil?
@@ -251,12 +251,19 @@ class PapersController < ApplicationController
 
   #审核 创建试卷的js文件
   def examine
-    @paper = Paper.find(params[:id])
-    @paper.update_attributes(:status=>Paper::CHECKED[:YES])
-    @paper.create_paper_url(@paper.create_paper_js, "#{Time.now.strftime("%Y%m%d")}", "js", "paperjs")
+    begin
+      @paper = Paper.find(params[:id])
+      paper_doc = @paper.open_file
+      @paper.create_paper_url(@paper.create_paper_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "paperjs")
+      @paper.write_file(@paper.create_paper_answer_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "anwerjs")
+      @paper.update_attributes(:status=>Paper::CHECKED[:YES])
+      message = "试卷审核成功"
+    rescue
+      message = "试卷打开不成功，请检查试卷"
+    end
     respond_to do |format|
       format.json {
-        data={:message=>'试卷审核成功'}
+        data={:message => message}
         render :json=>data
       }
     end

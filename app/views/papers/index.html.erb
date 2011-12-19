@@ -1,12 +1,15 @@
-
 <div class="main_title">
-  <div class="m_t_btn"><button onclick="javascript:window.location.href='/papers/new?category=<%= params['category'] %>'">新建试卷</button></div>
+  <div class="m_t_btn">
+    <button onclick="javascript:window.location.href='/papers/new?category=<%= params['category'] %>'">新建试卷</button>
+  </div>
   <div class="m_t_h">试卷列表</div>
   <div class="m_t_select">
     <select name="" onchange="javascript:select_checked(this,<%= params['category'] %>);">
       <option <% if params["checked"].nil? %> selected="selected" <% end %> value="<%= Paper::CHECKED[:ALL] %>">全部</option>
-      <option <% if params["checked"]!=nil && params["checked"].to_i==Paper::CHECKED[:NO] %> selected="selected" <% end %> value="<%= Paper::CHECKED[:NO] %>">未审核</option>
-      <option <% if params["checked"]!=nil && params["checked"].to_i==Paper::CHECKED[:YES] %> selected="selected" <% end %> value="<%= Paper::CHECKED[:YES] %>">已审核</option>
+      <option <% if params["checked"]!=nil && params["checked"].to_i==Paper::CHECKED[:NO] %>
+          selected="selected" <% end %> value="<%= Paper::CHECKED[:NO] %>">未审核</option>
+      <option <% if params["checked"]!=nil && params["checked"].to_i==Paper::CHECKED[:YES] %>
+        selected="selected" <% end %> value="<%= Paper::CHECKED[:YES] %>">已审核</option>
     </select>
   </div>
 </div>
@@ -15,8 +18,18 @@
   <% @papers.each do |paper| %>
     <div class="t_list">
       <div class="text_btn">
-        <button class="t_btn" onclick="javascript:window.location.href='/papers/<%= paper.id %>/edit?category=<%= params["category"] %>'">编辑</button>
-<% if paper.status %><img alt="cet-4" src="/assets/t_pic.png" /><% else %><button class="t_btn" id="examine_btn_<%= paper.id %>" onclick="$(function(){javascript:examine(<%= paper.id %>,$('#examine_btn_<%= paper.id %>'),$('#paper_status_<%= paper.id %>'))});">审核</button><% end %>
+        <button class="t_btn"
+                onclick="javascript:window.location.href='/papers/<%= paper.id %>/edit?category=<%= params["category"] %>'">
+          编辑</button>
+        <% if paper.status %>
+          <img alt="cet-4" src="/assets/t_pic.png" />
+        <% else %>
+          <%# unless paper.creater_id == cookies[:user_id].to_i %>
+          <button class="t_btn" id="examine_btn_<%= paper.id %>"
+                  onclick="$(function(){javascript:examine(<%= paper.id %>,$('#examine_btn_<%= paper.id %>'),$('#paper_status_<%= paper.id %>'))});">
+            审核</button>
+          <%# end %>
+        <% end %>
         <button class="t_btn">预览</button>
       </div>
       <h2><%= paper.title %></h2>
