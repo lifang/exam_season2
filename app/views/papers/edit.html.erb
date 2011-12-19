@@ -19,7 +19,7 @@
 
 <div class="main_title">
   <span class="yl_bc"><a href="#">预览</a> | <a href="#">保存</a></span>
-  <div class="m_t_h">
+  <div class="m_t_h1">
     <input name="" type="text" class="p_name" style="display:none" onblur="$(this).hide();$('.p_name:eq(1)').show();" onchange="javascript:ajax_edit_paper_title(<%= params[:id] %>,$(this).val());" /><span class="p_name" onselectstart="return false;" ondblclick="javascript:$(this).hide();$('.p_name:eq(0)').val($(this).text()).show().focus();"><%= (@paper.title.nil?||@paper.title.strip=="")==true ? "未命名试卷" : @paper.title %></span>
     <input name="" type="text" class="p_time" style="display:none" onblur="$(this).hide();$('.p_time:eq(1)').show();" onchange="javascript:ajax_edit_paper_time(<%= params[:id] %>,$(this).val());" /><span class="p_time" onselectstart="return false;" ondblclick="javascript:$(this).hide();$('.p_time:eq(0)').val($(this).text()).show().focus();"><%= (@paper.time.nil?) ? "未设置" : @paper.time %></span>（分钟）
   </div>
