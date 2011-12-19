@@ -105,7 +105,7 @@ class Word < ActiveRecord::Base
       file_name = ""
       open(uri) do |fin|
         file_name = uri.split('.').reverse[0]
-        all_dir = "#{Rails.root}/public/mp3/"
+        all_dir = "#{Rails.root}/public/word_datas/#{Time.now.strftime("%Y%m%d")}/"
         FileUtils.makedirs all_dir    #建目录
         puts 'begin download pic'
         File.open("#{all_dir}#{word}.#{file_name}", "wb+") do |fout|
