@@ -98,5 +98,18 @@ class WordsController < ApplicationController
     flash[:notice] = "编辑成功"
     redirect_to "/words?category=#{params[:category_id]}"
   end
+
+  def download_word
+    word_infos=Word.get_word_from_web(params[:word])
+    respond_to do |format|
+      format.html {
+        render :partial=>"/papers/download_word" ,:object=>word_infos
+      }
+    end
+  end
+
+  def create_word
+    
+  end
   
 end

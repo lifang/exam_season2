@@ -1,0 +1,8 @@
+<% words =download_word %>
+<ul>
+  <% words.split(";").each do |word| %>
+    <%  single_word=word.split(",") %>
+    <li><a class="single_word_li single_word" href="javascript:void(0);"
+           onclick="javascript:show_single_word_detail($(this),'<%=single_word[0]%>','<%= single_word[2]%>','<%= single_word[3] %>','<%=single_word[1] %>','<%= single_word[4] %>','<%= single_word[5] %>');" ><%=single_word[0] %></a></li>
+    <% end unless words==""%>
+</ul>

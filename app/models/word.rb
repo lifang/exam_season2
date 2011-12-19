@@ -56,6 +56,7 @@ class Word < ActiveRecord::Base
     contents =Iconv.conv("GB2312//IGNORE", "UTF-8", contents)
     puts "page aready"
     doc_utf = Hpricot(contents)
+
     #词性
     pos = doc_utf.search('div[@class=webtop-g]').search('span[@class=pos]').inner_html unless
     doc_utf.search('span[@class=pos]').nil?     
@@ -115,7 +116,8 @@ class Word < ActiveRecord::Base
         end
         puts 'download pic over'
       end
-      yinbiao = info.inner_html.force_encoding('UTF-8').gsub(/<[^{><}]*>/, "")
+      puts info.inner_html
+      yinbiao = info.inner_html.gsub(/<[^{><}]*>/, "")
       puts yinbiao
     end
 
@@ -126,15 +128,16 @@ class Word < ActiveRecord::Base
     doc_utf = Hpricot(ch_page.body)
     ch_infos = doc_utf.search('div[@id=summary-card]').search('div[@class=summary]').search('div[@class=description]')
     ch_ds = []
-    infos.each do |block|
+    ch_infos.each do |block|
       d = block.inner_html.gsub(/<[^{><}]*>/, "").gsub(", ", ";").gsub(",", ";")
       ch_ds << d
     end
-
+    word_info=""
     ds.each do |d|
-      puts "#{word},#{pos},#{d}, #{ch_ds[0]},#{yinbiao},/mp3/#{word}.#{file_name}, #{descriptions[d]}"
+      word_info += "#{word},#{pos},#{d}, #{ch_ds[0].split(".")[1]},#{yinbiao},/mp3/#{word}.#{file_name}, #{descriptions[d]};"
     end unless ds.blank?
-
+    puts word_info
+    return word_info
   end
 
 end
