@@ -69,6 +69,7 @@ class Word < ActiveRecord::Base
     ds = []
     if infos.inner_html.to_s.strip == ""
       d = doc_utf.search("span[@class=d]").inner_html.gsub(/<[^{><}]*>/, "")  #释义
+      d = doc_utf.search("span[@class=ud]").inner_html.gsub(/<[^{><}]*>/, "") if d.to_s.strip == ""
       ds << d
       doc_utf.search("span[@class=x]").each do |sentence|
         if descriptions[d].nil? or descriptions[d].length < sentence.inner_html.gsub(/<[^{><}]*>/, "").length
@@ -80,6 +81,7 @@ class Word < ActiveRecord::Base
       infos.each do |block|
         unless block.search('/img').length == 0
           d = block.search("span[@class=d]").inner_html.gsub(/<[^{><}]*>/, "")
+          d = block.search("span[@class=ud]").inner_html.gsub(/<[^{><}]*>/, "") if d.to_s.strip == ""
           ds << d
           block.search("span[@class=x]").each do |sentence|
             if descriptions[d].nil? or descriptions[d].length < sentence.inner_html.gsub(/<[^{><}]*>/, "").length
@@ -90,6 +92,7 @@ class Word < ActiveRecord::Base
       end
       if ds.blank?
         d = infos[0].search("span[@class=d]").inner_html.gsub(/<[^{><}]*>/, "")
+        d = infos[0].search("span[@class=ud]").inner_html.gsub(/<[^{><}]*>/, "") if d.to_s.strip == ""
         ds << d
         infos[0].search("span[@class=x]").each do |sentence|
           if descriptions[d].nil? or descriptions[d].length < sentence.inner_html.gsub(/<[^{><}]*>/, "").length
