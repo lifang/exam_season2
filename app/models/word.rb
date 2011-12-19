@@ -52,10 +52,10 @@ class Word < ActiveRecord::Base
     url = "http://oald8.oxfordlearnersdictionaries.com/dictionary/"
     agent = Mechanize.new
     page = agent.get(url + "#{word}")
-    contents =Iconv.conv("UTF-8//IGNORE", "GB2312",page.body )
-    contents =Iconv.conv("GB2312//IGNORE", "UTF-8", contents)
+#    contents =Iconv.conv("UTF-8//IGNORE", "GB2312",page.body )
+#    contents =Iconv.conv("GB2312//IGNORE", "UTF-8", contents)
     puts "page aready"
-    doc_utf = Hpricot(contents)
+    doc_utf = Hpricot(page.body)
 
     #词性
     pos = doc_utf.search('div[@class=webtop-g]').search('span[@class=pos]').inner_html unless
@@ -132,10 +132,7 @@ class Word < ActiveRecord::Base
       d = block.inner_html.gsub(/<[^{><}]*>/, "").gsub(", ", ";").gsub(",", ";")
       ch_ds << d
     end
-    word_info=""
-    ds.each do |d|
-      word_info += "#{word},#{pos},#{d}, #{ch_ds[0].split(".")[1]},#{yinbiao},/mp3/#{word}.#{file_name}, #{descriptions[d]};"
-    end unless ds.blank?
+    word_info = "#{word},;,#{pos},;,#{ds[0]},;,#{ch_ds[0].split(".")[1]},;,#{yinbiao},;,/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{file_name},;,#{descriptions[ds[0]]}"
     puts word_info
     return word_info
   end

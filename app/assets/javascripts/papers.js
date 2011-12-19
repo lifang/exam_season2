@@ -423,7 +423,7 @@ function load_add_label(tags_input,display){
     $("#t_se_input_tags").val("");
     $("#t_se_input_tags").focus();
     display_tags_text(tags_input,display);
-    //ajax_load_tags_list('',$(tags_input).val()); //初始化可选标签列表
+//ajax_load_tags_list('',$(tags_input).val()); //初始化可选标签列表
 }
 
 //关闭标签管理框
@@ -550,7 +550,7 @@ function load_addWords(words_input,display){
     $("#addWords_insert_words").val($(words_input).val());
     $("#xs_add_div").hide(); //未选中单词，详细信息隐藏
     display_words_text(words_input,display);
-    //ajax_load_words_list('',$(words_input).val());
+//ajax_load_words_list('',$(words_input).val());
 }
 
 function close_addWords(){
@@ -603,7 +603,7 @@ function ajax_load_words_list(match,added_words){
 }
 
 //词汇管理框，点击单一小题，右侧显示单词的详细信息
-function show_single_word_detail(jqery_ele,name,en_mean,ch_mean,types,phonetic,enunciate_url){
+function show_single_word_detail(jqery_ele,name,en_mean,ch_mean,types,phonetic,enunciate_url,web_word){
     $(".single_word_li").removeClass("hover");
     jqery_ele.addClass("hover");
     $(".single_word_element").html("");
@@ -612,6 +612,7 @@ function show_single_word_detail(jqery_ele,name,en_mean,ch_mean,types,phonetic,e
     $("#single_word_ch_mean").html(ch_mean);
     $("#single_word_types").html(types);
     $("#single_word_phonetic").html(phonetic);
+    $("#web_word").val(web_word);
     $("#single_word_enunciate_url").val(enunciate_url);
     $("#xs_add_div").show();
 }
@@ -625,22 +626,23 @@ function select_word(word){
             return false;
         }
     }
-     $.ajax({
-        type: "POST",
-        url: "/words/download_word.html",
-        dataType: "html",
-        data : {
-            word : word
-        },
-        beforeSend: function(){
-            $(".single_word_li").html($("#ajax_loader").html());
-        },
-        success : function(data){
-            alert(data);
-            $("#words_list_ajax_loader").html(data);
-            $(".single_word:eq(0)").trigger("click");
-        }
-    });
+    if(parseInt(($("#web_word")).val())==1){
+        $.ajax({
+            type: "POST",
+            url: "/words/create_word.html",
+            dataType: "html",
+            data : {
+                name :$("#single_word_name").html(),
+                en_mean :$("#single_word_en_mean").html(),
+                ch_mean :$("#single_word_ch_mean").html(),
+                types :$("#single_word_types").html(),
+                phonetic :$("#single_word_phonetic").html(),
+                enunciate_url :$("#single_word_enunciate_url").val(),
+                sentence :$('.word_liju').html(),
+                category_id : category_id
+            }
+        });
+    }
     origin_words.push(word);
     $("#addWords_insert_words").val(origin_words.join(" "));
     $("#already_add_words_div").html($("#already_add_words_div").html()+"<div>"+word+" <a href='javascript:void(0);' onclick='javascript:delete_word(\""+word+"\")'>[删除]</a></div>");
@@ -682,7 +684,7 @@ function download_word(word){
             word : word
         },
         beforeSend: function(){
-            $(".single_word_li").html($("#ajax_loader").html());
+            $(".web_load").html($("#ajax_loader").html());
         },
         success : function(data){
             $("#words_list_ajax_loader").html(data);

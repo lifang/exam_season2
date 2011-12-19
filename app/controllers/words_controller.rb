@@ -109,7 +109,13 @@ class WordsController < ApplicationController
   end
 
   def create_word
-    
+    Word.transaction do
+      word = Word.create(:category_id => params[:category_id].to_i, :name => params[:name], :types => params[:types].to_i,
+        :phonetic => params[:phonetic].strip, :enunciate_url =>params[:enunciate_url], :en_mean => params[:en_mean],
+        :ch_mean => params[:ch_mean])
+      WordSentence.create(:word_id => word.id, :description =>  params[:sentence].strip) unless  params[:sentence].nil? or  params[:sentence].strip.empty?
+    end
+    redirect_to request.referer
   end
   
 end
