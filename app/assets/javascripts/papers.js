@@ -621,7 +621,7 @@ function display_words_text(words_input,display){
     $(display).empty();
     for(var i=0;i<origin_words_arr.length;i++){
         if(origin_words_arr[i]!=""){
-            $(display).html($(display).html()+" "+origin_words_arr[i]);
+            $(display).html($(display).html()+";"+origin_words_arr[i]);
         }
     }
     if($(display).html()==""){
@@ -668,7 +668,7 @@ function show_single_word_detail(jqery_ele,name,en_mean,ch_mean,types,phonetic,e
 
 //词汇管理框，选择词汇
 function select_word(word){
-    var origin_words = $("#addWords_insert_words").val().split(";");
+    var origin_words = $.trim($("#addWords_insert_words").val()).split(";");
     for(var i=0;i<origin_words.length;i++){
         if(origin_words[i]==word){
             tishi_alert("你选择的单词已经在列表中");
