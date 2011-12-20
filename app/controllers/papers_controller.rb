@@ -346,8 +346,6 @@ class PapersController < ApplicationController
     file.close
   end
 
-  # --------- END ------XML文件操作--------require 'rexml/document'----------include REXML----------
-
   def sort
     paper = Paper.find_by_id(params[:paper_id].to_i)
     begin
