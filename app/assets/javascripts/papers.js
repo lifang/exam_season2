@@ -609,7 +609,7 @@ function close_addWords(){
 
 //将词汇显示到页面上
 function display_words_text(words_input,display){
-    var origin_words_arr = $(words_input).val().split(" ");
+    var origin_words_arr = $(words_input).val().split(";");
     //显示到词汇管理框
     $("#already_add_words_div").empty();
     for(var i=0;i<origin_words_arr.length;i++){
@@ -723,7 +723,7 @@ function delete_word(word){
 
 //词汇管理框 插入词汇，更新form值
 function insert_words(origin_words_input,target_words_input,display){
-    $(target_words_input).val($(origin_words_input).val().split(";").join("."));
+    $(target_words_input).val($(origin_words_input).val());
     display_words_text(target_words_input,display);
     close_addWords();
 }
