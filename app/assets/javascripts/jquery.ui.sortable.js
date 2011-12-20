@@ -402,6 +402,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 	},
 
 	serialize: function(o) {
+
 		var items = this._getItemsAsjQuery(o && o.connected);
 		var str = []; o = o || {};
 
@@ -413,6 +414,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 		if(!str.length && o.key) {
 			str.push(o.key + '=');
 		}
+
 		return str.join('&');
 
 	},
