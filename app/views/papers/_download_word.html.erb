@@ -8,6 +8,11 @@
   <input type="hidden" id="types" value="<%=single_word[1] %>"/>
   <input type="hidden" id="name" value="<%=single_word[0] %>"/>
   <input type="hidden" id="enunciate_url" value="<%=single_word[5] %>"/>
-  <li><a class="single_word_li single_word" href="javascript:void(0);"
-         onclick="javascript:show_single_word_detail('1');" ><%=single_word[0] %></a></li>
+  <% unless words==",;,,;,,;,,;,,;,,;,"|| words.length==18%>
+    <li><a class="single_word_li single_word" href="javascript:void(0);"
+           onclick="javascript:show_single_word('1');" ><%=single_word[0] %></a></li>
+    <% else %>
+    <li><a class="single_word_li single_word" href="javascript:void(0);"
+           onclick="javascript:show_single_word('0');" ><%=single_word[0] %></a></li>
+    <% end %>
 </ul>

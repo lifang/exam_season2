@@ -4,7 +4,7 @@
   <% object[:words].each do |word| %>
     <input type="hidden" id="word_phonetic_<%= word.id if word.id %>" value="<%= word.phonetic if word.phonetic %>" ></input>
     <li><a class="single_word_li single_word" href="javascript:void(0);"
-           onclick="javascript:show_single_word_detail($(this),'<%= word.name if word.name %>','<%= word.en_mean if word.en_mean %>','<%= word.ch_mean if word.ch_mean %>','<%= Word::TYPES[word.types.nil? ? 0 : word.types] %>',$('#word_phonetic_<%= word.id if word.id %>').val(),'<%= word.enunciate_url if word.enunciate_url %>','', <%= word.id %>);" ><%= word.name if word.name %></a></li>
+           onclick="javascript:show_single_word_detail($(this),'<%= word.name if word.name %>','<%= word.en_mean if word.en_mean %>','<%= word.ch_mean if word.ch_mean %>','<%= Word::TYPES[word.types.nil? ? 0 : word.types] %>',$('#word_phonetic_<%= word.id if word.id %>').val(),'<%= word.enunciate_url if word.enunciate_url %>', <%= word.id %>);" ><%= word.name if word.name %></a></li>
     <% end %>
     <% if object[:match]!="" %><li><a class="single_word_li web_load" href="javascript:void(0);" onclick="javascript:download_word('<%= object[:match] %>');">从网上抓取<%= object[:match] %></a></li><% end %>
 </ul>

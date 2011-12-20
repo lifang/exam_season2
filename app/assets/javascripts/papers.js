@@ -603,7 +603,8 @@ function ajax_load_words_list(match,added_words){
 }
 
 //词汇管理框，点击单一小题，右侧显示单词的详细信息
-function show_single_word_detail(jqery_ele,name,en_mean,ch_mean,types,phonetic,enunciate_url,web_word,id){
+function show_single_word_detail(jqery_ele,name,en_mean,ch_mean,types,phonetic,enunciate_url,id){
+    $("#web_word").val("");
     $(".single_word_li").removeClass("hover");
     jqery_ele.addClass("hover");
     $(".single_word_element").html("");
@@ -613,20 +614,13 @@ function show_single_word_detail(jqery_ele,name,en_mean,ch_mean,types,phonetic,e
     $("#single_word_ch_mean").html(ch_mean);
     $("#single_word_types").html(types);
     $("#single_word_phonetic").html(phonetic);
-    $("#web_word").val(web_word);
-    $('.word_liju').html($("#sentence").val());
     $("#single_word_enunciate_url").val(enunciate_url);
     $("#xs_add_div").show();
-    if ($("#web_word").val() == "") {
-        $("#modify_word").css("display", "");
-    } else {
-        $("#modify_word").css("display", "none");
-    }
 }
 
 //词汇管理框，选择词汇
 function select_word(word){
-    var origin_words = $("#addWords_insert_words").val().split(" ");
+    var origin_words = $("#addWords_insert_words").val().split(";");
     for(var i=0;i<origin_words.length;i++){
         if(origin_words[i]==word){
             tishi_alert("你选择的单词已经在列表中");
@@ -651,7 +645,7 @@ function select_word(word){
         });
     }
     origin_words.push(word);
-    $("#addWords_insert_words").val(origin_words.join(" "));
+    $("#addWords_insert_words").val(origin_words.join(";"));
     $("#already_add_words_div").html($("#already_add_words_div").html()+"<div>"+word+" <a href='javascript:void(0);' onclick='javascript:delete_word(\""+word+"\")'>[删除]</a></div>");
 }
 
@@ -663,14 +657,14 @@ function edit_word(category_id) {
 
 //词汇管理框 删除词汇
 function delete_word(word){
-    var origin_tags_arr = $("#addWords_insert_words").val().split(" ");
+    var origin_tags_arr = $("#addWords_insert_words").val().split(";");
     var result_tags_arr = new Array;
     for(var i=0;i<origin_tags_arr.length;i++){
         if(origin_tags_arr[i]!=word && origin_tags_arr[i]!=""){
             result_tags_arr.push(origin_tags_arr[i]);
         }
     }
-    $("#addWords_insert_words").val(result_tags_arr.join(" "));
+    $("#addWords_insert_words").val(result_tags_arr.join(";"));
     $("#already_add_words_div").empty();
     for(var i=0;i<result_tags_arr.length;i++){
         if(result_tags_arr[i]!=""){
@@ -681,7 +675,7 @@ function delete_word(word){
 
 //词汇管理框 插入词汇，更新form值
 function insert_words(origin_words_input,target_words_input,display){
-    $(target_words_input).val($(origin_words_input).val());
+    $(target_words_input).val($(origin_words_input).val().split(";").join("."));
     display_words_text(target_words_input,display);
     close_addWords();
 }
@@ -707,7 +701,7 @@ function download_word(word){
 }
 
 //显示请求到的单词
-function show_single_word_detail(web_word){
+function show_single_word(web_word){
     $(".single_word_li").removeClass("hover");
     $(".single_word_element").html("");
     $("#single_word_name").html($("#name").val());
@@ -723,6 +717,9 @@ function show_single_word_detail(web_word){
     if ($("#web_word").val() == "") {
         $("#modify_word").css("display", "");
     } else {
+        if($("#web_word").val() == "0"){
+            $("#select_word").css("display", "none");
+        }
         $("#modify_word").css("display", "none");
     }
 }

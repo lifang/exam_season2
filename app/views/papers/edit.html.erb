@@ -426,7 +426,7 @@
     <input type="hidden" id="addWords_insert_words" />
     <div><button class="t_btn" onclick="javascript:insert_words('#addWords_insert_words',$('#addWords_words_input').val(),$('#addWords_display').val());">插入</button></div>
   </div>
-  <div class="addwords_side">
+  <div class="addwords_side" id="select_word">
     <div class="xs_add" id="xs_add_div">
       <input id="web_word" value="" type="hidden" />
       <input type="hidden" id="single_word_enunciate_url" value=""/>
@@ -442,7 +442,7 @@
       <div class="word_liju" style="display:none;"></div><br/>
       <div>
         <button class="t_btn" id="modify_word" onclick="javascript:edit_word(<%= params[:category] %>);" >修改</button>
-        <button class="t_btn" onclick="javascirpt:$(function(){select_word($('#single_word_name').html())});">选择</button>
+        <button class="t_btn"  onclick="javascirpt:$(function(){select_word($('#single_word_name').html())});">选择</button>
       </div>
     </div>
   </div>

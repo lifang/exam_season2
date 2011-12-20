@@ -71,7 +71,7 @@ class PapersController < ApplicationController
       @question.question_tags(Tag.create_tag(tag_name))
     end
     if !@post[:question_words].nil? and @post[:question_words].strip != ""
-      words = @post[:question_words].strip.split(" ")
+      words = @post[:question_words].strip.split(".")
       @question.question_words(words)
     end
     #存储xml文件
