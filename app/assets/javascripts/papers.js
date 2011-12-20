@@ -621,7 +621,7 @@ function display_words_text(words_input,display){
     $(display).empty();
     for(var i=0;i<origin_words_arr.length;i++){
         if(origin_words_arr[i]!=""){
-            $(display).html($(display).html()+" "+origin_words_arr[i]);
+            $(display).html($(display).html()+";"+origin_words_arr[i]);
         }
     }
     if($(display).html()==""){
