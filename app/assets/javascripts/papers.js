@@ -315,11 +315,22 @@ function select_correct_type(ele_str,block_index,problem_index,question_index,co
             $("#post_question_div").show();
             $(location).append($("#post_question_div"));  //载入form
         }else{
-            $(location).closest(".question_list_box").scrollTop(0);
+            var questioon_list = $(location).siblings(".question_list");
+            var insert_index = questioon_list.not(".ignore").index(questioon_list.has(".q_l_text:hidden"));
+            $("#post_question_insert_index").val(insert_index+1);
             $(".q_l_answer").hide();
             $(".q_l_text:hidden").show();
             $("#post_question_div").show();
-            $(location).append($("#post_question_div"));  //载入form
+            if(insert_index==-1){
+            var final_scrollTop = 65 * (questioon_list.not(".ignore").length);
+            $(location).closest(".question_list_box").scrollTop(final_scrollTop);
+            $(location).append($("#post_question_div"));
+            }else{
+            var final_scrollTop = 65 * (insert_index);
+            $(location).closest(".question_list_box").scrollTop(final_scrollTop);
+                insert_location = "#question_list_"+block_index+"_"+problem_index+"_"+(insert_index+1);
+                $(insert_location).append($("#post_question_div"));
+            }
         } // 显示框 和 编辑框 切换显示
         var questions_xpath = "/paper/blocks/block["+block_index+"]/problems/problem["+problem_index+"]/questions" //构造 questions_xpath , 作为下一个方法的变量
         fill_post_question_form(questions_xpath,question_index,question_answer,question_attrs,question_description,question_analysis,question_score,question_tags,question_words,question_flag); //初始化表单值

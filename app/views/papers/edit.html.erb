@@ -142,12 +142,10 @@
 
               <div class="clear"></div>
               <div class="question_list_box">
-                <div class="question_list" id="question_list_<%=  block_index %>_<%=  problem_index %>"></div>
-
                 <% question_index = 0; problem.elements["questions"].each_element do |question|; question_index += 1 %>
                   <% answer = question.elements["answer"].text if question.elements["answer"] %><% correct_type = question.attributes["correct_type"]=="" ? "error" : question.attributes["correct_type"].to_i %>
                   <input type="hidden" value="<%= correct_type %>" class="correct_type" id="correct_type" />
-
+                  <div class="question_list ignore" id="question_list_<%=  block_index %>_<%=  problem_index %>_<%= question_index%>"></div>
                   <div class="question_list">
                     <div  onselectstart="return false;" class="q_l_text">
                       <% judge_str = {"1"=>"是/对","0"=>"否/错"}   #定义 判断题 "1"=>"是/对"  "0"=>"否/错" %>
@@ -200,7 +198,7 @@
                     <div class="edit_question_form" id="q_l_answer_<%= block_index %>_<%= problem_index %>_<%= question_index %>"></div>
                   </div>
                 <% end if problem.elements["questions"] #questions循环结束 %>
-                <div class="hold_320_height" style="height:320px;"></div>
+                   <div class="question_list ignore" style="height:320px;" id="question_list_<%=  block_index %>_<%=  problem_index %>"></div>
               </div>
             </div>
           </div>
@@ -270,8 +268,8 @@
             </div>
           <% end # 添加题目 表单 END%>
         </div>
-        <div id="append_create_problem_single_attr_<%= block_index %>"><li><input name="radio_0_block_<%= block_index %>" class="radio_0_block_<%= block_index %>" type="radio" value=""  /> <input name="text_0_block_<%= block_index %>" class="text_0_block_<%= block_index %>" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li></div>
-        <div id="append_create_problem_multi_attr_<%= block_index %>"><li><input name="checkbox_1_block_<%= block_index %>" class="checkbox_1_block_<%= block_index %>" type="checkbox" value="" /> <input name="text_1_block_<%= block_index %>" class="text_1_block_<%= block_index %>" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li></div>
+        <div id="append_create_problem_single_attr_<%= block_index %>" style="display:none;"><li><input name="radio_0_block_<%= block_index %>" class="radio_0_block_<%= block_index %>" type="radio" value=""  /> <input name="text_0_block_<%= block_index %>" class="text_0_block_<%= block_index %>" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li></div>
+        <div id="append_create_problem_multi_attr_<%= block_index %>" style="display:none;"><li><input name="checkbox_1_block_<%= block_index %>" class="checkbox_1_block_<%= block_index %>" type="checkbox" value="" /> <input name="text_1_block_<%= block_index %>" class="text_1_block_<%= block_index %>" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li></div>
       </div>
     <% end #blocks循环结束 %>
     <div class="clear"></div>
@@ -413,6 +411,7 @@
       <%= f.hidden_field :question_tags ,:id=>"post_question_question_tags" %>
       <%= f.hidden_field :question_flag ,:id=>"post_question_question_flag" %>
       <%= f.hidden_field :question_words ,:id=>"post_question_question_words" %>
+      <%= f.hidden_field :insert_index ,:id=>"post_question_insert_index" %>
       <div class="qa_h">小题描述<textarea name="post_question[question_description]" id="post_question_question_description" cols="" rows="" class="qa_textarea"></textarea></div>
       <div class="qa_h"><span class="yl_bc"><input id="post_question_flag_checkbox" name="" type="checkbox" value="" onclick="javascript:if(this.checked){$('#post_question_question_flag').val('1')}else{$('#post_question_question_flag').val('0')};" /> 自动批改</span>答案</div>
       <div class="qa_h">
