@@ -667,7 +667,8 @@ function show_single_word_detail(jqery_ele,name,en_mean,ch_mean,types,phonetic,e
 }
 
 //词汇管理框，选择词汇
-function select_word(word){
+function select_word(){
+    var word=$('#single_word_name').html();
     var origin_words = $("#addWords_insert_words").val().split(";");
     for(var i=0;i<origin_words.length;i++){
         if(origin_words[i]==word){
