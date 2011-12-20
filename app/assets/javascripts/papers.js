@@ -687,7 +687,7 @@ function insert_words(origin_words_input,target_words_input,display){
 }
 
 
-
+//请求网上单词
 function download_word(word){
     $.ajax({
         type: "POST",
@@ -706,4 +706,23 @@ function download_word(word){
     });
 }
 
-
+//显示请求到的单词
+function show_single_word_detail(web_word){
+    $(".single_word_li").removeClass("hover");
+    $(".single_word_element").html("");
+    $("#single_word_name").html($("#name").val());
+    $("#single_word_en_mean").html($("#en_mean").val());
+    $("#single_word_ch_mean").html($("#ch_mean").val());
+    $("#single_word_types").html($("#types").val());
+    $("#single_word_phonetic").html($("#phonetic").val());
+    $("#web_word").val(web_word);
+    $('.word_liju').css("display","");
+    $('.word_liju').html($("#sentence").val());
+    $("#single_word_enunciate_url").val($("#enunciate_url").val());
+    $("#xs_add_div").show();
+    if ($("#web_word").val() == "") {
+        $("#modify_word").css("display", "");
+    } else {
+        $("#modify_word").css("display", "none");
+    }
+}
