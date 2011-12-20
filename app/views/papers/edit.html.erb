@@ -468,7 +468,7 @@
       <ul id="words_list_ajax_loader"></ul>
     </div>
     <div id="already_add_words_div" class="words_ny"></div>
-    <input type="hidden" id="addWords_insert_words" />
+    <input type="hidden" id="addWords_insert_words" value="" />
     <div><button class="t_btn" onclick="javascript:insert_words('#addWords_insert_words',$('#addWords_words_input').val(),$('#addWords_display').val());">插入</button></div>
   </div>
   <div class="addwords_side" id="select_word">
@@ -487,7 +487,7 @@
       <div class="word_liju" style="display:none;"></div><br/>
       <div>
         <button class="t_btn" id="modify_word" onclick="javascript:edit_word(<%= params[:category] %>);" >修改</button>
-        <button class="t_btn"  onclick="javascirpt:$(function(){select_word()});">选择</button>
+        <button class="t_btn"  onclick="javascirpt:$(function(){select_word($('#single_word_name').html())});">选择</button>
       </div>
     </div>
   </div>
