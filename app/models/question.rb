@@ -20,7 +20,7 @@ class Question < ActiveRecord::Base
 
   def question_words(words)
     self.words = []
-    words.each {|word| self.words << Word.find_by_name(word) }
+    words.each {|word| self.words << Word.find_by_name(word) if Word.find_by_name(word) }
   end
 
 end

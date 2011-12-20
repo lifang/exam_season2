@@ -764,16 +764,28 @@ function show_ready_word(jquery_ele, word_id) {
 
 $(document).ready(function(){
     $('.info_ul').sortable({
-        update: function(){
-            var block_index = getCookie("init_block");
-            alert(getCookie("init_block"));
-            alert($('#block_sort_'+block_index).sortable('serialize'));
-            $.ajax({
-                type: 'post',
-                data: $('#block_sort_'+block_index).sortable('serialize'),
-                dataType: 'script',
-                url: '/papers/sort'
-            })
+        update: function(event, ui){
+            var list = $(this).sortable('serialize');
+            var item_id = ui.item.attr("id").split("li_");
+            if (item_id[1] != null) {
+                $.ajax({
+                    type: 'post',
+                    data: "paper_id="+getCookie("init_paper")+"&block_index="+getCookie("init_block")+"&old_postion="+item_id[1]+"&"+list,
+                    dataType: 'script',
+                    url: '/papers/sort',
+                    complete:function(request){
+                        var res = request.responseText.split(",");
+                        tishi_alert(res[0]);
+                        if (res[1] != null) {setCookie("init_problem",""+res[1]);}
+                        window.setTimeout(function(){
+                            window.location.reload();
+                        }, 1000);
+                    }
+                })
+            } else {
+                tishi_alert("您拖动的大题已经不存在，请刷新页面");
+                return false;
+            }
         }
     });
     $(".info_ul").disableSelection();
