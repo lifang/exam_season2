@@ -252,6 +252,7 @@ span.mk_span_w { color: #000;}
 .q_w_p em { color: #999; font-size: 12px;}
 
 .q_l_answer { border-top: 1px #CCC solid; overflow: hidden; padding: 5px 0; background: #e0e0e0; display: none;}
+.q_l_create { border-top: 1px #CCC solid; overflow: hidden; padding: 5px 0; background: #e0e0e0;}
 .q_label { width: 125px; float: left; line-height: 18px; padding-left: 10px; margin: 5px 0;}
 .q_label div { padding: 5px 0;}
 .q_re_a { margin: 0 5px;}

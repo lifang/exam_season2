@@ -62,7 +62,7 @@ $(function(){
         }
         // 手工测得 question_list 的 高度为 65 ，样式改动，需调整
         $(".q_l_text:hidden").show();
-        $(".q_l_answer:visible").hide();
+        $(".q_l_answer").hide();
         var final_scrollTop = 65 * ($(this).closest(".question_list_box").children(".question_list").index($(this).closest(".question_list"))-1) ;
         $(this).closest(".question_list_box").scrollTop(final_scrollTop);
         var $answer = $(this).next(".q_l_answer");
@@ -144,6 +144,7 @@ function validate_post_block(){
 }
 
 
+
 //ajax载入小题类型，拼凑完整表单(create_problem 表单)
 function select_question_type(question_type,block_index){
     $('#create_problem_attrs_module_'+block_index).load('/papers/select_question_type',
@@ -161,13 +162,7 @@ function add_event_on_create_problem_form(question_type,block_index){
     var text = ".text_"+question_type+"_block_"+block_index;
     var attrs = ".question_attrs_block_"+block_index;   //表单
     var answer = ".question_answer_block_"+block_index;   //表单
-    if(question_type == 0 ){
-        var radio = ".radio_"+question_type+"_block_"+block_index;
-        generate_single_choose(text,attrs,answer,radio);
-    }else if(question_type== 1 ){
-        var checkbox = ".checkbox_"+question_type+"_block_"+block_index;
-        generate_multi_choose(text,attrs,answer,checkbox);
-    }else if(question_type== 2 ){
+    if(question_type== 2 ){
         var radio = ".radio_"+question_type+"_block_"+block_index;
         generate_judge(answer,radio);
     }else if(question_type==3 ||question_type==5){
@@ -175,39 +170,6 @@ function add_event_on_create_problem_form(question_type,block_index){
     }
 }
 
-//单选题 整理组织单选题选项和答案
-function generate_single_choose(text,attrs,answer,radio){
-    $(text).bind("change",function(){
-        var attrs_array = [];
-        $(text).each(function(){
-            attrs_array.push($(this).val());
-        })
-        $(attrs).val(attrs_array.join(';-;'));
-        $(radio).each(function(){
-            if(this.checked){
-                $(answer).val($(this).next(text).val());
-            }
-        })
-    })
-    $(radio).bind("click",function(){
-        $(answer).val($(this).next(text).val());
-    });
-}
-
-//多选题 整理组织单选题选项和答案
-function generate_multi_choose(text,attrs,answer,checkbox){
-    $(text).bind("change",function(){
-        var attrs_array = [];
-        $(text).each(function(){
-            attrs_array.push($(this).val());
-        })
-        $(attrs).val(attrs_array.join(';-;'));
-        $(answer).val(organize_multichoose_answer(checkbox,text));
-    })
-    $(checkbox).bind("click",function(){
-        $(answer).val(organize_multichoose_answer(checkbox,text));
-    });
-}
 
 //判断题 整理组织答案
 function generate_judge(answer,radio){
@@ -223,17 +185,50 @@ function generate_fill(answer,text){
     })
 }
 
-//多选题组织答案
-function organize_multichoose_answer(element,text){
-    var answer_array = [];
-    $(element).each(function(){
-        if(this.checked){
-            answer_array.push($(this).next(text).val());
-        }
-    })
-    return answer_array.join(';|;');
+//提交post_question表单前组织单选题、多选题答案
+function submit_create_problem_form(block_index){
+    var correct_type=parseInt($("#create_problem_correct_type_"+block_index).val());
+    if(correct_type==0){
+        create_problem_single_choose(block_index);
+    }
+    if(correct_type==1){
+        create_problem_multi_choose(block_index);
+    }
 }
 
+//单选题 整理组织单选题选项和答案
+function create_problem_single_choose(block_index){
+    $(".radio_0_block_"+block_index).each(function(){
+        if(this.checked){
+            $(".question_answer_block_"+block_index).val($(this).next(".text_0_block_"+block_index).val());
+        }
+    })
+    var attrs = [];
+    $(".text_0_block_"+block_index).each(function(){
+        if($(this).val()!=""){
+            attrs.push($(this).val());
+        }
+    })
+    $(".question_attrs_block_"+block_index).val(attrs.join(";-;"));
+}
+
+//多选题 整理组织单选题选项和答案
+function create_problem_multi_choose(block_index){
+    var answer_arr = [];
+    $(".checkbox_1_block_"+block_index).each(function(){
+        if(this.checked&&$(this).next(".text_1_block_"+block_index).val()!=""){
+            answer_arr.push($(this).next(".text_1_block_"+block_index).val());
+        }
+    })
+    $(".question_answer_block_"+block_index).val(answer_arr.join(";|;"));
+    var attrs = [];
+    $(".text_1_block_"+block_index).each(function(){
+        if($(this).val()!=""){
+            attrs.push($(this).val());
+        }
+    })
+    $(".question_attrs_block_"+block_index).val(attrs.join(";-;"));
+}
 
 //ajax 编辑题目说明
 function ajax_edit_problem_description(paper_id,block_index,problem_index,description){
@@ -287,7 +282,7 @@ function rescue_null(object){
 
 
 ////ajax载入小题类型，拼凑完整表单(post_question 表单)
-function select_correct_type(ele_str,block_index,problem_index,question_index,correct_type,question_answer,question_attrs,question_description,question_analysis,question_score,question_tags,question_words,hidden_div){
+function select_correct_type(ele_str,block_index,problem_index,question_index,correct_type,question_answer,question_attrs,question_description,question_analysis,question_score,question_tags,question_words,question_flag,hidden_div){
     //如果参数为null,转化为""
     if(check_edit()){
         var form_position = $("#post_question_div").parent().attr("id").replace('question_list_','').replace('q_l_answer_','').split('_');
@@ -302,6 +297,7 @@ function select_correct_type(ele_str,block_index,problem_index,question_index,co
     question_score=rescue_null(question_score);
     question_tags=rescue_null(question_tags);
     question_words=rescue_null(question_words);
+    question_flag=rescue_null(question_flag);
     hidden_div=rescue_null(hidden_div);   //编辑小题时有值，追加小题时为空
     $('#post_question_attrs_module').load('/papers/select_correct_type',
     {
@@ -315,21 +311,18 @@ function select_correct_type(ele_str,block_index,problem_index,question_index,co
         if(hidden_div!=""){
             var final_scrollTop = 65 * (hidden_div.closest(".question_list_box").children(".question_list").index(hidden_div.closest(".question_list"))-1) ;
             hidden_div.closest(".question_list_box").scrollTop(final_scrollTop);
-            hidden_div.slideUp(800,function(){
-                $("#post_question_div").hide();
-                $(location).append($("#post_question_div"));  //载入form
-                $("#post_question_div").slideDown(1200);
-            });
+            hidden_div.hide();
+            $("#post_question_div").show();
+            $(location).append($("#post_question_div"));  //载入form
         }else{
             $(location).closest(".question_list_box").scrollTop(0);
-            $(".q_l_answer:visible").hide();
+            $(".q_l_answer").hide();
             $(".q_l_text:hidden").show();
-            $("#post_question_div").hide();
+            $("#post_question_div").show();
             $(location).append($("#post_question_div"));  //载入form
-            $("#post_question_div").slideDown(1200);
         } // 显示框 和 编辑框 切换显示
         var questions_xpath = "/paper/blocks/block["+block_index+"]/problems/problem["+problem_index+"]/questions" //构造 questions_xpath , 作为下一个方法的变量
-        fill_post_question_form(questions_xpath,question_index,question_answer,question_attrs,question_description,question_analysis,question_score,question_tags,question_words); //初始化表单值
+        fill_post_question_form(questions_xpath,question_index,question_answer,question_attrs,question_description,question_analysis,question_score,question_tags,question_words,question_flag); //初始化表单值
         add_event_on_post_question_form(correct_type);  //初始化表单事件
     });
 }
@@ -351,7 +344,7 @@ function close_post_question_form(){
 }
 
 //初始化 post_question 表单 值
-function fill_post_question_form(questions_xpath,question_index,question_answer,question_attrs,question_description,question_analysis,question_score,question_tags,question_words){
+function fill_post_question_form(questions_xpath,question_index,question_answer,question_attrs,question_description,question_analysis,question_score,question_tags,question_words,question_flag){
     $("#post_question_questions_xpath").val(questions_xpath);
     $("#post_question_question_index").val(question_index);
     $("#post_question_question_answer").val(question_answer);
@@ -361,6 +354,12 @@ function fill_post_question_form(questions_xpath,question_index,question_answer,
     $("#post_question_question_score").val(question_score);
     $("#post_question_question_tags").val(question_tags);
     $("#post_question_question_words").val(question_words);
+    $("#post_question_question_flag").val(question_flag);
+    if(question_flag==1){
+        $("#post_question_flag_checkbox").attr("checked",true);
+    }else{
+        $("#post_question_flag_checkbox").attr("checked",false);
+    }
     display_tags_text('#post_question_question_tags','#post_question_tags_div');         //显示标签
     display_words_text('#post_question_question_words','#post_question_words_div');      //显示词汇
 }
@@ -370,13 +369,7 @@ function add_event_on_post_question_form(correct_type){
     var text = ".text_"+correct_type+"_question";
     var attrs = "#post_question_question_attrs";   //表单
     var answer = "#post_question_question_answer";   //表单
-    if(correct_type == 0 ){
-        var radio = ".radio_"+correct_type+"_question";
-        generate_single_choose(text,attrs,answer,radio);
-    }else if(correct_type== 1 ){
-        var checkbox = ".checkbox_"+correct_type+"_question";
-        generate_multi_choose(text,attrs,answer,checkbox);
-    }else if(correct_type== 2 ){
+    if(correct_type== 2 ){
         var radio = ".radio_"+correct_type+"_question";
         generate_judge(answer,radio);
     }else if(correct_type==3 ||correct_type==5){
@@ -384,6 +377,50 @@ function add_event_on_post_question_form(correct_type){
     }
 }
 
+//提交post_question表单前组织单选题、多选题答案
+function submit_post_question_form(){
+    var correct_type=parseInt($("#post_question_correct_type").val());
+    if(correct_type==0){
+        post_question_single_choose();
+    }
+    if(correct_type==1){
+        post_question_multi_choose();
+    }
+}
+
+//单选题 整理组织单选题选项和答案
+function post_question_single_choose(){  
+    $(".radio_0_question").each(function(){
+        if(this.checked){
+            $("#post_question_question_answer").val($(this).next(".text_0_question").val());
+        }
+    })
+    var attrs = [];
+    $(".text_0_question").each(function(){
+        if($(this).val()!=""){
+            attrs.push($(this).val());
+        }
+    })
+    $("#post_question_question_attrs").val(attrs.join(";-;"));
+}
+
+//多选题 整理组织单选题选项和答案
+function post_question_multi_choose(){
+    var answer_arr = [];
+    $(".checkbox_1_question").each(function(){
+        if(this.checked && $(this).next(".text_1_question").val()!=""){
+            answer_arr.push($(this).next(".text_1_question").val());
+        }
+    })
+    $("#post_question_question_answer").val(answer_arr.join(";|;"));
+    var attrs = [];
+    $(".text_1_question").each(function(){
+        if($(this).val()!=""){
+            attrs.push($(this).val());
+        }
+    })
+    $("#post_question_question_attrs").val(attrs.join(";-;"));
+}
 
 function ajax_edit_paper_title(paper_id,title){
     $.ajax({
@@ -423,7 +460,7 @@ function load_add_label(tags_input,display){
     $("#t_se_input_tags").val("");
     $("#t_se_input_tags").focus();
     display_tags_text(tags_input,display);
-    ajax_load_tags_list('',$(tags_input).val()); //初始化可选标签列表
+//ajax_load_tags_list('',$(tags_input).val()); //初始化可选标签列表
 }
 
 //关闭标签管理框
@@ -550,7 +587,7 @@ function load_addWords(words_input,display){
     $("#addWords_insert_words").val($(words_input).val());
     $("#xs_add_div").hide(); //未选中单词，详细信息隐藏
     display_words_text(words_input,display);
-    ajax_load_words_list('',$(words_input).val());
+//ajax_load_words_list('',$(words_input).val());
 }
 
 function close_addWords(){

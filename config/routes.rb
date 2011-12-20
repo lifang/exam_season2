@@ -8,7 +8,8 @@ RailsTest3::Application.routes.draw do
     end
     collection do
       post :select_question_type,:select_correct_type    #ajax
-      post :ajax_load_tags_list,:ajax_insert_new_tag,:ajax_load_words_list
+      post :ajax_load_tags_list,:ajax_insert_new_tag,:ajax_load_words_list #标签管理、词汇管理
+      post :upload_image #上传图片
     end
   end
 

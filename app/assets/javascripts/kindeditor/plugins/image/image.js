@@ -11,16 +11,12 @@ KindEditor.plugin('image', function(K) {
 	var self = this, name = 'image',
 		allowImageUpload = K.undef(self.allowImageUpload, true),
 		allowFileManager = K.undef(self.allowFileManager, false),
-		uploadJson = K.undef(self.uploadJson, self.basePath + 'php/upload_json.php'),
+		uploadJson = K.undef('/papers/upload_image.json'),
 		imgPath = self.basePath + 'plugins/image/images/',
 		lang = self.lang(name + '.');
 
 	self.plugin.imageDialog = function(options) {
 		var imageUrl = K.undef(options.imageUrl, 'http://'),
-			imageWidth = K.undef(options.imageWidth, ''),
-			imageHeight = K.undef(options.imageHeight, ''),
-			imageTitle = K.undef(options.imageTitle, ''),
-			imageAlign = K.undef(options.imageAlign, ''),
 			clickFn = options.clickFn;
 		var html = [
 			'<div style="padding:10px 20px;">',
@@ -39,26 +35,6 @@ KindEditor.plugin('image', function(K) {
 			'<label style="width:60px;">' + lang.localUrl + '</label>',
 			'<input type="text" name="localUrl" class="ke-input-text" tabindex="-1" style="width:200px;" readonly="true" /> &nbsp;',
 			'<input type="button" class="ke-upload-button" value="' + lang.viewServer + '" />',
-			'</div>',
-			'</div>',
-			//size
-			'<div class="ke-dialog-row">',
-			'<label for="keWidth" style="width:60px;">' + lang.size + '</label>',
-			lang.width + ' <input type="text" id="keWidth" class="ke-input-text ke-input-number" name="width" value="" maxlength="4" /> ',
-			lang.height + ' <input type="text" class="ke-input-text ke-input-number" name="height" value="" maxlength="4" /> ',
-			'<img class="ke-refresh-btn" src="' + imgPath + 'refresh.gif" width="16" height="16" alt="" style="cursor:pointer;" />',
-			'</div>',
-			//align
-			'<div class="ke-dialog-row">',
-			'<label style="width:60px;">' + lang.align + '</label>',
-			'<input type="radio" name="align" class="ke-inline-block" value="" checked="checked" /> <img name="defaultImg" src="' + imgPath + 'align_top.gif" width="23" height="25" alt="" />',
-			' <input type="radio" name="align" class="ke-inline-block" value="left" /> <img name="leftImg" src="' + imgPath + 'align_left.gif" width="23" height="25" alt="" />',
-			' <input type="radio" name="align" class="ke-inline-block" value="right" /> <img name="rightImg" src="' + imgPath + 'align_right.gif" width="23" height="25" alt="" />',
-			'</div>',
-			//title
-			'<div class="ke-dialog-row">',
-			'<label for="keTitle" style="width:60px;">' + lang.imgTitle + '</label>',
-			'<input type="text" id="keTitle" class="ke-input-text" name="title" value="" style="width:200px;" /></div>',
 			'</div>',
 			'</div>'
 		].join('');

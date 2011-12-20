@@ -1,44 +1,65 @@
 
 <% object = post_question_attrs_module %>
-<input type="hidden" value="<%= object[:correct_type] %>" name="post_question[correct_type]" />
+<input type="hidden" value="<%= object[:correct_type] %>" id="post_question_correct_type" name="post_question[correct_type]" />
 
 <% if object[:answer]==""&&object[:question_attrs]=="" %>
 
   <% if object[:correct_type]==0 %>
-    <ul><li><input name="radio_<%= object[:correct_type] %>_question" class="radio_<%= object[:correct_type] %>_question" type="radio" value=""  /><input name="text_<%= object[:correct_type] %>_question" class="text_<%= object[:correct_type] %>_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:$(this).closest('ul').remove();" style="display:none;">[删除]</a></li></ul>
-    <ul><li><input name="radio_<%= object[:correct_type] %>_question" class="radio_<%= object[:correct_type] %>_question" type="radio" value=""  /><input name="text_<%= object[:correct_type] %>_question" class="text_<%= object[:correct_type] %>_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:$(this).closest('ul').remove();" style="display:none;">[删除]</a></li></ul>
-    <ul><li><input name="radio_<%= object[:correct_type] %>_question" class="radio_<%= object[:correct_type] %>_question" type="radio" value=""  /><input name="text_<%= object[:correct_type] %>_question" class="text_<%= object[:correct_type] %>_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:$(this).closest('ul').remove();" style="display:none;">[删除]</a></li></ul>
-    <ul><li><input name="radio_<%= object[:correct_type] %>_question" class="radio_<%= object[:correct_type] %>_question" type="radio" value=""  /><input name="text_<%= object[:correct_type] %>_question" class="text_<%= object[:correct_type] %>_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:$(this).closest('ul').remove();" style="display:none;">[删除]</a></li></ul>
+    <ul>
+      <li><input name="radio_0_question" class="radio_0_question" type="radio" value=""  />
+        <input name="text_0_question" class="text_0_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+      <li><input name="radio_0_question" class="radio_0_question" type="radio" value=""  />
+        <input name="text_0_question" class="text_0_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+      <li><input name="radio_0_question" class="radio_0_question" type="radio" value=""  />
+        <input name="text_0_question" class="text_0_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+      <li><input name="radio_0_question" class="radio_0_question" type="radio" value=""  />
+        <input name="text_0_question" class="text_0_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+    </ul>
+    <div><a href="javascript:void(0);" onclick="javascript:post_question_add_attr($(this),0);">&nbsp;&nbsp;添加选项</a></div>
   <% elsif object[:correct_type]==1 %>
-    <ul><li><input name="checkbox_<%= object[:correct_type] %>_question" class="checkbox_<%= object[:correct_type] %>_question" type="checkbox" value="" /><input name="text_<%= object[:correct_type] %>_question" class="text_<%= object[:correct_type] %>_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:$(this).closest('ul').remove();" style="display:none;">[删除]</a></li></ul>
-    <ul><li><input name="checkbox_<%= object[:correct_type] %>_question" class="checkbox_<%= object[:correct_type] %>_question" type="checkbox" value="" /><input name="text_<%= object[:correct_type] %>_question" class="text_<%= object[:correct_type] %>_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:$(this).closest('ul').remove();" style="display:none;">[删除]</a></li></ul>
-    <ul><li><input name="checkbox_<%= object[:correct_type] %>_question" class="checkbox_<%= object[:correct_type] %>_question" type="checkbox" value="" /><input name="text_<%= object[:correct_type] %>_question" class="text_<%= object[:correct_type] %>_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:$(this).closest('ul').remove();" style="display:none;">[删除]</a></li></ul>
-    <ul><li><input name="checkbox_<%= object[:correct_type] %>_question" class="checkbox_<%= object[:correct_type] %>_question" type="checkbox" value="" /><input name="text_<%= object[:correct_type] %>_question" class="text_<%= object[:correct_type] %>_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:$(this).closest('ul').remove();" style="display:none;">[删除]</a></li></ul>
+    <ul>
+      <li><input name="checkbox_1_question" class="checkbox_1_question" type="checkbox" value="" />
+        <input name="text_1_question" class="text_1_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+      <li><input name="checkbox_1_question" class="checkbox_1_question" type="checkbox" value="" />
+        <input name="text_1_question" class="text_1_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+      <li><input name="checkbox_1_question" class="checkbox_1_question" type="checkbox" value="" />
+        <input name="text_1_question" class="text_1_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+      <li><input name="checkbox_1_question" class="checkbox_1_question" type="checkbox" value="" />
+        <input name="text_1_question" class="text_1_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+    </ul>
+    <div><a href="javascript:void(0);" onclick="javascript:post_question_add_attr($(this),1);">&nbsp;&nbsp;添加选项</a></div>
   <% elsif object[:correct_type]==2 %>
-    <ul><li><input name="radio_<%= object[:correct_type] %>_question" class="radio_<%= object[:correct_type] %>_question" type="radio" value="1" /> 是/对</li><li><input name="radio_<%= object[:correct_type] %>_question" class="radio_<%= object[:correct_type] %>_question" type="radio" value="0" /> 否/错</li></ul>
+    <ul><li><input name="radio_2_question" class="radio_2_question" type="radio" value="1" /> 是/对</li>
+      <li><input name="radio_2_question" class="radio_2_question" type="radio" value="0" /> 否/错</li></ul>
   <% elsif object[:correct_type]==3 %>
-    <input name="text_<%= object[:correct_type] %>_question" class="text_<%= object[:correct_type] %>_question qa_input" type="text" value=""/>
+    <input name="text_3_question" class="text_3_question qa_input" type="text" value=""/>
   <% elsif object[:correct_type]==5 %>
-    <textarea name="textarea_<%= object[:correct_type] %>_question" class="text_<%= object[:correct_type] %>_question qa_textarea" cols="" rows="" ></textarea>
+    <textarea name="textarea_5_question" class="text_5_question qa_textarea" cols="" rows="" ></textarea>
   <% end %>
 
 <% else %>
-    
+
   <% if object[:correct_type]==0 %>
-    <% object[:question_attrs].split(";-;").each do |attr| %>
-    <ul><li><input name="radio_<%= object[:correct_type] %>_question" class="radio_<%= object[:correct_type] %>_question" type="radio" value="" <% if object[:answer]==attr %>checked="true"<% end %> /><input name="text_<%= object[:correct_type] %>_question" class="text_<%= object[:correct_type] %>_question" type="text" value="<%= attr %>" /><a href="#" style="display:none;" >[删除]</a></li></ul>
-    <% end %>
+    <ul>
+      <% object[:question_attrs].split(";-;").each do |attr| %>
+        <li><input name="radio_0_question" class="radio_0_question" type="radio" value="" <% if object[:answer]==attr %>checked="true"<% end %> /> <input name="text_0_question" class="text_0_question" type="text" value="<%= attr %>" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+      <% end %>
+    </ul>
+    <div><a href="javascript:void(0);" onclick="javascript:post_question_add_attr($(this),0);">&nbsp;&nbsp;添加选项</a></div>
   <% elsif object[:correct_type]==1 %>
-    <% answer_arr = object[:answer].split(";|;") %>
-    <% object[:question_attrs].split(";-;").each do |attr| %>
-    <ul><li><input <% if answer_arr.include?(attr) %> checked="true" <% end %> name="checkbox_<%= object[:correct_type] %>_question" class="checkbox_<%= object[:correct_type] %>_question" type="checkbox" value="" /><input name="text_<%= object[:correct_type] %>_question" class="text_<%= object[:correct_type] %>_question" type="text" value="<%= attr %>" /><a href="#" style="display:none;">[删除]</a></li></ul>
-    <% end %>
+    <ul>
+      <% answer_arr = object[:answer].split(";|;") %>
+      <% object[:question_attrs].split(";-;").each do |attr| %>
+        <li><input <% if answer_arr.include?(attr) %> checked="checked" <% end %> name="checkbox_1_question" class="checkbox_1_question" type="checkbox" value="" /> <input name="text_1_question" class="text_1_question" type="text" value="<%= attr %>" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+      <% end %>
+    </ul>
+    <div><a href="javascript:void(0);" onclick="javascript:post_question_add_attr($(this),1);">&nbsp;&nbsp;添加选项</a></div>
   <% elsif object[:correct_type]==2 %>
-    <ul><li><input <% if object[:answer]=="1" %> checked="true" <% end %> name="radio_<%= object[:correct_type] %>_question" class="radio_<%= object[:correct_type] %>_question" type="radio" value="1" /> 是/对</li><li><input <% if object[:answer]=="0" %> checked="true" <% end %> name="radio_<%= object[:correct_type] %>_question" class="radio_<%= object[:correct_type] %>_question" type="radio" value="0" /> 否/错</li></ul>
+    <ul><li><input <% if object[:answer]=="1" %> checked="true" <% end %> name="radio_2_question" class="radio_2_question" type="radio" value="1" /> 是/对</li><li><input <% if object[:answer]=="0" %> checked="true" <% end %> name="radio_2_question" class="radio_2_question" type="radio" value="0" /> 否/错</li></ul>
   <% elsif object[:correct_type]==3 %>
-    <input name="text_<%= object[:correct_type] %>_question" class="text_<%= object[:correct_type] %>_question qa_input" type="text" value="<%= object[:answer] %>"/>
+    <input name="text_3_question" class="text_3_question qa_input" type="text" value="<%= object[:answer] %>"/>
   <% elsif object[:correct_type]==5 %>
-    <textarea name="textarea_<%= object[:correct_type] %>_question" class="text_<%= object[:correct_type] %>_question qa_textarea" cols="" rows=""><%= object[:answer] %></textarea>
+    <textarea name="textarea_5_question" class="text_5_question qa_textarea" cols="" rows=""><%= object[:answer] %></textarea>
   <% end %>
 
 <% end %>

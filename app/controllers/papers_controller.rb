@@ -1,3 +1,4 @@
+# encoding: utf-8
 class PapersController < ApplicationController
   before_filter :access?
   before_filter :is_category_in?
@@ -81,7 +82,7 @@ class PapersController < ApplicationController
     problem_element = doc.elements[@post[:problems_xpath]].add_element("problem")
     manage_element(problem_element,{:description=>@post[:problem_description],:title=>@post[:problem_title],:category=>@post[:category],:questions=>""},{:id=>@problem.id,:question_type=>@post[:question_type]})
     question_element = problem_element.elements["questions"].add_element("question")
-    manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>@post[:question_tags],:words=>@post[:question_words],:analysis=>@post[:question_analysis]},{:id=>@question.id,:score=>@post[:question_score],:correct_type=>@post[:correct_type]})
+    manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>@post[:question_tags],:words=>@post[:question_words],:analysis=>@post[:question_analysis]},{:id=>@question.id,:score=>@post[:question_score],:correct_type=>@post[:correct_type],:flag=>@post[:question_flag]})
     write_xml(doc,url)
     redirect_to "/papers/#{params[:id]}/edit?category=#{@post[:category]}"
   end
@@ -139,14 +140,14 @@ class PapersController < ApplicationController
       @question = Question.create(:problem_id=>problem_id,:description=>@post[:question_description],:answer=>@post[:question_answer],:correct_type=>@post[:correct_type],:analysis=>@post[:question_analysis],:question_attrs=>@post[:question_attrs])
       #创建标签
       question_element = doc.elements[@post[:questions_xpath]].add_element("question")
-      manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>@post[:question_tags],:words=>@post[:question_words],:analysis=>@post[:question_analysis]},{:correct_type=>@post[:correct_type],:id=>@question.id,:score=>@post[:question_score]})
+      manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>@post[:question_tags],:words=>@post[:question_words],:analysis=>@post[:question_analysis]},{:correct_type=>@post[:correct_type],:id=>@question.id,:score=>@post[:question_score],:flag=>@post[:question_flag]})
       write_xml(doc,url)
     else
       question_xpath = @post[:questions_xpath]+"/question[#{@post[:question_index]}]"
       @question=Question.find(doc.elements[question_xpath].attributes["id"])
       @question.update_attributes(:description=>@post[:question_description],:answer=>@post[:question_answer],:question_attrs=>@post[:question_attrs],:analysis=>@post[:question_analysis])
       question_element = doc.elements[question_xpath]
-      manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>@post[:question_tags],:words=>@post[:question_words],:analysis=>@post[:question_analysis]},{:score=>@post[:question_score]})
+      manage_element(question_element,{:description=>@post[:question_description],:answer=>@post[:question_answer],:questionattrs=>@post[:question_attrs],:tags=>@post[:question_tags],:words=>@post[:question_words],:analysis=>@post[:question_analysis]},{:score=>@post[:question_score],:flag=>@post[:question_flag]})
       write_xml(doc,url)
     end
     if !@post[:question_tags].nil? and @post[:question_tags].strip != ""
@@ -262,6 +263,7 @@ class PapersController < ApplicationController
     end
   end
 
+  #删除试卷内容 （部分、大题、小题）
   def destroy_element
     paper=Paper.find(params[:id])
     xpath = "/paper/blocks/block[#{params[:block_index]}]"
@@ -269,11 +271,26 @@ class PapersController < ApplicationController
     xpath += "/questions/question[#{params[:question_index]}]" if params[:question_index]
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
-    puts "----------------------------------------------"
-    puts xpath
     doc.delete_element(xpath)
     write_xml(doc,url)
     redirect_to request.referer
+  end
+
+  def upload_image
+    filename = params[:imgFile].original_filename
+    time = Time.now.strftime("%Y%m%d")
+    dir = "#{File.expand_path(Rails.root)}/public/upload_images"
+    Dir.mkdir(dir) unless File.directory?(dir)
+    Dir.mkdir("#{dir}/#{time}") unless File.directory?("#{dir}/#{time}")
+    File.open("#{dir}/#{time}/#{filename}", "wb") do |f|
+      f.write(params[:imgFile].read)
+    end
+    respond_to do |format|
+      format.json {
+        data={:error=>0,:url=>"/upload_images/#{time}/#{filename}",:message=>"upload_image error"}
+        render:json=>data
+      }
+    end
   end
 
   # --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------

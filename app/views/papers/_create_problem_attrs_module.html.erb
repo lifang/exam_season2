@@ -1,20 +1,35 @@
 
 <% object = create_problem_attrs_module %>
-<input type="hidden" value="<%= object[:question_type] %>" name="create_problem[correct_type]" />
+<input type="hidden" value="<%= object[:question_type] %>" id="create_problem_correct_type_<%= object[:block_index] %>" name="create_problem[correct_type]" />
 <% if object[:question_type]==0 %>
-    <ul><li><input name="radio_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="radio_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="radio" value=""  /><input name="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="text" value="" /><a href="javascript:void(0);" style="display:none;" onclick="javascript:$(this).closest('ul').remove();">[删除]</a></li></ul>
-    <ul><li><input name="radio_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="radio_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="radio" value=""  /><input name="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="text" value="" /><a href="javascript:void(0);" style="display:none;" onclick="javascript:$(this).closest('ul').remove();">[删除]</a></li></ul>
-    <ul><li><input name="radio_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="radio_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="radio" value=""  /><input name="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="text" value="" /><a href="javascript:void(0);" style="display:none;" onclick="javascript:$(this).closest('ul').remove();">[删除]</a></li></ul>
-    <ul><li><input name="radio_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="radio_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="radio" value=""  /><input name="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="text" value="" /><a href="javascript:void(0);" style="display:none;" onclick="javascript:$(this).closest('ul').remove();">[删除]</a></li></ul>
+  <ul>
+    <li><input name="radio_0_block_<%= object[:block_index] %>" class="radio_0_block_<%= object[:block_index] %>" type="radio" value=""  />
+      <input name="text_0_block_<%= object[:block_index] %>" class="text_0_block_<%= object[:block_index] %>" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+    <li><input name="radio_0_block_<%= object[:block_index] %>" class="radio_0_block_<%= object[:block_index] %>" type="radio" value=""  />
+      <input name="text_0_block_<%= object[:block_index] %>" class="text_0_block_<%= object[:block_index] %>" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+    <li><input name="radio_0_block_<%= object[:block_index] %>" class="radio_0_block_<%= object[:block_index] %>" type="radio" value=""  />
+      <input name="text_0_block_<%= object[:block_index] %>" class="text_0_block_<%= object[:block_index] %>" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+    <li><input name="radio_0_block_<%= object[:block_index] %>" class="radio_0_block_<%= object[:block_index] %>" type="radio" value=""  />
+      <input name="text_0_block_<%= object[:block_index] %>" class="text_0_block_<%= object[:block_index] %>" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+  </ul>
+  <div><a href="javascript:void(0);" onclick="javascript:create_problem_add_attr($(this),0,<%= object[:block_index] %>);">&nbsp;&nbsp;添加选项</a></div>
 <% elsif object[:question_type]==1 %>
-    <ul><li><input name="checkbox_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="checkbox_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="checkbox" value="" /><input name="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="text" value="" /><a  href="javascript:void(0);" style="display:none;" onclick="javascript:$(this).closest('ul').remove();">[删除]</a></li></ul>
-    <ul><li><input name="checkbox_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="checkbox_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="checkbox" value="" /><input name="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="text" value="" /><a  href="javascript:void(0);" style="display:none;" onclick="javascript:$(this).closest('ul').remove();">[删除]</a></li></ul>
-    <ul><li><input name="checkbox_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="checkbox_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="checkbox" value="" /><input name="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="text" value="" /><a  href="javascript:void(0);" style="display:none;" onclick="javascript:$(this).closest('ul').remove();">[删除]</a></li></ul>
-    <ul><li><input name="checkbox_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="checkbox_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="checkbox" value="" /><input name="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="text" value="" /><a  href="javascript:void(0);" style="display:none;" onclick="javascript:$(this).closest('ul').remove();">[删除]</a></li></ul>
+  <ul>
+    <li><input name="checkbox_1_block_<%= object[:block_index] %>" class="checkbox_1_block_<%= object[:block_index] %>" type="checkbox" value="" />
+      <input name="text_1_block_<%= object[:block_index] %>" class="text_1_block_<%= object[:block_index] %>" type="text" value="" /><a  href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+    <li><input name="checkbox_1_block_<%= object[:block_index] %>" class="checkbox_1_block_<%= object[:block_index] %>" type="checkbox" value="" />
+      <input name="text_1_block_<%= object[:block_index] %>" class="text_1_block_<%= object[:block_index] %>" type="text" value="" /><a  href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+    <li><input name="checkbox_1_block_<%= object[:block_index] %>" class="checkbox_1_block_<%= object[:block_index] %>" type="checkbox" value="" />
+      <input name="text_1_block_<%= object[:block_index] %>" class="text_1_block_<%= object[:block_index] %>" type="text" value="" /><a  href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+    <li><input name="checkbox_1_block_<%= object[:block_index] %>" class="checkbox_1_block_<%= object[:block_index] %>" type="checkbox" value="" />
+      <input name="text_1_block_<%= object[:block_index] %>" class="text_1_block_<%= object[:block_index] %>" type="text" value="" /><a  href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+  </ul>
+  <div><a href="javascript:void(0);" onclick="javascript:create_problem_add_attr($(this),1,<%= object[:block_index] %>);">&nbsp;&nbsp;添加选项</a></div>
 <% elsif object[:question_type]==2 %>
-    <ul><li><input name="radio_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="radio_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="radio" value="1" /> 是/对</li><li><input name="radio_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="radio_<%= object[:question_type] %>_block_<%= object[:block_index] %>" type="radio" value="0" /> 否/错</li></ul>
+  <ul><li><input name="radio_2_block_<%= object[:block_index] %>" class="radio_2_block_<%= object[:block_index] %>" type="radio" value="1" /> 是/对</li>
+    <li><input name="radio_2_block_<%= object[:block_index] %>" class="radio_2_block_<%= object[:block_index] %>" type="radio" value="0" /> 否/错</li></ul>
 <% elsif object[:question_type]==3 %>
-    <input name="text_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="text_<%= object[:question_type] %>_block_<%= object[:block_index] %> qa_input" type="text" value=""/>
+  <input name="text_3_block_<%= object[:block_index] %>" class="text_3_block_<%= object[:block_index] %> qa_input" type="text" value=""/>
 <% elsif object[:question_type]==5 %>
-    <textarea name="textarea_<%= object[:question_type] %>_block_<%= object[:block_index] %>" class="text_<%= object[:question_type] %>_block_<%= object[:block_index] %> qa_textarea" cols="" rows="" ></textarea>
+  <textarea name="textarea_5_block_<%= object[:block_index] %>" class="text_5_block_<%= object[:block_index] %> qa_textarea" cols="" rows="" ></textarea>
 <% end %>

@@ -1031,3 +1031,15 @@
 .ke-plugin-template .ke-right {
 	float: right;
 }
+
+.ke-icon-audio {
+        background-image: url(mp3.gif);
+        width: 16px;
+        height: 16px;
+}
+
+.ke-icon-mark {
+        background-image: url(sign.gif);
+        width: 16px;
+        height: 16px;
+}
