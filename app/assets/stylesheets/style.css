@@ -64,7 +64,8 @@ img { border: none;}
 
 .main { width: 958px; min-height: 548px; border: 1px #CCC solid; background: #FFF; position: relative;}
 .main_title { height: 40px; line-height: 40px; padding-left: 30px;}
-.m_t_h { width: 500px; float: left; font-size: 14px; font-weight: bold;}
+.m_t_h { width: 100px; float: left; font-size: 14px; font-weight: bold;}
+.m_t_h1 { width: 500px; float: left; font-size: 14px; font-weight: bold;}
 .m_t_select { width: 100px; float: left; padding-top: 9px;}
 .m_t_select select { width: 100px; height: 24px; line-height: 24px; border: 1px #CCC solid;}
 .m_t_btn { width: 100px; float: right; padding-top: 10px;}
@@ -272,7 +273,7 @@ span.mk_span_w { color: #000;}
 .add_label { width: 300px; padding: 10px; background: #FFF; border: 3px #999 solid; position: fixed;z-index:900;display:none;}
 .add_label div { line-height: 24px; margin: 5px 0;}
 .add_word_box { width: 298px; height: 100px; border: 1px #CCC solid; margin: 2px 0; overflow: auto;}
-.add_word_box li { float: left; margin: 5px; font-size: 16px; width: 45%;}
+.add_word_box li { float: left; margin: 5px; font-size: 12px; width: 29%;}
 .add_word_box li a { padding-left: 5px;}
 
 
@@ -425,15 +426,16 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 .see_mess_xx { border: 1px #CCC solid; padding: 10px;}
 
 /*添加词汇----------*/
-.addWords { width: 440px; padding: 10px; border: 3px #999 solid; background: #FFF; overflow: hidden; position: fixed;z-index: 900;display:none;}
-.addwords_side { width: 220px; float: left;}
-.words_ny { width: 200px; height: 100px; margin: 5px 0; overflow: auto; border: 1px #CCC solid;}
+.addWords { width: 640px; padding: 10px; border: 3px #999 solid; background: #FFF; overflow: hidden; position: fixed;display:none;z-index: 900;}
+.addwords_side { width: 320px; height: 400px; float: left; overflow: auto;}
+.words_ny { width: 300px; height: 160px; margin: 5px 0; overflow: auto; border: 1px #CCC solid;}
 .words_ny li { height: 24px; line-height: 24px;}
-.words_ny li a {width: 170px; height: 24px; display: block; padding-left: 10px; color: #333;}
+.words_ny li a {width: 290px; height: 24px; display: block; padding-left: 10px; color: #333;}
 .words_ny li a:hover { background: #09C; color: #FFF;}
 .words_ny li a.hover { background: #09C; color: #FFF;}
 .words_ny div { margin:5px;}
 .words_ny div a { padding-left: 5px;}
+
 
 .hui_bg { background: #e1e1e1; padding-left: 10px; height: 24px; line-height: 24px; margin: 5px 0;}
 .xs_add span { padding: 0 5px;}

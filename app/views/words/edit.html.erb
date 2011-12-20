@@ -15,6 +15,12 @@
             <option value="<%= k %>" <% if @word.types == k %>selected<% end %>><%= v %></option>
           <% end %>
         </select>
+        <label>等级：</label>
+        <select name="level" id="level" >
+          <% Word::LEVEL.each do |k, v| %>
+            <option value="<%= k %>" <% if @word.level == k %>selected<% end %>><%= v %></option>
+          <% end %>
+        </select>
       </div>
       <div>
         <label>音标：</label><input name="phonetic" id="phonetic" type="text" value="<%= @word.phonetic %>" />

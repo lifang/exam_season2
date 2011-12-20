@@ -31,7 +31,7 @@ RailsTest3::Application.routes.draw do
   end
   resources :words do
     collection do
-      post :search, :list_similar
+      post :search, :list_similar,:download_word,:create_word
       get :search_list
     end
   end

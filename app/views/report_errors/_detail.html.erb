@@ -6,7 +6,7 @@
     <% detail.each do |word| %>
       <div class="xs_add">
         <h2><%= word.name %></h2><span><%= Word::TYPES[word.types] %></span><span><%=word.phonetic  %></span>
-        <a href="#"><img src="/assets/icon_lb.png" onclick="javascript:listen()" /></a>
+        <a href="javascript:void(0);" onclick="javascript:listen()"><img src="/assets/icon_lb.png" /></a>
         <div id="jplayer_1"></div>
         <script type="text/javascript">
           (function(){
