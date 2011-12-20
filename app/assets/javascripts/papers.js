@@ -700,10 +700,42 @@ function download_word(word){
             $(".web_load").html($("#ajax_loader").html());
         },
         success : function(data){
+            alert(data);
             $("#words_list_ajax_loader").html(data);
             $(".single_word:eq(0)").trigger("click");
         }
     });
 }
+
+
+function show_single_word(jquery_ele, word_id) {
+    $(".single_word_li").removeClass("hover");
+    jquery_ele.addClass("hover");
+    $("#xs_add_div").show();
+    $('#xs_add_div').html($('#show_word_'+word_id).html());
+    if ($("#web_word").val() == "") {
+        $("#modify_word").css("display", "");
+    } else {
+        $("#modify_word").css("display", "none");
+    }
+}
+
+
+$(document).ready(function(){
+    $('.info_ul').sortable({
+        update: function(){
+            var block_index = getCookie("init_block");
+            alert(getCookie("init_block"));
+            alert($('#block_sort_'+block_index).sortable('serialize'));
+            $.ajax({
+                type: 'post',
+                data: $('#block_sort_'+block_index).sortable('serialize'),
+                dataType: 'script',
+                url: '/papers/sort'
+            })
+        }
+    });
+    $(".info_ul").disableSelection();
+});
 
 

@@ -8,7 +8,7 @@ RailsTest3::Application.routes.draw do
     end
     collection do
       post :select_question_type,:select_correct_type    #ajax
-      post :ajax_load_tags_list,:ajax_insert_new_tag,:ajax_load_words_list
+      post :ajax_load_tags_list,:ajax_insert_new_tag,:ajax_load_words_list, :sort
     end
   end
 

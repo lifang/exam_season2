@@ -9,3 +9,7 @@
 //= require cookie
 //= require DD_belatedPNG_0.0.8a-min
 //= require t_list
+//= require jquery.ui.core
+//= require jquery.ui.widget
+//= require jquery.ui.mouse
+//= require jquery.ui.sortable

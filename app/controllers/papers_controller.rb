@@ -238,9 +238,13 @@ class PapersController < ApplicationController
     category_id = params["category_id"].to_i
     like_params = "#{match}%"
     if params["added_words"].strip!=""
-      @words = Word.find_by_sql(["select * from words where category_id = ? and name like ? and name not in (?)",category_id,like_params,added_words])
+      @words = Word.find_by_sql(["select w.*, ws.description from words w left join word_sentences ws on ws.word_id = w.id
+            where w.category_id = ? and w.name like ? and w.name not in (?) limit 20",
+          category_id, like_params, added_words])
     else
-      @words = Word.find_by_sql(["select * from words where category_id = ? and name like ?",category_id,like_params])
+      @words = Word.find_by_sql(["select w.*, ws.description from words w left join word_sentences ws on ws.word_id = w.id
+            where w.category_id = ? and w.name like ?  limit 20",
+          category_id, like_params])
     end
     respond_to do |format|
       format.html {
@@ -316,5 +320,12 @@ class PapersController < ApplicationController
   end
 
   # --------- END ------XML文件操作--------require 'rexml/document'----------include REXML----------
-  
+
+  def sort
+    puts "-----------------"
+    puts params[:li]
+    render :text => ""
+    
+  end
+
 end

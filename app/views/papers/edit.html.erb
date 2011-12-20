@@ -55,7 +55,7 @@
     </script>
 
     <% block_index = 0; @xml.elements['blocks'].each_element do |block| ; block_index +=1 %>
-      <div class="bj_info_right" style="display:none;">
+    <div class="bj_info_right" style="display:none;" id="block_sort_<%= block_index %>">
         <div class="bj_info_top">
           <div class="info_Box">
             <div class="prev">&lt;</div>
@@ -64,7 +64,7 @@
                 <% problem_index = 0;
                 block.elements["problems"].each_element do |problem|
                   problem_index += 1 %>
-                  <li><a href="javascript:void(0);" id="problems_li_<%= block_index %>" class="problems_li_<%= block_index %>" ondblclick="javascript:destroy_problem(<%= params[:id] %>,<%= block_index %>,<%= problem_index %>);"><%= problem_index %></a></li>
+                  <li id="li_<%= problem_index %>"><a href="javascript:void(0);" id="problems_li_<%= block_index %>" class="problems_li_<%= block_index %>" ondblclick="javascript:destroy_problem(<%= params[:id] %>,<%= block_index %>,<%= problem_index %>);"><%= problem_index %></a></li>
                 <% end %>
               </ul>
             </div>

@@ -1,6 +1,6 @@
 # encoding: utf-8
 class Paper < ActiveRecord::Base
-
+  acts_as_list
   require 'rexml/document'
   include REXML
 
