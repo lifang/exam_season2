@@ -111,10 +111,22 @@ class WordsController < ApplicationController
 
   def create_word
     Word.transaction do
-      word = Word.create(:category_id => params[:category_id].to_i, :name => params[:name], :types => params[:types].to_i,
+      pram={:category_id => params[:category_id].to_i, :name => params[:name], :types => params[:types].to_i,
         :phonetic => params[:phonetic].strip, :enunciate_url =>params[:enunciate_url], :en_mean => params[:en_mean],
-        :ch_mean => params[:ch_mean])
-      WordSentence.create(:word_id => word.id, :description =>  params[:sentence].strip) unless  params[:sentence].nil? or  params[:sentence].strip.empty?
+        :ch_mean => params[:ch_mean]}
+      word=Word.find_by_name(params[:name])
+      if word.nil?
+        word = Word.create(pram)
+        WordSentence.create(:word_id => word.id, :description =>  params[:sentence].strip) unless  params[:sentence].nil? or  params[:sentence].strip.empty?
+      else
+        word.update_attributes(pram)
+        word_sentence=WordSentence.find_by_word_id(word.id)
+        if word_sentence.nil?
+          WordSentence.create(:word_id => word.id, :description =>  params[:sentence].strip) unless  params[:sentence].nil? or  params[:sentence].strip.empty?
+        else
+          word_sentence.update_attributes(:word_id => word.id, :description =>  params[:sentence].strip) unless  params[:sentence].nil? or  params[:sentence].strip.empty?
+        end
+      end
     end
     redirect_to request.referer
   end

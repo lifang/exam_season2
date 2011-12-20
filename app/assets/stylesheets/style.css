@@ -253,6 +253,7 @@ span.mk_span_w { color: #000;}
 .q_w_p em { color: #999; font-size: 12px;}
 
 .q_l_answer { border-top: 1px #CCC solid; overflow: hidden; padding: 5px 0; background: #e0e0e0; display: none;}
+.q_l_create { border-top: 1px #CCC solid; overflow: hidden; padding: 5px 0; background: #e0e0e0;}
 .q_label { width: 125px; float: left; line-height: 18px; padding-left: 10px; margin: 5px 0;}
 .q_label div { padding: 5px 0;}
 .q_re_a { margin: 0 5px;}
@@ -425,15 +426,16 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 .see_mess_xx { border: 1px #CCC solid; padding: 10px;}
 
 /*添加词汇----------*/
-.addWords { width: 440px; padding: 10px; border: 3px #999 solid; background: #FFF; overflow: hidden; position: fixed;z-index: 900;display:none;}
-.addwords_side { width: 220px; float: left;}
-.words_ny { width: 200px; height: 100px; margin: 5px 0; overflow: auto; border: 1px #CCC solid;}
+.addWords { width: 640px; padding: 10px; border: 3px #999 solid; background: #FFF; overflow: hidden; position: fixed;display:none;z-index: 900;}
+.addwords_side { width: 320px; height: 400px; float: left; overflow: auto;}
+.words_ny { width: 300px; height: 160px; margin: 5px 0; overflow: auto; border: 1px #CCC solid;}
 .words_ny li { height: 24px; line-height: 24px;}
-.words_ny li a {width: 170px; height: 24px; display: block; padding-left: 10px; color: #333;}
+.words_ny li a {width: 290px; height: 24px; display: block; padding-left: 10px; color: #333;}
 .words_ny li a:hover { background: #09C; color: #FFF;}
 .words_ny li a.hover { background: #09C; color: #FFF;}
 .words_ny div { margin:5px;}
 .words_ny div a { padding-left: 5px;}
+
 
 .hui_bg { background: #e1e1e1; padding-left: 10px; height: 24px; line-height: 24px; margin: 5px 0;}
 .xs_add span { padding: 0 5px;}

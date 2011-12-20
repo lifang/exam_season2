@@ -10,7 +10,7 @@
         <%= render :partial => "/papers/single_word", :object => word %>
       </div>
       <a class="single_word_li single_word" href="javascript:void(0);"
-         onclick="javascript:show_single_word($(this), <%= word.id %>);"><%= word.name if word.name %></a>
+         onclick="javascript:show_ready_word($(this), <%= word.id %>);"><%= word.name if word.name %></a>
     </li>
     <% end %>
     <% if object[:match]!="" %><li><a class="single_word_li web_load" href="javascript:void(0);"

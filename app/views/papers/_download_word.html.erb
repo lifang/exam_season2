@@ -1,10 +1,18 @@
 <% words =download_word %>
 <ul>
-  <%= words %>
-  <%  single_word = words.split(",;,") %>
-  <input type="hidden" id="word_phonetic" value="<%=single_word[4] %>" />
+  <%  single_word=words.split(",;,") %>
+  <input type="hidden" id="phonetic" value="<%=single_word[4] %>" />
   <input type="hidden" id="sentence" value="<%=single_word[6] %>" />
-  <li><a class="single_word_li single_word" href="javascript:void(0);"
-         onclick="javascript:show_single_word_detail($(this),'<%=single_word[0]%>','<%= single_word[2]%>','<%= single_word[3] %>','<%=single_word[1] %>',''+$('#word_phonetic').val(),'<%= single_word[5] %>',1);"><%=single_word[0] %></a></li>
-
+  <input type="hidden" id="en_mean" value="<%=single_word[2] %>"/>
+  <input type="hidden" id="ch_mean" value="<%=single_word[3] %>"/>
+  <input type="hidden" id="types" value="<%=single_word[1] %>"/>
+  <input type="hidden" id="name" value="<%=single_word[0] %>"/>
+  <input type="hidden" id="enunciate_url" value="<%=single_word[5] %>"/>
+  <% unless words==",;,,;,,;,,;,,;,,;,"|| words.length==18%>
+    <li><a class="single_word_li single_word" href="javascript:void(0);"
+           onclick="javascript:show_single_word('1');" ><%=single_word[0] %></a></li>
+    <% else %>
+    <li><a class="single_word_li single_word" href="javascript:void(0);"
+           onclick="javascript:show_single_word('0');" ><%=single_word[0] %></a></li>
+    <% end %>
 </ul>
