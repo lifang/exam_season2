@@ -210,9 +210,13 @@ function submit_create_problem_form(block_index) {
     if (question_type == 1) {
         var mark = "((sign))";
         var mark_sum = $('#problem_title_block_' + block_index).val().split(mark).length-1;
-        if (mark_sum != 1) {
-            tishi_alert("请在题面中插入1个标记，当前标记数："+mark_sum);
+        if (mark_sum == 0) {
+            tishi_alert("请在题目内容中插入1个标记");
             return false;
+        }else{
+            if(mark_sum>1){
+                tishi_alert("提示，你插入了"+mark_sum+"标记");
+            }
         }
     }
 }
@@ -454,7 +458,6 @@ function submit_post_question_form() {
         }
         if (sign_sum != question_sum) {
             tishi_alert("标记数（" + sign_sum + "） 不符合 题目数（" + question_sum + "）");
-            return false;
         }
     }
 }
@@ -980,4 +983,12 @@ function jplayer_play(src){
         mp3: src
     });
     $("#jplayer_loader").jPlayer("play");
+}
+
+//点击 “在题面后插入小题”，“在题面中插入小题”
+function reset_question_type(block_index,type){
+    $('.question_type_block_'+block_index).val(type);
+    $('.question_answer_block_'+block_index).val("");
+    $('.question_attrs_block_'+block_index).val("");
+    $('#create_problem_attrs_module_'+block_index).html('<font color=\'red\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请选择小题类型。</font>');
 }
