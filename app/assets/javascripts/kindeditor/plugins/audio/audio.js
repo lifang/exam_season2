@@ -3,7 +3,7 @@ KindEditor.plugin('audio', function(K) {
     editor.clickToolbar(name, function() {
         var p = prompt("请输入音频url:");
         if(p){
-            editor.insertHtml("(mp3)"+p+"(mp3)");
+            editor.insertHtml("((mp3))"+p+"((mp3))");
         }
     });
 });

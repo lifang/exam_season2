@@ -17,7 +17,7 @@ class Paper < ActiveRecord::Base
   STATUS={0=>"未审核",1=>"已审核"}
 
   # 试卷筛选 + 分页    通过paper_js_url 是否为空 判断是否通过审核
-  def Paper.search_mothod(category_id,checked, per_page, page)
+  def Paper.search_method(category_id,checked, per_page, page)
     sql = "select * from papers where types != #{Examination::TYPES[:SPECIAL]} and category_id = #{category_id}"
     sql += " and (status = #{CHECKED[:NO]} or status is null) " if checked==CHECKED[:NO]
     sql += " and status = #{CHECKED[:YES]}" if checked==CHECKED[:YES]

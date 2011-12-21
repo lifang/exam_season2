@@ -9,7 +9,7 @@ class PapersController < ApplicationController
   def index
     category=params["category"]
     checked=params["checked"].to_i unless params["checked"].nil?
-    @papers=Paper.search_mothod(category, checked, 5, params[:page])
+    @papers=Paper.search_method(category, checked, 5, params[:page])
   end
 
   #[get][collection] 新建试卷页面
@@ -138,8 +138,6 @@ class PapersController < ApplicationController
     doc = get_doc(url)
     if @post[:question_index]=="" # 当 question_index 为空，就是新建小题，不为空，就是编辑小题
       insert_index = @post[:insert_index].to_i;
-      puts "--------------------------------------------------------------"
-      puts insert_index
       problem_id = doc.elements[@post[:questions_xpath]].parent.attributes["id"].to_i
       @question = Question.create(:problem_id=>problem_id, :description=>@post[:question_description], :answer=>@post[:question_answer], :correct_type=>@post[:correct_type], :analysis=>@post[:question_analysis], :question_attrs=>@post[:question_attrs])
       #创建标签
