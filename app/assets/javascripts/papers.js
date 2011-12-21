@@ -143,7 +143,6 @@ function validate_post_block() {
     }
 }
 
-
 //ajax载入小题类型，拼凑完整表单(create_problem 表单)
 function select_question_type(question_type, block_index) {
     $('#create_problem_attrs_module_' + block_index).load('/papers/select_question_type',
@@ -193,6 +192,20 @@ function submit_create_problem_form(block_index) {
     if (correct_type == 1) {
         create_problem_multi_choose(block_index);
     }
+
+    //验证题面不能为空
+    alert($("#problem_title_block_"+block_index).val());
+    if(checkspace($("#problem_title_block_"+block_index).val())){
+        tishi_alert("未填写题目内容");
+        return false;
+    }
+
+    //验证答案不能为空
+    if(checkspace($(".question_answer_block_"+block_index).val())){
+        tishi_alert("未设置答案");
+        return false;
+    }
+
     //建题面中题目，匹配标记数量是否正确
     var question_type = parseInt($(".question_type_block_" + block_index).val());
     if (question_type == 1) {
@@ -413,6 +426,7 @@ function add_event_on_post_question_form(correct_type) {
 
 //提交post_question表单前组织单选题、多选题答案
 function submit_post_question_form() {
+
     var correct_type = parseInt($("#post_question_correct_type").val());
     if (correct_type == 0) {
         post_question_single_choose();
@@ -420,7 +434,11 @@ function submit_post_question_form() {
     if (correct_type == 1) {
         post_question_multi_choose();
     }
-
+    //小题答案不能为空
+    if(checkspace($("#post_question_question_answer").val())){
+        tishi_alert("未设置答案");
+        return false;
+    }
     //建题面中题目，匹配标记数量是否正确
     var question_type = parseInt($("#post_question_question_type").val());
     if (question_type == 1) {
@@ -442,6 +460,7 @@ function submit_post_question_form() {
 
 //单选题 整理组织单选题选项和答案
 function post_question_single_choose() {
+    $("#post_question_question_answer").val("");
     $(".radio_0_question").each(function() {
         if (this.checked) {
             $("#post_question_question_answer").val($(this).next(".text_0_question").val());
@@ -847,3 +866,110 @@ function show_single_word(web_word){
         $("#select_word").css("display", "");
     }
 }
+
+  //载入富文本编辑框,编辑时用，新建题目时使用load_create_kindeditor
+  function load_edit_kindeditor(selector,paper_id,block_index,problem_index) {
+    var editor = KindEditor.create(selector, {
+      resizeType : 1,
+      allowPreviewEmoticons : false,
+      allowImageUpload : true,
+      items : [
+        'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+        'removeformat', '|', 'image','audio','mark', '|' ,'commit' ]
+    });
+    KindEditor.plugin('commit', function(K) {
+      var name = 'commit';
+      editor.clickToolbar(name, function() {
+        var text = editor.html();
+        if($("#show_problem_title_"+block_index+"_"+problem_index).html()!=text){
+          ajax_edit_problem_title(paper_id,block_index,problem_index,text);
+        }
+        editor.remove();
+      });
+    });
+    editor.focus();
+  };
+
+  function load_create_kindeditor(index) {
+    var form = "#bj_info_box_"+index;
+    var selector = "#problem_title_block_"+index;
+    if($(form).css('display')!="none" && $(selector).css('display')!="none"){
+      var editor = KindEditor.create(selector, {
+        resizeType : 1,
+        allowPreviewEmoticons : false,
+        allowImageUpload : true,
+        afterBlur : function() {
+          var text = editor.html();
+          $(selector).val(text);
+        },
+        items : [
+          'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+          'removeformat', '|', 'image','audio','mark']
+      });
+    }
+  };
+
+  //删除模块
+  function destroy_block(paper_id,block_index){
+    if(confirm("系统即将删除第"+block_index+"部分的所有内容。\n确认要删除么？")){
+      $('#zhezhao').show();
+      delCookie("init_block");
+      delCookie("init_problem");
+      tishi_alert("正在删除，请稍等。");
+      window.location.href='/papers/'+paper_id+"/destroy_element?block_index="+block_index;
+    }
+  }
+
+  //删除大题
+  function destroy_problem(paper_id,block_index,problem_index){
+    if(confirm("系统即将将删除第"+block_index+"部分第"+problem_index+"大题的所有内容。\n确认要删除么？")){
+      $('#zhezhao').show();
+      setCookie("init_problem","1");
+      tishi_alert("正在删除，请稍等。");
+      window.location.href='/papers/'+paper_id+"/destroy_element?block_index="+block_index+"&problem_index="+problem_index;
+    }
+  }
+
+  //删除小题
+  function destroy_question(paper_id,block_index,problem_index,question_index){
+    if(confirm("系统即将删除第"+block_index+"部分第"+problem_index+"大题第"+question_index+"小题的所有内容。\n确认要删除么？")){
+      $('#zhezhao').show();
+      tishi_alert("正在删除，请稍等。");
+      window.location.href='/papers/'+paper_id+"/destroy_element?block_index="+block_index+"&problem_index="+problem_index+"&question_index="+question_index;
+    }
+  }
+
+
+
+  //create_problem表单 追加选项
+  function create_problem_add_attr(ele,correct_type,block_index){
+    var attrs = ele.parent().prev("ul");
+    if(correct_type==0){
+      attrs.append($("#append_create_problem_single_attr_"+block_index+">li").clone());
+    }
+    if(correct_type==1){
+      attrs.append($("#append_create_problem_multi_attr_"+block_index+">li").clone());
+    }
+  }
+
+  //post_question表单 追加选项
+  function post_question_add_attr(ele,correct_type){
+    var attrs = ele.parent().prev("ul");
+    if(correct_type==0){
+      attrs.append($("#append_post_question_single_attr>li").clone());
+    }
+    if(correct_type==1){
+      attrs.append($("#append_post_question_multi_attr>li").clone());
+    }
+  }
+
+  //删除选项
+  function remove_attr(ele){
+    ele.closest("li").remove();
+  }
+
+  //播放音频
+  function jplayer_play(src){
+    $("#jplayer_loader").jPlayer("setMedia", { mp3: src});
+    $("#jplayer_loader").jPlayer("play");
+  }

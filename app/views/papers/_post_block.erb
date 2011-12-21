@@ -1,0 +1,17 @@
+<div class="part_info">
+  <%= form_for :post_block ,:url=>"/papers/#{params[:id]}/post_block" ,:html=>{:onsubmit=>"return validate_post_block();"} do |f| %>
+    <span class="yj_x"><img alt="assets/x.gif" src="/assets/x.gif" onclick="javascript:close_part_info();" /></span>
+    <div class="qc_h"><strong>部分信息</strong></div>
+    <input type="hidden" id="block_xpath" name="block_xpath"></input>
+    <table width="400" border="0" cellpadding="0" cellspacing="1">
+      <tbody>
+        <tr><td>名称：</td><td><input id="block_name" name="block_name" type="text" /></td></tr>
+        <tr><td>开始时间：</td><td><input name="start_time" id="block_start_time_radio1" type="radio" value="0" onclick="javascript:$('#block_start_time').attr('disabled','disabled');" />无限制&nbsp;&nbsp;&nbsp;<input name="start_time" id="block_start_time_radio2" type="radio" value="0" onclick="javascript:$('#block_start_time').removeAttr('disabled').focus().select();" />开始于第<input name="block_start_time" id="block_start_time" type="text" size="5" onchange="javascript:$('#block_start_time_radio2').val(this.value);"/>分钟</td> </tr>
+        <tr><td>部分时长：</td><td><input name="time" type="radio" id="block_time_radio1" value="0" onclick="javascript:$('#block_time').attr('disabled','disabled');"/>无限制&nbsp;&nbsp;&nbsp;<input  name="time" id="block_time_radio2" type="radio" value="0" onclick="javascript:$('#block_time').removeAttr('disabled').focus().select();" />时长<input name="block_time" id="block_time" type="text" size="5" onchange="javascript:$('#block_time_radio2').val(this.value);" />分钟</td></tr>
+        <tr><td>说明：</td><td><textarea name="block_description" id="block_description" cols="" rows=""></textarea></td></tr>
+      </tbody>
+    </table>
+    <br/>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" class="t_btn" value="保存"></input></div>
+  <% end  #新建、编辑 block 表单  END%>
+</div>

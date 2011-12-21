@@ -66,7 +66,7 @@
     </script>
 
     <% block_index = 0; @xml.elements['blocks'].each_element do |block| ; block_index +=1 %>
-    <div class="bj_info_right" style="display:none;" >
+      <div class="bj_info_right" style="display:none;" >
         <div class="bj_info_top">
           <div class="info_Box">
             <div class="prev">&lt;</div>
@@ -199,7 +199,7 @@
                     <div class="edit_question_form" id="q_l_answer_<%= block_index %>_<%= problem_index %>_<%= question_index %>"></div>
                   </div>
                 <% end if problem.elements["questions"] #questions循环结束 %>
-                   <div class="question_list ignore" style="height:320px;" id="question_list_<%=  block_index %>_<%=  problem_index %>"></div>
+                <div class="question_list ignore" style="height:320px;" id="question_list_<%=  block_index %>_<%=  problem_index %>"></div>
               </div>
             </div>
           </div>
@@ -246,8 +246,8 @@
               </div>
               <div class="clear"></div>
               <div class="question_list_box">
-                  <div class="question_list" >
-                    <div>
+                <div class="question_list" >
+                  <div>
                     <div class="q_l_create">
                       <div class="qa_h">小题描述<textarea name="create_problem[question_description]" class="question_description_block_<%= block_index %> qa_textarea" cols="" rows=""></textarea></div>
                       <div class="qa_h"><span class="yl_bc"><input name="" type="checkbox" value="" onclick="javascript:if(this.checked){$('.question_flag_block_<%= block_index %>').val('1')}else{$('.question_flag_block_<%= block_index %>').val('0')};"/> 自动批改</span>答案</div>
@@ -276,128 +276,12 @@
     <div class="clear"></div>
   </div>
 </div>
-<script type="text/javascript">
-  
-  //载入富文本编辑框,编辑时用，新建题目时使用load_create_kindeditor
-  function load_edit_kindeditor(selector,paper_id,block_index,problem_index) {
-    var editor = KindEditor.create(selector, {
-      resizeType : 1,
-      allowPreviewEmoticons : false,
-      allowImageUpload : true,
-      afterBlur : function() {
-        var text = editor.html();
-        if($("#show_problem_title_"+block_index+"_"+problem_index).html()!=text){
-          ajax_edit_problem_title(paper_id,block_index,problem_index,text);
-        }
-        editor.remove();
-      },
-      items : [
-        'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
-        'removeformat', '|', 'image','audio','mark']
-    });
-    editor.focus();
-  };
 
-  function load_create_kindeditor(index) {
-    var form = "#bj_info_box_"+index;
-    var selector = "#problem_title_block_"+index;
-    if($(form).css('display')!="none" && $(selector).css('display')!="none"){
-      var editor = KindEditor.create(selector, {
-        resizeType : 1,
-        allowPreviewEmoticons : false,
-        allowImageUpload : true,
-        afterBlur : function() {
-          var text = editor.html();
-          $(selector).val(text);
-        },
-        items : [
-          'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
-          'removeformat', '|', 'image','audio','mark']
-      });
-    }
-  };
-
-  //删除模块
-  function destroy_block(paper_id,block_index){
-    if(confirm("系统即将删除第"+block_index+"部分的所有内容。\n确认要删除么？")){
-      $('#zhezhao').show();
-      delCookie("init_block");
-      delCookie("init_problem");
-      tishi_alert("正在删除，请稍等。");
-      window.location.href='/papers/'+paper_id+"/destroy_element?block_index="+block_index;
-    }
-  }
-
-  //删除大题
-  function destroy_problem(paper_id,block_index,problem_index){
-    if(confirm("系统即将将删除第"+block_index+"部分第"+problem_index+"大题的所有内容。\n确认要删除么？")){
-      $('#zhezhao').show();
-      setCookie("init_problem","1");
-      tishi_alert("正在删除，请稍等。");
-      window.location.href='/papers/'+paper_id+"/destroy_element?block_index="+block_index+"&problem_index="+problem_index;
-    }
-  }
-
-  //删除小题
-  function destroy_question(paper_id,block_index,problem_index,question_index){
-    if(confirm("系统即将删除第"+block_index+"部分第"+problem_index+"大题第"+question_index+"小题的所有内容。\n确认要删除么？")){
-      $('#zhezhao').show();
-      tishi_alert("正在删除，请稍等。");
-      window.location.href='/papers/'+paper_id+"/destroy_element?block_index="+block_index+"&problem_index="+problem_index+"&question_index="+question_index;
-    }
-  }
-
-
-
-  //create_problem表单 追加选项
-  function create_problem_add_attr(ele,correct_type,block_index){
-    var attrs = ele.parent().prev("ul");
-    if(correct_type==0){
-      attrs.append($("#append_create_problem_single_attr_"+block_index+">li").clone());
-    }
-    if(correct_type==1){
-      attrs.append($("#append_create_problem_multi_attr_"+block_index+">li").clone());
-    }
-  }
-
-  //post_question表单 追加选项
-  function post_question_add_attr(ele,correct_type){
-    var attrs = ele.parent().prev("ul");
-    if(correct_type==0){
-      attrs.append($("#append_post_question_single_attr>li").clone());
-    }
-    if(correct_type==1){
-      attrs.append($("#append_post_question_multi_attr>li").clone());
-    }
-  }
-
-  //删除选项
-  function remove_attr(ele){
-    ele.closest("li").remove();
-  }
-
-</script>
+<!--  遮罩  -->
+<div class="zhezhao" id="zhezhao"></div>
 
 <!--  新建、编辑 block 表单  -->
-<div class="zhezhao" id="zhezhao"></div>
-<div class="part_info">
-  <%= form_for :post_block ,:url=>"/papers/#{params[:id]}/post_block" ,:html=>{:onsubmit=>"return validate_post_block();"} do |f| %>
-    <span class="yj_x"><img alt="assets/x.gif" src="/assets/x.gif" onclick="javascript:close_part_info();" /></span>
-    <div class="qc_h"><strong>部分信息</strong></div>
-    <input type="hidden" id="block_xpath" name="block_xpath"></input>
-    <table width="400" border="0" cellpadding="0" cellspacing="1">
-      <tbody>
-        <tr><td>名称：</td><td><input id="block_name" name="block_name" type="text" /></td></tr>
-        <tr><td>开始时间：</td><td><input name="start_time" id="block_start_time_radio1" type="radio" value="0" onclick="javascript:$('#block_start_time').attr('disabled','disabled');" />无限制&nbsp;&nbsp;&nbsp;<input name="start_time" id="block_start_time_radio2" type="radio" value="0" onclick="javascript:$('#block_start_time').removeAttr('disabled').focus().select();" />开始于第<input name="block_start_time" id="block_start_time" type="text" size="5" onchange="javascript:$('#block_start_time_radio2').val(this.value);"/>分钟</td> </tr>
-        <tr><td>部分时长：</td><td><input name="time" type="radio" id="block_time_radio1" value="0" onclick="javascript:$('#block_time').attr('disabled','disabled');"/>无限制&nbsp;&nbsp;&nbsp;<input  name="time" id="block_time_radio2" type="radio" value="0" onclick="javascript:$('#block_time').removeAttr('disabled').focus().select();" />时长<input name="block_time" id="block_time" type="text" size="5" onchange="javascript:$('#block_time_radio2').val(this.value);" />分钟</td></tr>
-        <tr><td>说明：</td><td><textarea name="block_description" id="block_description" cols="" rows=""></textarea></td></tr>
-      </tbody>
-    </table>
-    <br/>
-    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" class="t_btn" value="保存"></input></div>
-  <% end  #新建、编辑 block 表单  END%>
-</div>
-
+<%= render :partial=>"/papers/post_block" %>
 
 <!--  追加、编辑 question 表单  -->
 <div id="post_question_loader" style="display:none;">
@@ -494,9 +378,3 @@
     </div>
   </div>
 </div>
-<script type="text/javascript">
-  function jplayer_play(src){
-    $("#jplayer_loader").jPlayer("setMedia", { mp3: src});
-    $("#jplayer_loader").jPlayer("play");
-  }
-</script>
