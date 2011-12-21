@@ -19,11 +19,11 @@ class PapersController < ApplicationController
   #[post][collection] 新建试卷
   def create
     @paper=Paper.create(:creater_id=>cookies[:user_id],
-                        :title => params[:title].strip, :types => Examination::TYPES[:OLD_EXAM], :status => Paper::CHECKED[:NO],
-                        :category_id => params[:category], :time => params[:time])
+      :title => params[:title].strip, :types => Examination::TYPES[:OLD_EXAM], :status => Paper::CHECKED[:NO],
+      :category_id => params[:category], :time => params[:time])
     category = Category.find(params[:category])
     @paper.create_paper_url(@paper.xml_content({"category_name" => category.name}),
-                            "#{Time.now.strftime("%Y%m%d")}", "xml") unless category.nil?
+      "#{Time.now.strftime("%Y%m%d")}", "xml") unless category.nil?
     redirect_to "/papers/#{@paper.id}/edit?category=#{params[:category]}"
   end
 
@@ -42,18 +42,18 @@ class PapersController < ApplicationController
   #[post][member] 模块表单
   def post_block
     block_xpath, block_name, block_description, block_time, block_start_time =
-        params["block_xpath"], params["block_name"], params["block_description"], params["time"], params["start_time"]
+      params["block_xpath"], params["block_name"], params["block_description"], params["time"], params["start_time"]
     paper = Paper.find(params[:id].to_i)
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     if block_xpath != ""
       block = doc.elements[block_xpath]
       manage_element(block, {"base_info/title"=>block_name, "base_info/description"=>block_description},
-                     {"time"=>block_time, "start_time"=>block_start_time})
+        {"time"=>block_time, "start_time"=>block_start_time})
     else
       block = doc.elements["blocks"].add_element("block")
       manage_element(block, {"base_info/title"=>block_name, "base_info/description"=>block_description, "problems"=>""},
-                     {"total_score"=>"0", "total_num"=>"0", "time"=>block_time, "start_time"=>block_start_time})
+        {"total_score"=>"0", "total_num"=>"0", "time"=>block_time, "start_time"=>block_start_time})
     end
     write_xml(doc, url)
     redirect_to request.referer
@@ -72,7 +72,7 @@ class PapersController < ApplicationController
       @question.question_tags(Tag.create_tag(tag_name))
     end
     if !@post[:question_words].nil? and @post[:question_words].strip != ""
-      words = @post[:question_words].strip.split(".")
+      words = @post[:question_words].strip.split(";")
       @question.question_words(words)
     end
     #存储xml文件
@@ -162,7 +162,7 @@ class PapersController < ApplicationController
       @question.question_tags(Tag.create_tag(tag_name))
     end
     if !@post[:question_words].nil? and @post[:question_words].strip != ""
-      words = @post[:question_words].strip.split(" ")
+      words = @post[:question_words].strip.split(";")
       @question.question_words(words)
     end
     redirect_to request.referer
@@ -220,14 +220,14 @@ class PapersController < ApplicationController
   end
 
 
-#ajax 选择题目类型，载入 _post_question_attrs_module 部分
+  #ajax 选择题目类型，载入 _post_question_attrs_module 部分
   def select_correct_type
     correct_type, question_answer, question_attrs=params["correct_type"].to_i, params["question_answer"], params["question_attrs"]
     @object={:correct_type=>correct_type, :answer=>question_answer, :question_attrs=>question_attrs}
     render :partial=>"post_question_attrs_module", :object=>@object
   end
 
-#ajax 插入标签时，用户选中不存在的标签，则新建该标签记录
+  #ajax 插入标签时，用户选中不存在的标签，则新建该标签记录
   def ajax_insert_new_tag
     tag_name = params[:tag_name]
     puts tag_name
@@ -246,9 +246,13 @@ class PapersController < ApplicationController
     category_id = params["category_id"].to_i
     like_params = "#{match}%"
     if params["added_words"].strip!=""
-      @words = Word.find_by_sql(["select * from words where category_id = ? and name like ? and name not in (?)", category_id, like_params, added_words])
+      @words = Word.find_by_sql(["select w.*, ws.description from words w left join word_sentences ws on ws.word_id = w.id
+            where w.category_id = ? and w.name like ? and w.name not in (?) limit 20",
+          category_id, like_params, added_words])
     else
-      @words = Word.find_by_sql(["select * from words where category_id = ? and name like ?", category_id, like_params])
+      @words = Word.find_by_sql(["select w.*, ws.description from words w left join word_sentences ws on ws.word_id = w.id
+            where w.category_id = ? and w.name like ?  limit 20",
+          category_id, like_params])
     end
     respond_to do |format|
       format.html {
@@ -278,7 +282,7 @@ class PapersController < ApplicationController
   end
 
 
-#删除试卷内容 （部分、大题、小题）
+  #删除试卷内容 （部分、大题、小题）
   def destroy_element
     paper=Paper.find(params[:id])
     xpath = "/paper/blocks/block[#{params[:block_index]}]"
@@ -308,17 +312,17 @@ class PapersController < ApplicationController
     end
   end
 
-# --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------
+  # --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------
 
-#将XML文件生成document对象
+  #将XML文件生成document对象
   def get_doc(url)
     file = File.open(url)
     doc = Document.new(file).root
     return doc
   end
 
-#处理XML节点
-#参数解释： element为doc.elements[xpath]产生的对象，content为子内容，attributes为属性
+  #处理XML节点
+  #参数解释： element为doc.elements[xpath]产生的对象，content为子内容，attributes为属性
   def manage_element(element, content={}, attributes={})
     content.each do |key, value|
       arr, ele = "#{key}".split("/"), element
@@ -333,13 +337,30 @@ class PapersController < ApplicationController
     return element
   end
 
-#将document对象生成xml文件
+  #将document对象生成xml文件
   def write_xml(doc, url)
     file = File.new(url, File::CREAT|File::TRUNC|File::RDWR, 0644)
     file.write(doc)
     file.close
   end
 
-# --------- END ------XML文件操作--------require 'rexml/document'----------include REXML----------
+  def sort
+    paper = Paper.find_by_id(params[:paper_id].to_i)
+    begin
+        doc = paper.open_file
+        old_postion = params[:old_postion]
+        postion_list = params[:li]
+        new_postion = postion_list.index(old_postion)
+        problem = doc.root.elements["blocks/block[#{params[:block_index]}]/problems/problem[#{old_postion}]"]
+        block = problem.parent
+        block.insert_before(doc.elements["#{block.xpath}/problem[#{new_postion+1}]"],problem)
+        paper.create_paper_url(doc.to_s, paper.paper_url.split("/")[2], "xml")
+        message = "顺序调整成功。, #{new_postion+1}"
+      rescue
+        message = "顺序调整失败，请检查试卷是否正常。"
+      end if paper
+    render :text => message
+    
+  end
 
 end

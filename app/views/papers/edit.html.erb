@@ -66,7 +66,7 @@
     </script>
 
     <% block_index = 0; @xml.elements['blocks'].each_element do |block| ; block_index +=1 %>
-      <div class="bj_info_right" style="display:none;">
+    <div class="bj_info_right" style="display:none;" >
         <div class="bj_info_top">
           <div class="info_Box">
             <div class="prev">&lt;</div>
@@ -75,7 +75,7 @@
                 <% problem_index = 0;
                 block.elements["problems"].each_element do |problem|
                   problem_index += 1 %>
-                  <li><a href="javascript:void(0);" id="problems_li_<%= block_index %>" class="problems_li_<%= block_index %>" ondblclick="javascript:destroy_problem(<%= params[:id] %>,<%= block_index %>,<%= problem_index %>);"><%= problem_index %></a></li>
+                  <li id="li_<%= problem_index %>"><a href="javascript:void(0);" id="problems_li_<%= block_index %>" class="problems_li_<%= block_index %>" ondblclick="javascript:destroy_problem(<%= params[:id] %>,<%= block_index %>,<%= problem_index %>);"><%= problem_index %></a></li>
                 <% end %>
               </ul>
             </div>
@@ -470,7 +470,7 @@
       <ul id="words_list_ajax_loader"></ul>
     </div>
     <div id="already_add_words_div" class="words_ny"></div>
-    <input type="hidden" id="addWords_insert_words" />
+    <input type="hidden" id="addWords_insert_words" value="" />
     <div><button class="t_btn" onclick="javascript:insert_words('#addWords_insert_words',$('#addWords_words_input').val(),$('#addWords_display').val());">插入</button></div>
   </div>
   <div class="addwords_side" id="select_word">

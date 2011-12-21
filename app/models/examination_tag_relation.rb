@@ -48,6 +48,7 @@ class ExaminationTagRelation < ActiveRecord::Base
               special_problem = problem.clone
               special_problem.add_element(problem.elements["title"])
               special_problem.add_element(problem.elements["category"])
+              special_problem.add_element(problem.elements["description"]) if problem.elements["description"]
               special_problem.add_element("questions")
             end
             special_problem.elements["questions"].add_element(question)

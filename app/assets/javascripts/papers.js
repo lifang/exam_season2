@@ -97,7 +97,7 @@ function stop_bunble() {
     if (window.event) {
         window.event.cancelBubble = true;
     }
-    ;
+;
 }
 
 
@@ -151,9 +151,9 @@ function select_question_type(question_type, block_index) {
         "question_type" : question_type,
         "block_index" : block_index
     },
-            function() {
-                add_event_on_create_problem_form(question_type, block_index);
-            });
+    function() {
+        add_event_on_create_problem_form(question_type, block_index);
+    });
 }
 
 //ajax回调函数，载入模版后，给其中的元素绑定事件 (create_problem 表单)
@@ -327,37 +327,37 @@ function select_correct_type(ele_str, question_type, block_index, problem_index,
         "question_answer" : question_answer,
         "question_attrs" : question_attrs
     },
-            function() {
-                // 手工测得 question_list 的 高度为 65 ，样式改动，需调整
-                var location = question_index == "" ? ele_str + block_index + "_" + problem_index : ele_str + block_index + "_" + problem_index + "_" + question_index;
-                if (hidden_div != "") {
-                    var final_scrollTop = 65 * (hidden_div.closest(".question_list_box").children(".question_list").not(".ignore").index(hidden_div.closest(".question_list")) - 1);
-                    hidden_div.closest(".question_list_box").scrollTop(final_scrollTop);
-                    hidden_div.hide();
-                    $("#post_question_div").show();
-                    $(location).append($("#post_question_div"));  //载入form
-                } else {
-                    var question_list = $(location).siblings(".question_list");
-                    var insert_index = question_list.not(".ignore").index(question_list.has(".q_l_text:hidden"));
-                    $("#post_question_insert_index").val(insert_index + 1);
-                    $(".q_l_answer").hide();
-                    $(".q_l_text:hidden").show();
-                    $("#post_question_div").show();
-                    if (insert_index == -1) {
-                        var final_scrollTop = 65 * (question_list.not(".ignore").length);
-                        $(location).closest(".question_list_box").scrollTop(final_scrollTop);
-                        $(location).append($("#post_question_div"));
-                    } else {
-                        var final_scrollTop = 65 * (insert_index);
-                        $(location).closest(".question_list_box").scrollTop(final_scrollTop);
-                        var insert_location = "#question_list_" + block_index + "_" + problem_index + "_" + (insert_index + 1);
-                        $(insert_location).append($("#post_question_div"));
-                    }
-                } // 显示框 和 编辑框 切换显示
-                var questions_xpath = "/paper/blocks/block[" + block_index + "]/problems/problem[" + problem_index + "]/questions" //构造 questions_xpath , 作为下一个方法的变量
-                fill_post_question_form(questions_xpath, question_type, question_index, question_answer, question_attrs, question_description, question_analysis, question_score, question_tags, question_words, question_flag); //初始化表单值
-                add_event_on_post_question_form(correct_type);  //初始化表单事件
-            });
+    function() {
+        // 手工测得 question_list 的 高度为 65 ，样式改动，需调整
+        var location = question_index == "" ? ele_str + block_index + "_" + problem_index : ele_str + block_index + "_" + problem_index + "_" + question_index;
+        if (hidden_div != "") {
+            var final_scrollTop = 65 * (hidden_div.closest(".question_list_box").children(".question_list").not(".ignore").index(hidden_div.closest(".question_list")) - 1);
+            hidden_div.closest(".question_list_box").scrollTop(final_scrollTop);
+            hidden_div.hide();
+            $("#post_question_div").show();
+            $(location).append($("#post_question_div"));  //载入form
+        } else {
+            var question_list = $(location).siblings(".question_list");
+            var insert_index = question_list.not(".ignore").index(question_list.has(".q_l_text:hidden"));
+            $("#post_question_insert_index").val(insert_index + 1);
+            $(".q_l_answer").hide();
+            $(".q_l_text:hidden").show();
+            $("#post_question_div").show();
+            if (insert_index == -1) {
+                var final_scrollTop = 65 * (question_list.not(".ignore").length);
+                $(location).closest(".question_list_box").scrollTop(final_scrollTop);
+                $(location).append($("#post_question_div"));
+            } else {
+                var final_scrollTop = 65 * (insert_index);
+                $(location).closest(".question_list_box").scrollTop(final_scrollTop);
+                var insert_location = "#question_list_" + block_index + "_" + problem_index + "_" + (insert_index + 1);
+                $(insert_location).append($("#post_question_div"));
+            }
+        } // 显示框 和 编辑框 切换显示
+        var questions_xpath = "/paper/blocks/block[" + block_index + "]/problems/problem[" + problem_index + "]/questions" //构造 questions_xpath , 作为下一个方法的变量
+        fill_post_question_form(questions_xpath, question_type, question_index, question_answer, question_attrs, question_description, question_analysis, question_score, question_tags, question_words, question_flag); //初始化表单值
+        add_event_on_post_question_form(correct_type);  //初始化表单事件
+    });
 }
 
 //关闭编辑小题框
@@ -649,8 +649,8 @@ function close_addWords() {
 }
 
 //将词汇显示到页面上
-function display_words_text(words_input, display) {
-    var origin_words_arr = $(words_input).val().split(" ");
+function display_words_text(words_input,display){
+    var origin_words_arr = $(words_input).val().split(";");
     //显示到词汇管理框
     $("#already_add_words_div").empty();
     for (var i = 0; i < origin_words_arr.length; i++) {
@@ -659,13 +659,8 @@ function display_words_text(words_input, display) {
         }
     }
     //显示到编辑表单框
-    $(display).empty();
-    for (var i = 0; i < origin_words_arr.length; i++) {
-        if (origin_words_arr[i] != "") {
-            $(display).html($(display).html() + " " + origin_words_arr[i]);
-        }
-    }
-    if ($(display).html() == "") {
+    $(display).html($(words_input).val());
+    if($(display).html()==""){
         $(display).html("未添加词汇");
     }
 }
@@ -708,15 +703,21 @@ function show_single_word_detail(jqery_ele, name, en_mean, ch_mean, types, phone
 }
 
 //词汇管理框，选择词汇
-function select_word(word) {
-    var origin_words = $("#addWords_insert_words").val().split(";");
-    for (var i = 0; i < origin_words.length; i++) {
-        if (origin_words[i] == word) {
-            tishi_alert("你选择的单词已经在列表中");
-            return false;
+function select_word(word){
+    var added_words=$("#addWords_insert_words").val();
+    if (added_words==""||added_words.length==0){
+        origin_words=[word]
+    }else{
+        var origin_words =added_words.split(";");
+        for(var i=0;i<origin_words.length;i++){
+            if(origin_words[i]==word){
+                tishi_alert("你选择的单词已经在列表中");
+                return false;
+            }
         }
+        origin_words.push(word);
     }
-    if (parseInt(($("#web_word")).val()) == 1) {
+    if(parseInt(($("#web_word")).val())==1){
         $.ajax({
             type: "POST",
             url: "/words/create_word.html",
@@ -733,7 +734,6 @@ function select_word(word) {
             }
         });
     }
-    origin_words.push(word);
     $("#addWords_insert_words").val(origin_words.join(";"));
     $("#already_add_words_div").html($("#already_add_words_div").html() + "<div>" + word + " <a href='javascript:void(0);' onclick='javascript:delete_word(\"" + word + "\")'>[删除]</a></div>");
 }
@@ -763,9 +763,9 @@ function delete_word(word) {
 }
 
 //词汇管理框 插入词汇，更新form值
-function insert_words(origin_words_input, target_words_input, display) {
-    $(target_words_input).val($(origin_words_input).val().split(";").join("."));
-    display_words_text(target_words_input, display);
+function insert_words(origin_words_input,target_words_input,display){
+    $(target_words_input).val($(origin_words_input).val());
+    display_words_text(target_words_input,display);
     close_addWords();
 }
 
@@ -789,26 +789,59 @@ function download_word(word) {
     });
 }
 
-//显示请求到的单词
-function show_single_word(web_word) {
+
+function show_ready_word(jquery_ele, word_id) {
     $(".single_word_li").removeClass("hover");
-    $(".single_word_element").html("");
-    $("#single_word_name").html($("#name").val());
-    $("#single_word_en_mean").html($("#en_mean").val());
-    $("#single_word_ch_mean").html($("#ch_mean").val());
-    $("#single_word_types").html($("#types").val());
-    $("#single_word_phonetic").html($("#phonetic").val());
-    $("#web_word").val(web_word);
-    $('.word_liju').css("display", "");
-    $('.word_liju').html($("#sentence").val());
-    $("#single_word_enunciate_url").val($("#enunciate_url").val());
+    jquery_ele.addClass("hover");
     $("#xs_add_div").show();
+    $('#xs_add_div').html($('#show_word_'+word_id).html());
     if ($("#web_word").val() == "") {
         $("#modify_word").css("display", "");
     } else {
-        if ($("#web_word").val() == "0") {
-            $("#select_word").css("display", "none");
-        }
         $("#modify_word").css("display", "none");
+    }
+}
+
+
+$(document).ready(function(){
+    $('.info_ul').sortable({
+        update: function(event, ui){
+            var list = $(this).sortable('serialize');
+            var item_id = ui.item.attr("id").split("li_");
+            if (item_id[1] != null) {
+                $.ajax({
+                    type: 'post',
+                    data: "paper_id="+getCookie("init_paper")+"&block_index="+getCookie("init_block")+"&old_postion="+item_id[1]+"&"+list,
+                    dataType: 'script',
+                    url: '/papers/sort',
+                    complete:function(request){
+                        var res = request.responseText.split(",");
+                        tishi_alert(res[0]);
+                        if (res[1] != null) {
+                            setCookie("init_problem",""+res[1]);
+                        }
+                        window.setTimeout(function(){
+                            window.location.reload();
+                        }, 1000);
+                    }
+                })
+            } else {
+                tishi_alert("您拖动的大题已经不存在，请刷新页面");
+                return false;
+            }
+        }
+    });
+    $(".info_ul").disableSelection();
+});
+
+
+//显示请求到的单词
+function show_single_word(web_word){
+    $('#xs_add_div').html($('#web_word_m').html());
+    $(".single_word_li").removeClass("hover");
+    $("#web_word").val(web_word);
+    $("#xs_add_div").show();
+    if($("#web_word").val() == "0"){
+        $("#select_word").css("display", "none");
     }
 }
