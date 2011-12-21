@@ -800,5 +800,7 @@ function show_single_word(web_word){
     $("#xs_add_div").show();
     if($("#web_word").val() == "0"){
         $("#select_word").css("display", "none");
+    } else {
+        $("#select_word").css("display", "");
     }
 }
