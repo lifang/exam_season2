@@ -81,7 +81,7 @@
             </div>
             <div class="next">&gt;</div>
           </div>
-          <a href="javascript:void(0);" class="add_a left_float" id="problems_li_<%= block_index %>" onclick="javascript:if(!notice_edit()){return false};$(this).next().trigger('click');load_create_kindeditor(<%= block_index %>);">添加问题</a>
+          <a href="javascript:void(0);" class="add_a left_float" id="problems_li_<%= block_index %>" onclick="javascript:if(!notice_edit()){return false};$(this).next().trigger('click');$(function(){load_create_kindeditor(<%= block_index %>)});">添加问题</a>
           <a href="javascript:void(0);" class="problems_li_<%= block_index %>" style="display:none;" id="problems_li_<%= block_index %>"><%= problem_index+1 %></a>
         </div>
 
