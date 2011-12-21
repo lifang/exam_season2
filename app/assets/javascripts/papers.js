@@ -209,7 +209,7 @@ function submit_create_problem_form(block_index) {
     var question_type = parseInt($(".question_type_block_" + block_index).val());
     if (question_type == 1) {
         var mark = "((sign))";
-        var mark_sum = $('#problem_title_block_' + block_index).val().split(mark)-1;
+        var mark_sum = $('#problem_title_block_' + block_index).val().split(mark).length-1;
         if (mark_sum != 1) {
             tishi_alert("请在题面中插入1个标记，当前标记数："+mark_sum);
             return false;
@@ -883,13 +883,8 @@ function load_edit_kindeditor(selector,paper_id,block_index,problem_index,questi
             if(question_type==1){
                 var mark = "((sign))";
                 var sign_sum = text.split(mark).length-1;
-                if(sign_sum - question_sum == 1){
-                    tishi_alert("亲，别忘了新建小题哦~");
-                }else{
-                    if(question_sum !=sign_sum){
-                        tishi_alert("标记数（" + sign_sum + "） 不符合 小题数（" + question_sum + "）");
-                        return false;
-                    }
+                if(question_sum !=sign_sum){
+                    tishi_alert("标记数（" + sign_sum + "） 不符合 小题数（" + question_sum + "）");
                 }
             }
             if($("#show_problem_title_"+block_index+"_"+problem_index).html()!=text){
