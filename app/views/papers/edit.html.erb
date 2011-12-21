@@ -228,7 +228,8 @@
             </div>
             <div class="question_bianji">
               <div class="qu_tab">
-                <ul class="q_tab_ul"><li class="hover" onclick="javascript:$('.question_type_block_<%= block_index %>').val(<%= Problem::QUESTION_TYPE[:OUTER] %>);$('#create_problem_attrs_module_<%= block_index %>').html('<font color=\'red\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请选择小题类型。</font>');">在题面后追加小题</li><li onclick="javascript:$('.question_type_block_<%= block_index %>').val(<%= Problem::QUESTION_TYPE[:INNER] %>);$('#create_problem_attrs_module_<%= block_index %>').html('<font color=\'red\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请选择小题类型。</font>');">在题面中插入小题</li></ul>
+                <ul class="q_tab_ul"><li class="hover" onclick="javascript:reset_question_type(<%= block_index %>,'0');">在题面后追加小题</li><li onclick="javascript:reset_question_type(<%= block_index %>,'1');">在题面中插入小题</li></ul>
+
                 <div class="q_tab_div">
                   <div><ul>
                       <li><a href="javascript:void(0);" onclick="javascript:select_question_type(0,<%= block_index %>);" >单选题</a></li>
