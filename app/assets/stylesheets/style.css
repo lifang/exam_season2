@@ -29,7 +29,6 @@ img { border: none;}
 .t_se_input { height: 25px; line-height: 25px; float: left; color: #999;}
 
 
-
 /*登录*/
 .login_logo { margin-left: 120px; padding-top: 25px;}
 .login_area { width: 481px; height: 341px; margin: 60px auto; background: url(/assets/login_bg.png) no-repeat;}
@@ -155,12 +154,13 @@ span.mk_span_w { color: #000;}
 .yuejuan_div { width: 250px; padding: 20px; background: #FFF; border: 3px  #999 solid; position: fixed; display: none; z-index:100;}
 .yuejuan_div h3, .yuejuan_div div { font-size: 12px; line-height: 32px;}
 .yj_x { position: absolute; top: 5px; right: 5px; cursor: pointer; font-size: 16px;}
+.yj_x_checkbox { position: absolute; top: 9px; right: 30px; cursor: pointer; font-size: 16px;}
 
 /*问题编辑-----------*/
 .yl_bc { float: right; margin-right: 20px;}
 .bj_info {}
 .bj_info_left { width: 83px; float: left; display: inline;}
-.bj_info_right { width: 825px; padding: 5px; float: left; background: #d8f4ff; border: 1px #139DD3 solid; height: 440px;}
+.bj_info_right { width: 825px; padding: 5px; float: left; background: #d8f4ff; border: 1px #139DD3 solid; height: 600px; margin-bottom: 10px;}
 
 .bj_info_left li {
     color: #333;
@@ -214,17 +214,17 @@ span.mk_span_w { color: #000;}
 	text-decoration: underline;
 	background: url(/assets/icon_tj.png) no-repeat left center;
 }
-.bj_info_box { width: 813px; height: 405px; margin: 0 auto; background: #FFF; border: 1px #139DD3 solid;}
+.bj_info_box { width: 813px; height: 565px; margin: 0 auto; background: #FFF; border: 1px #139DD3 solid;}
 
 .question_content { width: 408px; float: left;}
 .question_bianji { width: 400px; padding-right: 5px; float: left;}
 
 .qc_h { height: 32px; line-height: 32px; padding-left: 20px;}
-.qc_textarea1 { width: 380px; height: 90px; margin-left: 11px; padding: 5px;}
-.qc_textarea2 { width: 380px; height: 220px; margin-left: 11px; padding: 5px;}
+.qc_textarea1 { width: 380px; height: 200px; margin-left: 11px; padding: 5px;}
+.qc_textarea2 { width: 380px; height: 370px; margin-left: 11px; padding: 5px;}
 
-.qu_con_explain { width: 380px; height: 90px; padding: 5px; border: 1px #CCC solid; margin-left: 11px; line-height: 24px; overflow: auto;}
-.qu_con_content { width: 380px; height: 220px; padding: 5px; border: 1px #CCC solid; margin-left: 11px; line-height: 24px; overflow: auto;}
+.qu_con_explain { width: 380px; height: 150px; padding: 5px; border: 1px #CCC solid; margin-left: 11px; line-height: 24px; overflow: auto;}
+.qu_con_content { width: 380px; height: 320px; padding: 5px; border: 1px #CCC solid; margin-left: 11px; line-height: 24px; overflow: auto;}
 
 .qu_tab {padding-top: 10px;}
 .q_tab_ul { height: 32px; line-height: 32px;}
@@ -244,7 +244,7 @@ span.mk_span_w { color: #000;}
 .q_tab_div { padding: 0 5px; border: 1px #CCC solid; height: 32px; line-height: 32px;}
 .q_tab_div li{ float: left; margin: 0 5px;}
 
-.question_list_box { border: 1px #CCC solid; overflow: auto; margin-top: 5px; height: 315px;}
+.question_list_box { border: 1px #CCC solid; overflow: auto; margin-top: 5px; height: 475px;}
 .question_list { border-bottom: 1px #CCC solid;}
 .q_l_text { height: 64px; background: url(/assets/question_list_bg.png) repeat-x;}
 .q_l_word { padding: 0 10px; height: 32px; line-height: 32px; position: relative;}

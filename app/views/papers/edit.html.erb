@@ -29,7 +29,7 @@
   });
 </script>
 <div class="main_title">
-  <span class="yl_bc"><a href="#">预览</a> | <a href="#">保存</a></span>
+  <span class="yl_bc"><a href="#">预览</a> &nbsp;&nbsp; </span>
   <div class="m_t_h1">
     <input name="" type="text" class="p_name" style="display:none" onblur="$(this).hide();$('.p_name:eq(1)').show();" onchange="javascript:ajax_edit_paper_title(<%= params[:id] %>,$(this).val());" /><span class="p_name" onselectstart="return false;" ondblclick="javascript:$(this).hide();$('.p_name:eq(0)').val($(this).text()).show().focus();"><%= (@paper.title.nil?||@paper.title.strip=="")==true ? "未命名试卷" : @paper.title %></span>
     <input name="" type="text" class="p_time" style="display:none" onblur="$(this).hide();$('.p_time:eq(1)').show();" onchange="javascript:ajax_edit_paper_time(<%= params[:id] %>,$(this).val());" /><span class="p_time" onselectstart="return false;" ondblclick="javascript:$(this).hide();$('.p_time:eq(0)').val($(this).text()).show().focus();"><%= (@paper.time.nil?) ? "未设置" : @paper.time %></span>（分钟）
@@ -43,11 +43,11 @@
         <% count1=0;  @xml.elements['blocks'].each_element do |block| count1+=1 %>
           <li id="blocks_li" class="blocks_li" ondblclick="javascript:destroy_block(<%= params[:id] %>,<%= count1 %>);">
             <a href="javascript:void(0);"><%= block.elements['base_info/title'].text if block.elements['base_info/title']%></a>
-            <span onclick="javascript:load_edit_block('<%= block.xpath %>','<%= block.elements['base_info/title'].text if block.elements['base_info/title'] %>','<%= block.elements['base_info/description'].text if block.elements['base_info/description'] %>','<%= block.attributes['start_time'] if block.attributes['start_time'] %>','<%= block.attributes['time'] if block.attributes['time'] %>');stop_bunble();" ><img title="编辑" alt="icon_bi" src="/assets/icon_bi.png" /></span>
+            <span onclick="javascript:stop_bunble();if(!notice_edit()){return false};load_edit_block('<%= block.xpath %>','<%= block.elements['base_info/title'].text if block.elements['base_info/title'] %>','<%= block.elements['base_info/description'].text if block.elements['base_info/description'] %>','<%= block.attributes['start_time'] if block.attributes['start_time'] %>','<%= block.attributes['time'] if block.attributes['time'] %>');" ><img title="编辑" alt="icon_bi" src="/assets/icon_bi.png" /></span>
           </li>
         <% end %>
       </ul>
-      <a href="#" class="add_a" onclick="javascript:load_edit_block('','','','0','0');">添加部分</a>
+      <a href="#" class="add_a" onclick="javascript:if(!notice_edit()){return false};load_edit_block('','','','0','0');">添加部分</a>
     </div>
     <script type="text/javascript" >
       // 控制"block"模块的显示/隐藏
@@ -66,7 +66,7 @@
     </script>
 
     <% block_index = 0; @xml.elements['blocks'].each_element do |block| ; block_index +=1 %>
-    <div class="bj_info_right" style="display:none;" >
+      <div class="bj_info_right" style="display:none;" >
         <div class="bj_info_top">
           <div class="info_Box">
             <div class="prev">&lt;</div>
@@ -81,7 +81,7 @@
             </div>
             <div class="next">&gt;</div>
           </div>
-          <a href="javascript:void(0);" class="add_a left_float" id="problems_li_<%= block_index %>" onclick="javascript:$(this).next().trigger('click');load_create_kindeditor(<%= block_index %>);">添加问题</a>
+          <a href="javascript:void(0);" class="add_a left_float" id="problems_li_<%= block_index %>" onclick="javascript:if(!notice_edit()){return false};$(this).next().trigger('click');$(function(){load_create_kindeditor(<%= block_index %>)});">添加问题</a>
           <a href="javascript:void(0);" class="problems_li_<%= block_index %>" style="display:none;" id="problems_li_<%= block_index %>"><%= problem_index+1 %></a>
         </div>
 
@@ -110,12 +110,12 @@
           <div class="bj_info_box bj_info_box_<%= block_index %>" style="display:none;" >
             <div class="question_content">
               <div class="qc_h">说明 </div>
-              <div id="edit_problem_description_<%= block_index %>_<%= problem_index %>" style="display:none;"><textarea id="edit_problem_description_textarea_<%= block_index %>_<%= problem_index %>" cols="" rows=""  class="qc_textarea1" onchange="javascript:ajax_edit_problem_description(<%= params[:id] %>,<%= block_index %>,<%= problem_index %>,$(this).val());" onblur="$('#edit_problem_description_<%= block_index %>_<%= problem_index %>').hide();$('#show_problem_description_<%= block_index %>_<%= problem_index %>').show();"></textarea></div>
+              <div id="edit_problem_description_<%= block_index %>_<%= problem_index %>" style="display:none;">
+                <textarea id="edit_problem_description_textarea_<%= block_index %>_<%= problem_index %>" cols="" rows=""  class="qc_textarea1" onchange="javascript:ajax_edit_problem_description(<%= params[:id] %>,<%= block_index %>,<%= problem_index %>,$(this).val());" onblur="$('#edit_problem_description_<%= block_index %>_<%= problem_index %>').hide();$('#show_problem_description_<%= block_index %>_<%= problem_index %>').show();"></textarea>
+              </div>
               <div id="show_problem_description_<%= block_index %>_<%= problem_index %>" class="qu_con_explain" onselectstart="return false;" ondblclick="javascript:$('#edit_problem_description_<%= block_index %>_<%= problem_index %>').show();$(this).hide();$('#edit_problem_description_textarea_<%= block_index %>_<%= problem_index %>').val($(this).text()).focus();"><%= problem.elements["description"].text if problem.elements["description"] %></div>
               <div class="qc_h"><span class="yl_bc"></span>题目内容</div>
-              <div style="display:none;" id="edit_problem_title_<%= block_index %>_<%= problem_index %>"><textarea id="edit_problem_title_textarea_<%= block_index %>_<%= problem_index %>" cols="" rows=""  class="qc_textarea2" onchange="javascript:ajax_edit_problem_title(<%= params[:id] %>,<%= block_index %>,<%= problem_index %>,$(this).val());" onblur="$('#edit_problem_title_<%= block_index %>_<%= problem_index %>').hide();$('#show_problem_title_<%= block_index %>_<%= problem_index %>').show();"></textarea></div>
-    <!--       <div id="show_problem_title_<%= block_index %>_<%= problem_index %>" class="qu_con_content" onselectstart="return false;" ondblclick="javascript:$('#edit_problem_title_<%= block_index %>_<%= problem_index %>').show();$(this).hide();$('#edit_problem_title_textarea_<%= block_index %>_<%= problem_index %>').val($(this).text()).focus();"><%= problem.elements["title"].text if problem.elements["title"] %></div>     -->
-              <div id="show_problem_title_<%= block_index %>_<%= problem_index %>" class="qu_con_content" onselectstart="return false;" ondblclick="javascript:load_edit_kindeditor('#show_problem_title_<%= block_index %>_<%= problem_index %>',<%= params[:id] %>,<%= block_index %>,<%= problem_index %>);"><%= problem.elements["title"].text.html_safe if problem.elements["title"]&&problem.elements["title"].text %></div>
+              <div id="show_problem_title_<%= block_index %>_<%= problem_index %>" class="qu_con_content" onselectstart="return false;" ondblclick="javascript:load_edit_kindeditor('#show_problem_title_<%= block_index %>_<%= problem_index %>',<%= params[:id] %>,<%= block_index %>,<%= problem_index %>,<%= problem.elements["questions"].size if problem.elements["questions"] %>,<%= problem.attributes["question_type"] if problem.attributes["question_type"] %>);"><%= problem.elements["title"].text.html_safe if problem.elements["title"]&&problem.elements["title"].text %></div>
             </div>
 
             <div class="question_bianji">
@@ -124,44 +124,75 @@
                 <div class="q_tab_div">
                   <% if problem.attributes["question_type"].to_i==Problem::QUESTION_TYPE[:INNER] %>
                     <div><ul>
-                        <li><a href="javascript:void(0);"  onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',0);">单选题</a></li>
-                        <li><a href="javascript:void(0);"  onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',3);">填空题</a></li>
-                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',1);">拖拽题</a></li>
+                        <li><a href="javascript:void(0);"  onclick="javascript:select_correct_type('#question_list_','1',<%= block_index %>,<%= problem_index %>,'',0);">单选题</a></li>
+                        <li><a href="javascript:void(0);"  onclick="javascript:select_correct_type('#question_list_','1',<%= block_index %>,<%= problem_index %>,'',3);">填空题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_','1',<%= block_index %>,<%= problem_index %>,'',1);">拖拽题</a></li>
                       </ul></div>
                   <% elsif problem.attributes["question_type"].to_i==Problem::QUESTION_TYPE[:OUTER] %>
                     <div><ul>
-                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',0);">单选题</a></li>
-                        <li><a href="javascript:void(0);"  onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',1);">多选题</a></li>
-                        <li><a href="javascript:void(0);"  onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',2);">判断题</a></li>
-                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',3);">填空题</a></li>
-                        <li><a href="javascript:void(0);"  onclick="javascript:select_correct_type('#question_list_',<%= block_index %>,<%= problem_index %>,'',5);">简答题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_','0',<%= block_index %>,<%= problem_index %>,'',0);">单选题</a></li>
+                        <li><a href="javascript:void(0);"  onclick="javascript:select_correct_type('#question_list_','0',<%= block_index %>,<%= problem_index %>,'',1);">多选题</a></li>
+                        <li><a href="javascript:void(0);"  onclick="javascript:select_correct_type('#question_list_','0',<%= block_index %>,<%= problem_index %>,'',2);">判断题</a></li>
+                        <li><a href="javascript:void(0);" onclick="javascript:select_correct_type('#question_list_','0',<%= block_index %>,<%= problem_index %>,'',3);">填空题</a></li>
+                        <li><a href="javascript:void(0);"  onclick="javascript:select_correct_type('#question_list_','0',<%= block_index %>,<%= problem_index %>,'',5);">简答题</a></li>
                       </ul></div>
                   <% end %>
                 </div>
               </div>
 
               <div class="clear"></div>
-              <div class="question_list_box">
+              <div class="question_list_box" id="question_list_box_<%= block_index%>_<%= problem_index %>">
                 <% question_index = 0; problem.elements["questions"].each_element do |question|; question_index += 1 %>
                   <% answer = question.elements["answer"].text if question.elements["answer"] %><% correct_type = question.attributes["correct_type"]=="" ? "error" : question.attributes["correct_type"].to_i %>
-                  <input type="hidden" value="<%= correct_type %>" class="correct_type" id="correct_type" />
+                 <input type="hidden" value="<%= correct_type %>" class="correct_type" id="correct_type" />
                   <div class="question_list ignore" id="question_list_<%=  block_index %>_<%=  problem_index %>_<%= question_index%>"></div>
                   <div class="question_list">
                     <div  onselectstart="return false;" class="q_l_text">
                       <% judge_str = {"1"=>"是/对","0"=>"否/错"}   #定义 判断题 "1"=>"是/对"  "0"=>"否/错" %>
-                      <div class="q_l_word"><p class="q_w_p"><%= question.elements["questionattrs"].text!="" && question.elements["questionattrs"].text!=nil ? question.elements["questionattrs"].text.split(";-;").join("/") : correct_type==Question::CORRECT_TYPE[:JUDGE] ? judge_str[question.elements["answer"].text] : question.elements["answer"].text %></p><span class="yj_x" onclick="javascript:stop_bunble();destroy_question(<%= params[:id] %>,<%= block_index %>,<%= problem_index %>,<%= question_index %>);"><img alt="x" src="/assets/x.gif"/></span></div>
-                      <div class="q_l_word"><p class="q_w_p"><em>限定词的用法</em></p><p>分值：<span class="red"><%= question.attributes["score"] unless question.attributes["score"].nil? %></span></p></div>
+                      <div class="q_l_word">
+                        <p class="q_w_p">
+                          <%= question.elements["questionattrs"].text!="" && question.elements["questionattrs"].text!=nil ? question.elements["questionattrs"].text.split(";-;").join("/") : correct_type==Question::CORRECT_TYPE[:JUDGE] ? judge_str[question.elements["answer"].text] : question.elements["answer"].text %>
+                        </p>
+                        <span class="yj_x_checkbox"><input type="checkbox" title="追加在当前小题前面" onclick="javascript:stop_bunble();set_insert_question_index($(this),<%= block_index %>,<%= problem_index %>)" value="<%= question_index %>" name="insert_index_block_<%= block_index %>_problem_<%= problem_index %>" class="insert_index_block_<%= block_index %>_problem_<%= problem_index %>" /></span>
+                        <span class="yj_x" onclick="javascript:stop_bunble();destroy_question(<%= params[:id] %>,<%= block_index %>,<%= problem_index %>,<%= question_index %>);"><img alt="x" src="/assets/x.gif"/></span>
+                      </div>
+                      <script type="text/javascript" >
+
+                        function set_insert_question_index(jq_ele,block_index,problem_index){
+                          var final_index = 0;
+                          if(jq_ele[0].checked){
+                            final_index = jq_ele.val();
+                          }
+                          $(".insert_index_block_"+block_index+"_problem_"+problem_index+":checked").each(function(){
+                            if(this!=jq_ele[0]){
+                              $(this).attr("checked",false);
+                            }
+                          });
+                        }
+
+                      </script>
+                      <div class="q_l_word">
+                        <p class="q_w_p">
+                          <em><%= (question.elements['tags'].nil?||question.elements['tags'].text.nil?) ? "未添加标签" : question.elements['tags'].text %></em>
+                        </p>
+                        <p>分值：
+                          <span class="red"><%= question.attributes["score"] unless question.attributes["score"].nil? %></span>
+                        </p>
+                      </div>
                     </div>
-                    <div class="q_l_answer" onselectstart="return false;" onerror="javascript:select_correct_type('#q_l_answer_',<%= block_index %>,<%= problem_index %>,<%= question_index %>,<%= correct_type %>,$(this).find('#display_question_answer').text(),$(this).find('#display_question_attrs').text(),$(this).find('#display_question_description').text(),$(this).find('#display_question_analysis').text(),$(this).find('#display_question_score').text(),$(this).find('#display_question_tags').text(),$(this).find('#display_question_words').text(),$(this).find('#display_question_flag').text(),$(this).closest('.q_l_answer'));">
+                    <div class="q_l_answer" id="show_q_l_answer_<%= block_index %>_<%= problem_index %>_<%= question_index %>" onselectstart="return false;">
                       <div class="qa_h">小题描述
                         <div class="qa_textarea_div" id="display_question_description"><%= question.elements["description"].text unless question.elements["description"].nil? %></div>
                       </div>
-                      <div class="qa_h"><span class="yl_bc"><input name="" <% if question.attributes["flag"]=="1" %> checked="true" <% end %> type="checkbox" disabled="true" value=""/> 自动批改</span>答案
+                      <div class="qa_h">
+                        <span class="yl_bc">
+                          <input name="" <% if question.attributes["flag"]=="1" %> checked="true" <% end %> type="checkbox" disabled="true" value=""/> 自动批改
+                        </span>答案
                         <div style="display:none;" id="display_question_flag" ><%= question.attributes["flag"] if question.attributes["flag"] %></div>
                         <div style="display:none;" id="display_question_answer" ><%= answer if answer %></div>
                         <div style="display:none;" id="display_question_attrs" ><%= question.elements["questionattrs"].text if question.elements["questionattrs"] %></div>
                         <div class="qa_textarea_div">
-                          <% if correct_type=="error" %>
+                          <% if correct_type=="error" ||(correct_type==0 && question.elements["questionattrs"].text.nil?)||(correct_type==1 && question.elements["questionattrs"].text.nil?) %>
                             <ul><li style="color:red;"> 系统检测此题存在问题，请删除或联系管理员。</li></ul>
                           <% elsif correct_type == Question::CORRECT_TYPE[:SINGLE_CALK] || correct_type == Question::CORRECT_TYPE[:CHARACTER] %>
                             <%= answer unless answer.nil? %>
@@ -192,13 +223,13 @@
                       <div class="clear"></div>
                       <div class="qa_h">分值: <span class="red" id="display_question_score"><%= question.attributes["score"] unless question.attributes["score"].nil? %></span></div>
                       <div class="qa_h">
-                        <button class="t_btn" onclick="javascript:$(this).closest('.q_l_answer').trigger('onerror');" >编辑</button>
+                        <button class="t_btn"  onclick="javascript:var q_ele='#show_q_l_answer_<%= block_index %>_<%= problem_index %>_<%= question_index %>';select_correct_type('#q_l_answer_',<%= problem.attributes["question_type"] %>,<%= block_index %>,<%= problem_index %>,<%= question_index %>,<%= correct_type %>,$(q_ele).find('#display_question_answer').text(),$(q_ele).find('#display_question_attrs').text(),$(q_ele).find('#display_question_description').text(),$(q_ele).find('#display_question_analysis').text(),$(q_ele).find('#display_question_score').text(),$(q_ele).find('#display_question_tags').text(),$(q_ele).find('#display_question_words').text(),$(q_ele).find('#display_question_flag').text(),$(q_ele).closest('.q_l_answer'));" >编辑</button>
                       </div>
                     </div>
                     <div class="edit_question_form" id="q_l_answer_<%= block_index %>_<%= problem_index %>_<%= question_index %>"></div>
                   </div>
                 <% end if problem.elements["questions"] #questions循环结束 %>
-                   <div class="question_list ignore" style="height:320px;" id="question_list_<%=  block_index %>_<%=  problem_index %>"></div>
+                <div class="question_list ignore" id="question_list_<%=  block_index %>_<%=  problem_index %>"></div>
               </div>
             </div>
           </div>
@@ -227,7 +258,8 @@
             </div>
             <div class="question_bianji">
               <div class="qu_tab">
-                <ul class="q_tab_ul"><li class="hover" onclick="javascript:$('.question_type_block_<%= block_index %>').val(<%= Problem::QUESTION_TYPE[:OUTER] %>);$('#create_problem_attrs_module_<%= block_index %>').html('<font color=\'red\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请选择小题类型。</font>');">在题面后追加小题</li><li onclick="javascript:$('.question_type_block_<%= block_index %>').val(<%= Problem::QUESTION_TYPE[:INNER] %>);$('#create_problem_attrs_module_<%= block_index %>').html('<font color=\'red\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请选择小题类型。</font>');">在题面中插入小题</li></ul>
+                <ul class="q_tab_ul"><li class="hover" onclick="javascript:reset_question_type(<%= block_index %>,'0');">在题面后追加小题</li><li onclick="javascript:reset_question_type(<%= block_index %>,'1');">在题面中插入小题</li></ul>
+
                 <div class="q_tab_div">
                   <div><ul>
                       <li><a href="javascript:void(0);" onclick="javascript:select_question_type(0,<%= block_index %>);" >单选题</a></li>
@@ -245,8 +277,8 @@
               </div>
               <div class="clear"></div>
               <div class="question_list_box">
-                  <div class="question_list" >
-                    <div>
+                <div class="question_list" >
+                  <div>
                     <div class="q_l_create">
                       <div class="qa_h">小题描述<textarea name="create_problem[question_description]" class="question_description_block_<%= block_index %> qa_textarea" cols="" rows=""></textarea></div>
                       <div class="qa_h"><span class="yl_bc"><input name="" type="checkbox" value="" onclick="javascript:if(this.checked){$('.question_flag_block_<%= block_index %>').val('1')}else{$('.question_flag_block_<%= block_index %>').val('0')};"/> 自动批改</span>答案</div>
@@ -275,226 +307,11 @@
     <div class="clear"></div>
   </div>
 </div>
-<script type="text/javascript">
-  
-  //载入富文本编辑框,编辑时用，新建题目时使用load_create_kindeditor
-  function load_edit_kindeditor(selector,paper_id,block_index,problem_index) {
-    var editor = KindEditor.create(selector, {
-      resizeType : 1,
-      allowPreviewEmoticons : false,
-      allowImageUpload : true,
-      afterBlur : function() {
-        var text = editor.html();
-        if($("#show_problem_title_"+block_index+"_"+problem_index).html()!=text){
-          ajax_edit_problem_title(paper_id,block_index,problem_index,text);
-        }
-        editor.remove();
-      },
-      items : [
-        'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
-        'removeformat', '|', 'image','audio','mark']
-    });
-    editor.focus();
-  };
 
-  function load_create_kindeditor(index) {
-    var form = "#bj_info_box_"+index;
-    var selector = "#problem_title_block_"+index;
-    if($(form).css('display')!="none" && $(selector).css('display')!="none"){
-      var editor = KindEditor.create(selector, {
-        resizeType : 1,
-        allowPreviewEmoticons : false,
-        allowImageUpload : true,
-        afterBlur : function() {
-          var text = editor.html();
-          $(selector).val(text);
-        },
-        items : [
-          'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
-          'removeformat', '|', 'image','audio','mark']
-      });
-    }
-  };
-
-  //删除模块
-  function destroy_block(paper_id,block_index){
-    if(confirm("系统即将删除第"+block_index+"部分的所有内容。\n确认要删除么？")){
-      $('#zhezhao').show();
-      delCookie("init_block");
-      delCookie("init_problem");
-      tishi_alert("正在删除，请稍等。");
-      window.location.href='/papers/'+paper_id+"/destroy_element?block_index="+block_index;
-    }
-  }
-
-  //删除大题
-  function destroy_problem(paper_id,block_index,problem_index){
-    if(confirm("系统即将将删除第"+block_index+"部分第"+problem_index+"大题的所有内容。\n确认要删除么？")){
-      $('#zhezhao').show();
-      setCookie("init_problem","1");
-      tishi_alert("正在删除，请稍等。");
-      window.location.href='/papers/'+paper_id+"/destroy_element?block_index="+block_index+"&problem_index="+problem_index;
-    }
-  }
-
-  //删除小题
-  function destroy_question(paper_id,block_index,problem_index,question_index){
-    if(confirm("系统即将删除第"+block_index+"部分第"+problem_index+"大题第"+question_index+"小题的所有内容。\n确认要删除么？")){
-      $('#zhezhao').show();
-      tishi_alert("正在删除，请稍等。");
-      window.location.href='/papers/'+paper_id+"/destroy_element?block_index="+block_index+"&problem_index="+problem_index+"&question_index="+question_index;
-    }
-  }
-
-
-
-  //create_problem表单 追加选项
-  function create_problem_add_attr(ele,correct_type,block_index){
-    var attrs = ele.parent().prev("ul");
-    if(correct_type==0){
-      attrs.append($("#append_create_problem_single_attr_"+block_index+">li").clone());
-    }
-    if(correct_type==1){
-      attrs.append($("#append_create_problem_multi_attr_"+block_index+">li").clone());
-    }
-  }
-
-  //post_question表单 追加选项
-  function post_question_add_attr(ele,correct_type){
-    var attrs = ele.parent().prev("ul");
-    if(correct_type==0){
-      attrs.append($("#append_post_question_single_attr>li").clone());
-    }
-    if(correct_type==1){
-      attrs.append($("#append_post_question_multi_attr>li").clone());
-    }
-  }
-
-  //删除选项
-  function remove_attr(ele){
-    ele.closest("li").remove();
-  }
-
-</script>
-
-<!--  新建、编辑 block 表单  -->
-<div class="zhezhao" id="zhezhao"></div>
-<div class="part_info">
-  <%= form_for :post_block ,:url=>"/papers/#{params[:id]}/post_block" ,:html=>{:onsubmit=>"return validate_post_block();"} do |f| %>
-    <span class="yj_x"><img alt="assets/x.gif" src="/assets/x.gif" onclick="javascript:close_part_info();" /></span>
-    <div class="qc_h"><strong>部分信息</strong></div>
-    <input type="hidden" id="block_xpath" name="block_xpath"></input>
-    <table width="400" border="0" cellpadding="0" cellspacing="1">
-      <tbody>
-        <tr><td>名称：</td><td><input id="block_name" name="block_name" type="text" /></td></tr>
-        <tr><td>开始时间：</td><td><input name="start_time" id="block_start_time_radio1" type="radio" value="0" onclick="javascript:$('#block_start_time').attr('disabled','disabled');" />无限制&nbsp;&nbsp;&nbsp;<input name="start_time" id="block_start_time_radio2" type="radio" value="0" onclick="javascript:$('#block_start_time').removeAttr('disabled').focus().select();" />开始于第<input name="block_start_time" id="block_start_time" type="text" size="5" onchange="javascript:$('#block_start_time_radio2').val(this.value);"/>分钟</td> </tr>
-        <tr><td>部分时长：</td><td><input name="time" type="radio" id="block_time_radio1" value="0" onclick="javascript:$('#block_time').attr('disabled','disabled');"/>无限制&nbsp;&nbsp;&nbsp;<input  name="time" id="block_time_radio2" type="radio" value="0" onclick="javascript:$('#block_time').removeAttr('disabled').focus().select();" />时长<input name="block_time" id="block_time" type="text" size="5" onchange="javascript:$('#block_time_radio2').val(this.value);" />分钟</td></tr>
-        <tr><td>说明：</td><td><textarea name="block_description" id="block_description" cols="" rows=""></textarea></td></tr>
-      </tbody>
-    </table>
-    <br/>
-    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" class="t_btn" value="保存"></input></div>
-  <% end  #新建、编辑 block 表单  END%>
-</div>
-
-
-<!--  追加、编辑 question 表单  -->
+<div class="zhezhao" id="zhezhao"></div>   <!--  遮罩  -->
+<%= render :partial=>"/papers/post_block" %>  <!--   post_block 表单  -->
 <div id="post_question_loader" style="display:none;">
-  <div id="append_post_question_single_attr"><li><input name="radio_0_question" class="radio_0_question" type="radio" value=""  /> <input name="text_0_question" class="text_0_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li></div>
-  <div id="append_post_question_multi_attr"><li><input name="checkbox_1_question" class="checkbox_1_question" type="checkbox" value="" /> <input name="text_1_question" class="text_1_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li></div>
-  <div class="q_l_answer" id="post_question_div" style="display: block; ">
-    <%= form_for :post_question ,:url=>"/papers/#{params[:id]}/post_question" ,:html=>{:onsubmit=>"return submit_post_question_form();"} do |f| %>
-      <%= f.hidden_field :questions_xpath ,:id=>"post_question_questions_xpath" %>
-      <%= f.hidden_field :question_index ,:id=>"post_question_question_index" %>
-      <%= f.hidden_field :question_answer ,:id=>"post_question_question_answer" %>
-      <%= f.hidden_field :question_attrs ,:id=>"post_question_question_attrs" %>
-      <%= f.hidden_field :question_tags ,:id=>"post_question_question_tags" %>
-      <%= f.hidden_field :question_flag ,:id=>"post_question_question_flag" %>
-      <%= f.hidden_field :question_words ,:id=>"post_question_question_words" %>
-      <%= f.hidden_field :insert_index ,:id=>"post_question_insert_index" %>
-      <div class="qa_h">小题描述<textarea name="post_question[question_description]" id="post_question_question_description" cols="" rows="" class="qa_textarea"></textarea></div>
-      <div class="qa_h"><span class="yl_bc"><input id="post_question_flag_checkbox" name="" type="checkbox" value="" onclick="javascript:if(this.checked){$('#post_question_question_flag').val('1')}else{$('#post_question_question_flag').val('0')};" /> 自动批改</span>答案</div>
-      <div class="qa_h">
-        <div id="post_question_attrs_module"></div>
-      </div>
-      <div class="qa_h">解析</div>
-      <div class="qa_h"><textarea name="post_question[question_analysis]" id="post_question_question_analysis" cols="" rows="" class="qa_textarea">1111</textarea></div>
-      <div class="clear"></div>
-      <div class="q_label">
-        <div><strong>标签</strong> </div>
-        <div id="post_question_tags_div"></div>
-        <a href="javascript:void(0);" onclick="load_add_label('#post_question_question_tags','#post_question_tags_div');">标签管理</a>
-      </div>
-
-      <div class="q_label">
-        <div><strong>词汇</strong></div>
-        <div id="post_question_words_div"></div>
-        <a href="javascript:void(0);" onclick="load_addWords('#post_question_question_words','#post_question_words_div');">词汇管理</a>
-      </div>
-      <div class="clear"></div>
-      <div class="qa_h">分值 <input name="post_question[question_score]" id="post_question_question_score" type="text" /></div>
-      <div class="qa_h">
-        &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" class="t_btn">保存</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="t_btn" onclick="javascript:close_post_question_form();">取消</button>
-      </div>
-    <% end #新建、编辑 question 表单 END%>
-  </div>
+  <%= render :partial=>"/papers/post_question" %>   <!--  post_question 表单  -->
 </div>
-
-<!-- 标签管理框 -->
-<div class="add_label">
-  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:close_add_label();" /></span>
-  <div><input name="" type="text" onkeydown="javascript:$(function(){if(event.keyCode==13){ajax_load_tags_list($('#t_se_input_tags').val(),$($('#add_label_tags_input').val()).val())}});" id="t_se_input_tags" class="t_se_input" /><button  onclick="javascipt:$(function(){ajax_load_tags_list($('#t_se_input_tags').val(),$($('#add_label_tags_input').val()).val())});" class="t_search" ></button></div>
-  <input type="hidden" id="add_label_tags_input" />
-  <input type="hidden" id="add_label_display" />
-  <div>可选标签</div>
-  <div id="tags_list_ajax_loader" class="add_word_box" ></div>
-
-  <div>已添加标签</div>
-  <div class="add_word_box">
-    <ul id="already_add_tags_div"></ul>
-  </div>
-  <div><button class="t_btn" onclick="javascript:$(function(){organize_tags($('#add_label_tags_input').val(),$('#add_label_display').val())});">更新</button></div>
-</div>
-
-<!-- 词汇管理框 -->
-<div class="addWords">
-  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:close_addWords();" /></span>
-  <div class="addwords_side">
-    <div><input name="" type="text" onkeydown="javascript:$(function(){if(event.keyCode==13){ajax_load_words_list($('#t_se_input_words').val(),$($('#addWords_words_input').val()).val())}});" id="t_se_input_words" class="t_se_input" /><button onclick="javascipt:$(function(){ajax_load_words_list($('#t_se_input_words').val(),$($('#addWords_words_input').val()).val())})" class="t_search"></button></div>
-    <input type="hidden" id="addWords_words_input" />
-    <input type="hidden" id="addWords_display" />
-    <div class="words_ny">
-      <ul id="words_list_ajax_loader"></ul>
-    </div>
-    <div id="already_add_words_div" class="words_ny"></div>
-    <input type="hidden" id="addWords_insert_words" value="" />
-    <div><button class="t_btn" onclick="javascript:insert_words('#addWords_insert_words',$('#addWords_words_input').val(),$('#addWords_display').val());">插入</button></div>
-  </div>
-  <div class="addwords_side" id="select_word">
-    <div class="xs_add" id="xs_add_div">
-      <input id="web_word" value="" type="hidden" />
-      <input type="hidden" id="single_word_enunciate_url" value=""/>
-      <input type="hidden" id="single_word_id" value=""/>
-      <h2 id="single_word_name" class="single_word_element"></h2>
-      <span id="single_word_types" class="single_word_element"></span>
-      <span id="single_word_phonetic" class="single_word_element"></span>
-      <a href="javascript:void(0);">
-        <img src="/assets/icon_lb.png" onclick="javascript:$(function(){alert($('#single_word_enunciate_url').val())});" />
-      </a>
-      <div id="single_word_en_mean" class="size_16 single_word_element"></div>
-      <div id="single_word_ch_mean" class="single_word_element"></div>
-      <div class="word_liju" style="display:none;"></div><br/>
-      <div>
-        <button class="t_btn" id="modify_word" onclick="javascript:edit_word(<%= params[:category] %>);" >修改</button>
-        <button class="t_btn"  onclick="javascirpt:$(function(){select_word($('#single_word_name').html())});">选择</button>
-      </div>
-    </div>
-  </div>
-</div>
-<script type="text/javascript">
-  function jplayer_play(src){
-    $("#jplayer_loader").jPlayer("setMedia", { mp3: src});
-    $("#jplayer_loader").jPlayer("play");
-  }
-</script>
+<%= render :partial=>"/papers/tags_manage" %>    <!-- 标签管理框 -->
+<%= render :partial=>"/papers/words_manage" %>   <!-- 词汇管理框 -->

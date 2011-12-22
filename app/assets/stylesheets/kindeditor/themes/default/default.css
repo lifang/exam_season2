@@ -409,7 +409,7 @@
 	border: 1px solid #CCCCCC;
 	background-color: #FFF;
 	overflow: hidden;
-	margin: 0;
+	margin: 0 auto;
 	padding: 0;
 }
 /* toolbar */
@@ -1040,6 +1040,12 @@
 
 .ke-icon-mark {
         background-image: url(sign.gif);
+        width: 16px;
+        height: 16px;
+}
+
+.ke-icon-commit {
+        background-image: url(save.png);
         width: 16px;
         height: 16px;
 }

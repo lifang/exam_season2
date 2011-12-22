@@ -1,0 +1,40 @@
+  <div id="append_post_question_single_attr"><li><input name="radio_0_question" class="radio_0_question" type="radio" value=""  /> <input name="text_0_question" class="text_0_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li></div>
+  <div id="append_post_question_multi_attr"><li><input name="checkbox_1_question" class="checkbox_1_question" type="checkbox" value="" /> <input name="text_1_question" class="text_1_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li></div>
+  <div class="q_l_answer" id="post_question_div" style="display: block; ">
+    <%= form_for :post_question ,:url=>"/papers/#{params[:id]}/post_question" ,:html=>{:onsubmit=>"return submit_post_question_form();"} do |f| %>
+      <%= f.hidden_field :questions_xpath ,:id=>"post_question_questions_xpath" %>
+      <%= f.hidden_field :question_index ,:id=>"post_question_question_index" %>
+      <%= f.hidden_field :question_answer ,:id=>"post_question_question_answer" %>
+      <%= f.hidden_field :question_attrs ,:id=>"post_question_question_attrs" %>
+      <%= f.hidden_field :question_tags ,:id=>"post_question_question_tags" %>
+      <%= f.hidden_field :question_flag ,:id=>"post_question_question_flag" %>
+      <%= f.hidden_field :question_words ,:id=>"post_question_question_words" %>
+      <%= f.hidden_field :insert_index ,:id=>"post_question_insert_index" %>
+      <div class="qa_h">小题描述<textarea name="post_question[question_description]" id="post_question_question_description" cols="" rows="" class="qa_textarea"></textarea></div>
+      <div class="qa_h"><span class="yl_bc"><input id="post_question_flag_checkbox" name="" type="checkbox" value="" onclick="javascript:if(this.checked){$('#post_question_question_flag').val('1')}else{$('#post_question_question_flag').val('0')};" /> 自动批改</span>答案</div>
+      <input type="hidden" id="post_question_question_type" />
+      <div class="qa_h">
+        <div id="post_question_attrs_module"></div>
+      </div>
+      <div class="qa_h">解析</div>
+      <div class="qa_h"><textarea name="post_question[question_analysis]" id="post_question_question_analysis" cols="" rows="" class="qa_textarea">1111</textarea></div>
+      <div class="clear"></div>
+      <div class="q_label">
+        <div><strong>标签</strong> </div>
+        <div id="post_question_tags_div"></div>
+        <a href="javascript:void(0);" onclick="load_add_label('#post_question_question_tags','#post_question_tags_div');">标签管理</a>
+      </div>
+
+      <div class="q_label">
+        <div><strong>词汇</strong></div>
+        <div id="post_question_words_div"></div>
+        <a href="javascript:void(0);" onclick="load_addWords('#post_question_question_words','#post_question_words_div');">词汇管理</a>
+      </div>
+      <div class="clear"></div>
+      <div class="qa_h">分值 <input name="post_question[question_score]" id="post_question_question_score" type="text" /></div>
+      <div class="qa_h">
+        &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" class="t_btn">保存</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="t_btn" onclick="javascript:close_post_question_form();">取消</button>
+      </div>
+    <% end #新建、编辑 question 表单 END%>
+  </div>
