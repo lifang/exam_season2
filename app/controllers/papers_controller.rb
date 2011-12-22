@@ -252,15 +252,9 @@ class PapersController < ApplicationController
     added_words = params["added_words"].split(" ")
     category_id = params["category_id"].to_i
     like_params = "#{match}%"
-    if params["added_words"].strip!=""
-      @words = Word.find_by_sql(["select w.*, ws.description from words w left join word_sentences ws on ws.word_id = w.id
-            where w.category_id = ? and w.name like ? and w.name not in (?) limit 20",
-          category_id, like_params, added_words])
-    else
-      @words = Word.find_by_sql(["select w.*, ws.description from words w left join word_sentences ws on ws.word_id = w.id
+    @words = Word.find_by_sql(["select w.*, ws.description from words w left join word_sentences ws on ws.word_id = w.id
             where w.category_id = ? and w.name like ?  limit 20",
-          category_id, like_params])
-    end
+        category_id, like_params])
     respond_to do |format|
       format.html {
         render :partial=>"/papers/words_list", :object=>{:words=>@words, :match=>match}
@@ -355,18 +349,18 @@ class PapersController < ApplicationController
   def sort
     paper = Paper.find_by_id(params[:paper_id].to_i)
     begin
-        doc = paper.open_file
-        old_postion = params[:old_postion]
-        postion_list = params[:li]
-        new_postion = postion_list.index(old_postion)
-        problem = doc.root.elements["blocks/block[#{params[:block_index]}]/problems/problem[#{old_postion}]"]
-        block = problem.parent
-        block.insert_before(doc.elements["#{block.xpath}/problem[#{new_postion+1}]"],problem)
-        paper.create_paper_url(doc.to_s, paper.paper_url.split("/")[2], "xml")
-        message = "顺序调整成功。, #{new_postion+1}"
-      rescue
-        message = "顺序调整失败，请检查试卷是否正常。"
-      end if paper
+      doc = paper.open_file
+      old_postion = params[:old_postion]
+      postion_list = params[:li]
+      new_postion = postion_list.index(old_postion)
+      problem = doc.root.elements["blocks/block[#{params[:block_index]}]/problems/problem[#{old_postion}]"]
+      block = problem.parent
+      block.insert_before(doc.elements["#{block.xpath}/problem[#{new_postion+1}]"],problem)
+      paper.create_paper_url(doc.to_s, paper.paper_url.split("/")[2], "xml")
+      message = "顺序调整成功。, #{new_postion+1}"
+    rescue
+      message = "顺序调整失败，请检查试卷是否正常。"
+    end if paper
     render :text => message
     
   end

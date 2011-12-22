@@ -1,7 +1,7 @@
 <div class="addWords">
   <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:close_addWords();" /></span>
   <div class="addwords_side">
-    <div><input name="" type="text" onkeydown="javascript:$(function(){if(event.keyCode==13){ajax_load_words_list($('#t_se_input_words').val(),$($('#addWords_words_input').val()).val())}});" id="t_se_input_words" class="t_se_input" /><button onclick="javascipt:$(function(){ajax_load_words_list($('#t_se_input_words').val(),$($('#addWords_words_input').val()).val())})" class="t_search"></button></div>
+    <div><input name="" type="text" id="t_se_input_words" class="t_se_input" /><button onclick="javascipt:$(function(){ajax_load_words_list($('#t_se_input_words').val(),$($('#addWords_words_input').val()).val())})" class="t_search"></button></div>
     <input type="hidden" id="addWords_words_input" />
     <input type="hidden" id="addWords_display" />
     <div class="words_ny">
