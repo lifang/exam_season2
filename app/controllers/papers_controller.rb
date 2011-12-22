@@ -44,6 +44,7 @@ class PapersController < ApplicationController
     block_xpath, block_name, block_description, block_time, block_start_time =
       params["block_xpath"], params["block_name"], params["block_description"], params["time"], params["start_time"]
     paper = Paper.find(params[:id].to_i)
+    paper.update_attribute("status",Paper::CHECKED[:NO])
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     if block_xpath != ""
@@ -77,6 +78,7 @@ class PapersController < ApplicationController
     end
     #存储xml文件
     paper = Paper.find(params[:id].to_i)
+    paper.update_attribute("status",Paper::CHECKED[:NO])
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     problem_element = doc.elements[@post[:problems_xpath]].add_element("problem")
@@ -97,6 +99,7 @@ class PapersController < ApplicationController
   # [post][member][ajax] 编辑题目说明
   def ajax_edit_problem_description
     paper = Paper.find(params[:id].to_i)
+    paper.update_attribute("status",Paper::CHECKED[:NO])
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     problem_element = doc.elements["/paper/blocks/block[#{params[:block_index]}]/problems/problem[#{params[:problem_index]}]"]
@@ -116,6 +119,7 @@ class PapersController < ApplicationController
   # [post][member][ajax] 编辑题目标题
   def ajax_edit_problem_title
     paper = Paper.find(params[:id].to_i)
+    paper.update_attribute("status",Paper::CHECKED[:NO])
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     problem_element = doc.elements["/paper/blocks/block[#{params[:block_index]}]/problems/problem[#{params[:problem_index]}]"]
@@ -134,6 +138,7 @@ class PapersController < ApplicationController
   def post_question
     @post = params[:post_question]
     paper = Paper.find(params[:id].to_i)
+    paper.update_attribute("status",Paper::CHECKED[:NO])
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     if @post[:question_index]=="" # 当 question_index 为空，就是新建小题，不为空，就是编辑小题
@@ -170,6 +175,7 @@ class PapersController < ApplicationController
 
   def ajax_edit_paper_title
     paper = Paper.find(params[:id].to_i)
+    paper.update_attribute("status",Paper::CHECKED[:NO])
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     base_info_element = doc.elements["/paper/base_info"]
@@ -187,6 +193,7 @@ class PapersController < ApplicationController
 
   def ajax_edit_paper_time
     paper = Paper.find(params[:id].to_i)
+    paper.update_attribute("status",Paper::CHECKED[:NO])
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
     doc = get_doc(url)
     base_info_element = doc.elements["/paper/base_info"]
@@ -285,6 +292,7 @@ class PapersController < ApplicationController
   #删除试卷内容 （部分、大题、小题）
   def destroy_element
     paper=Paper.find(params[:id])
+    paper.update_attribute("status",Paper::CHECKED[:NO])
     xpath = "/paper/blocks/block[#{params[:block_index]}]"
     xpath += "/problems/problem[#{params[:problem_index]}]" if params[:problem_index]
     xpath += "/questions/question[#{params[:question_index]}]" if params[:question_index]
