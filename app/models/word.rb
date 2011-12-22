@@ -28,9 +28,9 @@ class Word < ActiveRecord::Base
     sql += " and name like ? " unless search_text.nil? or search_text.strip.empty?
     sql += " order by name "
     unless search_text.nil? or search_text.strip.empty?
-      words = Word.paginate_by_sql([sql, category_id, "%#{search_text.strip}%"], :per_page => 10, :page => page)
+      words = Word.paginate_by_sql([sql, category_id, "%#{search_text.strip}%"], :per_page => 40, :page => page)
     else
-      words = Word.paginate_by_sql([sql, category_id], :per_page => 10, :page => page)
+      words = Word.paginate_by_sql([sql, category_id], :per_page => 40, :page => page)
     end
     return words
   end

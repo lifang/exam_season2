@@ -780,13 +780,14 @@ function insert_words(origin_words_input,target_words_input,display){
 
 
 //请求网上单词
-function download_word(word) {
+function download_word(word, category_id) {
     $.ajax({
         type: "POST",
         url: "/words/download_word.html",
         dataType: "html",
         data : {
-            word : word
+            word : word,
+            category_id : category_id
         },
         beforeSend: function() {
             $(".web_load").html($("#ajax_loader").html());
