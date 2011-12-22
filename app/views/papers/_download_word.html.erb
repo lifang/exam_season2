@@ -1,29 +1,32 @@
 <% words =download_word %>
 <ul>
   <%  single_word=words.split(",;,") %>
-  <div id="web_word_m" style="display:none">
-    <input id="web_word" value="" type="hidden" />
-    <input type="hidden" id="single_word_enunciate_url" value="<%=single_word[5] %>"/>
-    <input type="hidden" id="single_word_id" value=""/>
-    <h2 id="single_word_name" class="single_word_element"><%=  single_word[0] %></h2>
-    <span id="single_word_types" class="single_word_element"><%=  single_word[1]%></span>
-    <span id="single_word_phonetic" class="single_word_element"><%= single_word[4] %></span>
-    <a href="javascript:void(0);">
-      <img src="/assets/icon_lb.png" onclick="javascript:$(function(){alert($('#single_word_enunciate_url').val())});" />
-    </a>
-    <div id="single_word_en_mean" class="size_16 single_word_element"><%=single_word[2]%></div>
-    <div id="single_word_ch_mean" class="single_word_element"><%=single_word[3] %></div>
-    <div class="word_liju"><%= single_word[6] %></div><br/>
-    <div>
-      <button class="t_btn" onclick="javascirpt:$(function(){select_word('<%= single_word[0] %>')});">选择</button>
-    </div>
-    <input type="hidden" id="enunciate_url" value="<%=single_word[5] %>"/>
-  </div>
   <% unless words==",;,,;,,;,,;,,;,,;,"|| words.length==18%>
+    <div id="web_word_m" style="display:none">
+
+      <input id="web_word" value="" type="hidden" />
+      <input type="hidden" id="single_word_enunciate_url" value="<%=single_word[5] %>"/>
+      <input type="hidden" id="single_word_id" value=""/>
+      <h2 id="single_word_name" class="single_word_element"><%=  single_word[0] %></h2>
+      <span id="single_word_types" class="single_word_element"><%=  single_word[1]%></span>
+      <span id="single_word_phonetic" class="single_word_element"><%= single_word[4] %></span>
+      <a href="javascript:void(0);">
+        <img src="/assets/icon_lb.png" onclick="javascript:$(function(){jplayer_play($('#single_word_enunciate_url').val())});" />
+      </a>
+      <div id="single_word_en_mean" class="size_16 single_word_element"><%=single_word[2]%></div>
+      <div id="single_word_ch_mean" class="single_word_element"><%=single_word[3] %></div>
+      <div class="word_liju"><%= single_word[6] %></div><br/>
+      <div>
+        <button class="t_btn" onclick="javascirpt:$(function(){select_word('<%= single_word[0] %>')});">选择</button>
+      </div>
+      <input type="hidden" id="enunciate_url" value="<%=single_word[5] %>"/>
+    </div>
+
     <li><a class="single_word_li single_word" href="javascript:void(0);"
            onclick="javascript:show_single_word('1');" ><%=single_word[0] %></a></li>
     <% else %>
-      <%= "未搜到相关的词汇，请重新输入关键字" %>
+    <div id="web_word_m" style="display:none"></div>
+    <%= "未搜到相关的词汇，请重新输入关键字" %>
     <li><a class="single_word_li single_word" href="javascript:void(0);"
            onclick="javascript:show_single_word('0');" ><%=single_word[0] %></a></li>
     <% end %>

@@ -795,6 +795,7 @@ function download_word(word) {
             $("#words_list_ajax_loader").html(data);
             $(".single_word:eq(0)").trigger("click");
         }
+
     });
 }
 
@@ -804,7 +805,7 @@ function show_ready_word(jquery_ele, word_id) {
     jquery_ele.addClass("hover");
     $("#xs_add_div").show();
     $('#xs_add_div').html($('#show_word_'+word_id).html());
-    if ($("#web_word").val() == "") {
+    if ($("#web_word").val() == "0") {
         $("#modify_word").css("display", "");
     } else {
         $("#modify_word").css("display", "none");
@@ -850,9 +851,6 @@ function show_single_word(web_word){
     $(".single_word_li").removeClass("hover");
     $("#web_word").val(web_word);
     $("#xs_add_div").show();
-    if($("#web_word").val() == "0"){
-        $("#select_word").css("display", "none");
-    }
 }
 
 //载入富文本编辑框,编辑时用，新建题目时使用load_create_kindeditor
