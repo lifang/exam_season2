@@ -23,6 +23,7 @@
     <li><a class="single_word_li single_word" href="javascript:void(0);"
            onclick="javascript:show_single_word('1');" ><%=single_word[0] %></a></li>
     <% else %>
+      <%= "未搜到相关的词汇，请重新输入关键字" %>
     <li><a class="single_word_li single_word" href="javascript:void(0);"
            onclick="javascript:show_single_word('0');" ><%=single_word[0] %></a></li>
     <% end %>
