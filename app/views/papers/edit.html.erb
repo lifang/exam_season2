@@ -29,7 +29,7 @@
   });
 </script>
 <div class="main_title">
-  <span class="yl_bc"><a href="#">预览</a> | <a href="#">保存</a></span>
+  <span class="yl_bc"><a href="#">预览</a> &nbsp;&nbsp; </span>
   <div class="m_t_h1">
     <input name="" type="text" class="p_name" style="display:none" onblur="$(this).hide();$('.p_name:eq(1)').show();" onchange="javascript:ajax_edit_paper_title(<%= params[:id] %>,$(this).val());" /><span class="p_name" onselectstart="return false;" ondblclick="javascript:$(this).hide();$('.p_name:eq(0)').val($(this).text()).show().focus();"><%= (@paper.title.nil?||@paper.title.strip=="")==true ? "未命名试卷" : @paper.title %></span>
     <input name="" type="text" class="p_time" style="display:none" onblur="$(this).hide();$('.p_time:eq(1)').show();" onchange="javascript:ajax_edit_paper_time(<%= params[:id] %>,$(this).val());" /><span class="p_time" onselectstart="return false;" ondblclick="javascript:$(this).hide();$('.p_time:eq(0)').val($(this).text()).show().focus();"><%= (@paper.time.nil?) ? "未设置" : @paper.time %></span>（分钟）
@@ -153,7 +153,7 @@
                         <p class="q_w_p">
                           <%= question.elements["questionattrs"].text!="" && question.elements["questionattrs"].text!=nil ? question.elements["questionattrs"].text.split(";-;").join("/") : correct_type==Question::CORRECT_TYPE[:JUDGE] ? judge_str[question.elements["answer"].text] : question.elements["answer"].text %>
                         </p>
-                        <span><input type="checkbox" title="标注小题追加位置" onclick="javascript:stop_bunble();set_insert_question_index($(this),<%= block_index %>,<%= problem_index %>)" value="<%= question_index %>" name="insert_index_block_<%= block_index %>_problem_<%= problem_index %>" class="insert_index_block_<%= block_index %>_problem_<%= problem_index %>" /></span>
+                        <span class="yj_x_checkbox"><input type="checkbox" title="追加在当前小题前面" onclick="javascript:stop_bunble();set_insert_question_index($(this),<%= block_index %>,<%= problem_index %>)" value="<%= question_index %>" name="insert_index_block_<%= block_index %>_problem_<%= problem_index %>" class="insert_index_block_<%= block_index %>_problem_<%= problem_index %>" /></span>
                         <span class="yj_x" onclick="javascript:stop_bunble();destroy_question(<%= params[:id] %>,<%= block_index %>,<%= problem_index %>,<%= question_index %>);"><img alt="x" src="/assets/x.gif"/></span>
                       </div>
                       <script type="text/javascript" >
