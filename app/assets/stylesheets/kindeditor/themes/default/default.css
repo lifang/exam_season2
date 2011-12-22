@@ -409,7 +409,7 @@
 	border: 1px solid #CCCCCC;
 	background-color: #FFF;
 	overflow: hidden;
-	margin: 0;
+	margin: 0 auto;
 	padding: 0;
 }
 /* toolbar */

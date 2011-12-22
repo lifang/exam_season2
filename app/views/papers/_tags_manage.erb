@@ -1,0 +1,14 @@
+<div class="add_label">
+  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:close_add_label();" /></span>
+  <div><input name="" type="text" onkeydown="javascript:$(function(){if(event.keyCode==13){ajax_load_tags_list($('#t_se_input_tags').val(),$($('#add_label_tags_input').val()).val())}});" id="t_se_input_tags" class="t_se_input" /><button  onclick="javascipt:$(function(){ajax_load_tags_list($('#t_se_input_tags').val(),$($('#add_label_tags_input').val()).val())});" class="t_search" ></button></div>
+  <input type="hidden" id="add_label_tags_input" />
+  <input type="hidden" id="add_label_display" />
+  <div>可选标签</div>
+  <div id="tags_list_ajax_loader" class="add_word_box" ></div>
+
+  <div>已添加标签</div>
+  <div class="add_word_box">
+    <ul id="already_add_tags_div"></ul>
+  </div>
+  <div><button class="t_btn" onclick="javascript:$(function(){organize_tags($('#add_label_tags_input').val(),$('#add_label_display').val())});">更新</button></div>
+</div>
