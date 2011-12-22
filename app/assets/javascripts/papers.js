@@ -27,8 +27,6 @@ function paper_info() {
             return false;
         }
     }
-
-
 }
 
 // 设置DIV根据浏览器宽度，居中
@@ -59,11 +57,8 @@ $(function() {
                 return false;
             }
         }
-        // 手工测得 question_list 的 高度为 65 ，样式改动，需调整
         $(".q_l_text:hidden").show();
         $(".q_l_answer").hide();
-        var final_scrollTop = 65 * ($(this).closest(".question_list_box").children(".question_list").not(".ignore").index($(this).closest(".question_list")));
-        $(this).closest(".question_list_box").scrollTop(final_scrollTop);
         var $answer = $(this).next(".q_l_answer");
         $(this).slideUp(400, function() {
             $answer.slideDown(800)
@@ -74,9 +69,6 @@ $(function() {
 //小题的jquery效果  详细显示 => 简单显示
 $(function() {
     $(".q_l_answer[id!=post_question_div]").bind("dblclick", function() {
-        // 手工测得 question_list 的 高度为 65 ，样式改动，需调整
-        var final_scrollTop = 65 * ($(this).closest(".question_list_box").children(".question_list").not(".ignore").index($(this).closest(".question_list")));
-        $(this).closest(".question_list_box").scrollTop(final_scrollTop);
         $(this).slideUp(1000, function() {
             $(this).siblings(".q_l_text").slideDown(400);
         });
@@ -345,29 +337,26 @@ function select_correct_type(ele_str, question_type, block_index, problem_index,
         "question_attrs" : question_attrs
     },
     function() {
-        // 手工测得 question_list 的 高度为 65 ，样式改动，需调整
         var location = question_index == "" ? ele_str + block_index + "_" + problem_index : ele_str + block_index + "_" + problem_index + "_" + question_index;
         if (hidden_div != "") {
-            var final_scrollTop = 65 * (hidden_div.closest(".question_list_box").children(".question_list").not(".ignore").index(hidden_div.closest(".question_list")) - 1);
-            hidden_div.closest(".question_list_box").scrollTop(final_scrollTop);
             hidden_div.hide();
             $("#post_question_div").show();
             $(location).append($("#post_question_div"));  //载入form
         } else {
-            var question_list = $(location).siblings(".question_list");
-            var insert_index = question_list.not(".ignore").index(question_list.has(".q_l_text:hidden"));
-            $("#post_question_insert_index").val(insert_index + 1);
+            var index = $(".insert_index_block_"+block_index+"_problem_"+problem_index+":checked").val();
+            if(index==null){
+                var insert_index = 0;
+            }else{
+                var insert_index = index;
+            }
+            $("#post_question_insert_index").val(insert_index);
             $(".q_l_answer").hide();
             $(".q_l_text:hidden").show();
             $("#post_question_div").show();
-            if (insert_index == -1) {
-                var final_scrollTop = 65 * (question_list.not(".ignore").length);
-                $(location).closest(".question_list_box").scrollTop(final_scrollTop);
+            if (insert_index == 0) {
                 $(location).append($("#post_question_div"));
             } else {
-                var final_scrollTop = 65 * (insert_index);
-                $(location).closest(".question_list_box").scrollTop(final_scrollTop);
-                var insert_location = "#question_list_" + block_index + "_" + problem_index + "_" + (insert_index + 1);
+                var insert_location = "#question_list_" + block_index + "_" + problem_index + "_" + (insert_index);
                 $(insert_location).append($("#post_question_div"));
             }
         } // 显示框 和 编辑框 切换显示
@@ -379,10 +368,7 @@ function select_correct_type(ele_str, question_type, block_index, problem_index,
 
 //关闭编辑小题框
 function close_post_question_form() {
-    // 手工测得 question_list 的 高度为 65 ，样式改动，需调整
     var this_index = ($('#post_question_div').closest(".question_list_box").children(".question_list").not("ignore").index($('#post_question_div').closest(".question_list")));
-    var final_scrollTop = 65 * (this_index - 1);
-    $('#post_question_div').closest(".question_list_box").scrollTop(final_scrollTop);
     $('#post_question_div').slideUp(1000, function() {
         if (this_index > 0) {
             $(".q_l_text:hidden").slideDown(400);
