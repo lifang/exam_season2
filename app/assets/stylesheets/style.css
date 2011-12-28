@@ -388,7 +388,7 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 
 /*消费记录----*/
 .user_tab { width: 920px; background: #FFF;}
-.user_big_tab { width: 620px; height: 320px; background: #FFF; padding: 10px; border: 3px #999 solid;}
+.user_big_tab { width: 620px; height: 320px; background: #FFF; padding: 10px; border: 3px #999 solid;position: fixed;z-index: 100;}
 .user_tab_ul { height: 31px; line-height: 31px; overflow: hidden; border-bottom: 1px #CCC solid;}
 .user_tab_ul li {
     width: 80px;

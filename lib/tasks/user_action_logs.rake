@@ -3,11 +3,11 @@ namespace :user do
   task(:action_logs => :environment) do
     puts "user_action_logs start"
     all_type_action = ActionLog.find_by_sql(["select sum(al.total_num) total_count,
-      ifnull(sum(case when al.types=0 then al.total_num end), 0) log_count,
-      ifnull(sum(case when al.types=1 then al.total_num end), 0) practice_count,
-      ifnull(sum(case when al.types=2 then al.total_num end), 0) exam_count,
-      ifnull(sum(case when al.types=3 then al.total_num end), 0) recite_count,
-      ifnull(sum(case when al.types=4 then al.total_num end), 0) study_play_count,
+      ifnull(sum(case when al.types=#{ActionLog::TYPES[:LOGIN]} then al.total_num end), 0) log_count,
+      ifnull(sum(case when al.types=#{ActionLog::TYPES[:PRACTICE]} then al.total_num end), 0) practice_count,
+      ifnull(sum(case when al.types=#{ActionLog::TYPES[:EXAM]} then al.total_num end), 0) exam_count,
+      ifnull(sum(case when al.types=#{ActionLog::TYPES[:RECITE]} then al.total_num end), 0) recite_count,
+      ifnull(sum(case when al.types=#{ActionLog::TYPES[:STUDY_PLAY]} then al.total_num end), 0) study_play_count,
       max(al.created_at) max_time,
       floor((unix_timestamp(max(al.created_at))-unix_timestamp(min(al.created_at)))/(60*60*24*7) + 1) week_time,
       al.user_id
