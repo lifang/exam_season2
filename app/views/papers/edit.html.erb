@@ -43,7 +43,8 @@
         <% count1=0;  @xml.elements['blocks'].each_element do |block| count1+=1 %>
           <li id="blocks_li" class="blocks_li" ondblclick="javascript:destroy_block(<%= params[:id] %>,<%= count1 %>);">
             <a href="javascript:void(0);"><%= block.elements['base_info/title'].text if block.elements['base_info/title']%></a>
-            <span onclick="javascript:stop_bunble();if(!notice_edit()){return false};load_edit_block('<%= block.xpath %>','<%= block.elements['base_info/title'].text if block.elements['base_info/title'] %>','<%= block.elements['base_info/description'].text if block.elements['base_info/description'] %>','<%= block.attributes['start_time'] if block.attributes['start_time'] %>','<%= block.attributes['time'] if block.attributes['time'] %>');" ><img title="编辑" alt="icon_bi" src="/assets/icon_bi.png" /></span>
+            <input type="hidden" value="<%= block.elements['base_info/description'].text if block.elements['base_info/description'] %>" id="block_description_<%= count1 %>" />
+            <span onclick="javascript:stop_bunble();if(!notice_edit()){return false};load_edit_block('<%= block.xpath %>',escape('<%= block.elements['base_info/title'].text if block.elements['base_info/title'] %>'),$('#block_description_<%= count1 %>').val(),'<%= block.attributes['start_time'] if block.attributes['start_time'] %>','<%= block.attributes['time'] if block.attributes['time'] %>');" ><img title="编辑" alt="icon_bi" src="/assets/icon_bi.png" /></span>
           </li>
         <% end %>
       </ul>
@@ -234,6 +235,7 @@
             </div>
           </div>
         <% end #problems循环结束 %>
+        <% JSON %>
 
         <!--  添加题目 表单  -->
         <div class="bj_info_box bj_info_box_<%= block_index %>" id="bj_info_box_<%= block_index %>" style="display:none;">

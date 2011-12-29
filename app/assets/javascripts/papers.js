@@ -95,6 +95,8 @@ function stop_bunble() {
 
 //载入编辑模块div
 function load_edit_block(block_xpath, block_name, block_description, block_start_time, block_time) {
+    block_name=unescape(block_name);
+    block_description=unescape(block_description);
     $("#block_xpath").val(block_xpath);
     $("#block_name").val(block_name);
     $("#block_description").val(block_description);
