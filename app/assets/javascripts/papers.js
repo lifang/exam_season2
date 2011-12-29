@@ -782,13 +782,14 @@ function insert_words(origin_words_input,target_words_input,display){
 
 
 //请求网上单词
-function download_word(word) {
+function download_word(word, category_id) {
     $.ajax({
         type: "POST",
         url: "/words/download_word.html",
         dataType: "html",
         data : {
-            word : word
+            word : word,
+            category_id : category_id
         },
         beforeSend: function() {
             $(".web_load").html($("#ajax_loader").html());
@@ -797,6 +798,7 @@ function download_word(word) {
             $("#words_list_ajax_loader").html(data);
             $(".single_word:eq(0)").trigger("click");
         }
+
     });
 }
 
@@ -806,7 +808,7 @@ function show_ready_word(jquery_ele, word_id) {
     jquery_ele.addClass("hover");
     $("#xs_add_div").show();
     $('#xs_add_div').html($('#show_word_'+word_id).html());
-    if ($("#web_word").val() == "") {
+    if ($("#web_word").val() == "0") {
         $("#modify_word").css("display", "");
     } else {
         $("#modify_word").css("display", "none");
@@ -854,6 +856,8 @@ function show_single_word(web_word){
     $("#xs_add_div").show();
     if($("#web_word").val() == "0"){
         $("#select_word").css("display", "none");
+    } else {
+        $("#select_word").css("display", "");
     }
 }
 

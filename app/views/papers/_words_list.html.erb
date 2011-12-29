@@ -12,6 +12,6 @@
     </li>
     <% end %>
     <% if object[:match]!="" %><li><a class="single_word_li web_load" href="javascript:void(0);"
-           onclick="javascript:download_word('<%= object[:match] %>');">从网上抓取<%= object[:match] %></a></li><% end %>
+           onclick="javascript:download_word('<%= object[:match] %>', '<%= object[:category] %>');">从网上抓取<%= object[:match] %></a></li><% end %>
 </ul>
 

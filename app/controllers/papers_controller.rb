@@ -257,7 +257,7 @@ class PapersController < ApplicationController
         category_id, like_params])
     respond_to do |format|
       format.html {
-        render :partial=>"/papers/words_list", :object=>{:words=>@words, :match=>match}
+        render :partial=>"/papers/words_list", :object=>{:words=>@words, :match=>match, :category=>category_id}
       }
     end
   end

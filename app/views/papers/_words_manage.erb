@@ -11,24 +11,8 @@
     <input type="hidden" id="addWords_insert_words" value="" />
     <div><button class="t_btn" onclick="javascript:insert_words('#addWords_insert_words',$('#addWords_words_input').val(),$('#addWords_display').val());">插入</button></div>
   </div>
-  <div class="addwords_side" id="select_word">
+  <div class="addwords_side">
     <div class="xs_add" id="xs_add_div">
-      <input id="web_word" value="" type="hidden" />
-      <input type="hidden" id="single_word_enunciate_url" value=""/>
-      <input type="hidden" id="single_word_id" value=""/>
-      <h2 id="single_word_name" class="single_word_element"></h2>
-      <span id="single_word_types" class="single_word_element"></span>
-      <span id="single_word_phonetic" class="single_word_element"></span>
-      <a href="javascript:void(0);">
-        <img src="/assets/icon_lb.png" onclick="javascript:$(function(){alert($('#single_word_enunciate_url').val())});" />
-      </a>
-      <div id="single_word_en_mean" class="size_16 single_word_element"></div>
-      <div id="single_word_ch_mean" class="single_word_element"></div>
-      <div class="word_liju" style="display:none;"></div><br/>
-      <div>
-        <button class="t_btn" id="modify_word" onclick="javascript:edit_word(<%= params[:category] %>);" >修改</button>
-        <button class="t_btn"  onclick="javascirpt:$(function(){select_word($('#single_word_name').html())});">选择</button>
-      </div>
     </div>
   </div>
 </div>
