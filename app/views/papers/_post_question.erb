@@ -1,5 +1,5 @@
   <div id="append_post_question_single_attr"><li><input name="radio_0_question" class="radio_0_question" type="radio" value=""  /> <input name="text_0_question" class="text_0_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li></div>
-  <div id="append_post_question_multi_attr"><li><input name="checkbox_1_question" class="checkbox_1_question" type="checkbox" value="" /> <input name="text_1_question" class="text_1_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li></div>
+  <div id="append_post_question_multi_attr"><li><input name="radio_1_question" class="radio_1_question" type="radio" value="" /> <input name="text_1_question" class="text_1_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li></div>
   <div class="q_l_answer" id="post_question_div" style="display: block; ">
     <%= form_for :post_question ,:url=>"/papers/#{params[:id]}/post_question" ,:html=>{:onsubmit=>"return submit_post_question_form();"} do |f| %>
       <%= f.hidden_field :questions_xpath ,:id=>"post_question_questions_xpath" %>

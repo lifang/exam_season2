@@ -18,13 +18,13 @@
     <div><a href="javascript:void(0);" onclick="javascript:post_question_add_attr($(this),0);">&nbsp;&nbsp;添加选项</a></div>
   <% elsif object[:correct_type]==1 %>
     <ul>
-      <li><input name="checkbox_1_question" class="checkbox_1_question" type="checkbox" value="" />
+      <li><input name="radio_1_question" class="radio_1_question" type="radio" value="" />
         <input name="text_1_question" class="text_1_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
-      <li><input name="checkbox_1_question" class="checkbox_1_question" type="checkbox" value="" />
+      <li><input name="radio_1_question" class="radio_1_question" type="radio" value="" />
         <input name="text_1_question" class="text_1_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
-      <li><input name="checkbox_1_question" class="checkbox_1_question" type="checkbox" value="" />
+      <li><input name="radio_1_question" class="radio_1_question" type="radio" value="" />
         <input name="text_1_question" class="text_1_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
-      <li><input name="checkbox_1_question" class="checkbox_1_question" type="checkbox" value="" />
+      <li><input name="radio_1_question" class="radio_1_question" type="radio" value="" />
         <input name="text_1_question" class="text_1_question" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
     </ul>
     <div><a href="javascript:void(0);" onclick="javascript:post_question_add_attr($(this),1);">&nbsp;&nbsp;添加选项</a></div>
@@ -50,7 +50,7 @@
     <ul>
       <% answer_arr = object[:answer].split(";|;") %>
       <% object[:question_attrs].split(";-;").each do |attr| %>
-        <li><input <% if answer_arr.include?(attr) %> checked="checked" <% end %> name="checkbox_1_question" class="checkbox_1_question" type="checkbox" value="" /> <input name="text_1_question" class="text_1_question" type="text" value="<%= attr %>" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
+        <li><input <% if answer_arr.include?(attr) %> checked="checked" <% end %> name="radio_1_question" class="radio_1_question" type="radio" value="" /> <input name="text_1_question" class="text_1_question" type="text" value="<%= attr %>" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li>
       <% end %>
     </ul>
     <div><a href="javascript:void(0);" onclick="javascript:post_question_add_attr($(this),1);">&nbsp;&nbsp;添加选项</a></div>

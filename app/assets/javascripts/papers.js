@@ -234,7 +234,7 @@ function create_problem_single_choose(block_index) {
 //多选题 整理组织单选题选项和答案
 function create_problem_multi_choose(block_index) {
     var answer_arr = [];
-    $(".checkbox_1_block_" + block_index).each(function() {
+    $(".radio_1_block_" + block_index).each(function() {
         if (this.checked && $(this).next(".text_1_block_" + block_index).val() != "") {
             answer_arr.push($(this).next(".text_1_block_" + block_index).val());
         }
@@ -470,7 +470,7 @@ function post_question_single_choose() {
 //多选题 整理组织单选题选项和答案
 function post_question_multi_choose() {
     var answer_arr = [];
-    $(".checkbox_1_question").each(function() {
+    $(".radio_1_question").each(function() {
         if (this.checked && $(this).next(".text_1_question").val() != "") {
             answer_arr.push($(this).next(".text_1_question").val());
         }

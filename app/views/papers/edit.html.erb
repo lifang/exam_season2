@@ -200,7 +200,7 @@
                           <% elsif correct_type == Question::CORRECT_TYPE[:SINGLE_CHOSE] %>
                             <ul><% question.elements["questionattrs"].text.split(";-;").each do |attr| %><li><input name="" type="radio" disabled="true" value="" <% if answer && answer.split(";|;")&& answer.split(";|;").include?(attr) %>checked="true"<% end %> /> <%= attr %> </li><% end if question.elements["questionattrs"]&&question.elements["questionattrs"]!="" %></ul>
                           <% elsif correct_type == Question::CORRECT_TYPE[:MORE_CHOSE] %>
-                            <ul><% question.elements["questionattrs"].text.split(";-;").each do |attr| %><li><input name="" type="checkbox" disabled="true" value="" <% if answer && answer.split(";|;") && answer.split(";|;").include?(attr) %>checked="true"<% end %> /> <%= attr %> </li><% end if question.elements["questionattrs"]&&question.elements["questionattrs"]!="" %></ul>
+                            <ul><% question.elements["questionattrs"].text.split(";-;").each do |attr| %><li><input name="" type="radio" disabled="true" value="" <% if answer && answer.split(";|;") && answer.split(";|;").include?(attr) %>checked="true"<% end %> /> <%= attr %> </li><% end if question.elements["questionattrs"]&&question.elements["questionattrs"]!="" %></ul>
                           <% elsif correct_type == Question::CORRECT_TYPE[:JUDGE] %>
                             <ul><li><input name="" type="radio" value="" disabled="true" <% if answer=="1" %>checked="true"<% end %> /> 是/对</li><li><input name="" type="radio" disabled="true" value="" <% if answer=="0" %>checked="true"<% end %> /> 否/错</li></ul>
                           <% end #小题分类显示结束 %>
@@ -303,7 +303,7 @@
           <% end # 添加题目 表单 END%>
         </div>
         <div id="append_create_problem_single_attr_<%= block_index %>" style="display:none;"><li><input name="radio_0_block_<%= block_index %>" class="radio_0_block_<%= block_index %>" type="radio" value=""  /> <input name="text_0_block_<%= block_index %>" class="text_0_block_<%= block_index %>" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li></div>
-        <div id="append_create_problem_multi_attr_<%= block_index %>" style="display:none;"><li><input name="checkbox_1_block_<%= block_index %>" class="checkbox_1_block_<%= block_index %>" type="checkbox" value="" /> <input name="text_1_block_<%= block_index %>" class="text_1_block_<%= block_index %>" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li></div>
+        <div id="append_create_problem_multi_attr_<%= block_index %>" style="display:none;"><li><input name="radio_1_block_<%= block_index %>" class="radio_1_block_<%= block_index %>" type="radio" value="" /> <input name="text_1_block_<%= block_index %>" class="text_1_block_<%= block_index %>" type="text" value="" /><a href="javascript:void(0);" onclick="javascript:remove_attr($(this));">[删除]</a></li></div>
       </div>
     <% end #blocks循环结束 %>
     <div class="clear"></div>
