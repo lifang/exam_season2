@@ -21,7 +21,6 @@ class Paper < ActiveRecord::Base
     sql += " and (status = #{CHECKED[:NO]} or status is null) " if checked==CHECKED[:NO]
     sql += " and status = #{CHECKED[:YES]}" if checked==CHECKED[:YES]
     sql += " order by created_at desc"
-    puts "#{sql}"
     return Paper.paginate_by_sql(sql, :per_page =>per_page, :page => page)
   end
 
