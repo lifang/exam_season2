@@ -267,7 +267,7 @@ class PapersController < ApplicationController
     begin
       @paper = Paper.find(params[:id])
       paper_doc = @paper.open_file
-      @paper.write_file(@paper.create_paper_answer_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "anwerjs")
+      @paper.write_file(@paper.create_paper_answer_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "answerjs")
       @paper.create_paper_url(@paper.create_paper_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "paperjs")
       @paper.update_attributes(:status=>Paper::CHECKED[:YES])
       message = "试卷审核成功"
