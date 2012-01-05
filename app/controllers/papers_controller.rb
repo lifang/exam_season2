@@ -49,12 +49,14 @@ class PapersController < ApplicationController
     doc = get_doc(url)
     if block_xpath != ""
       block = doc.elements[block_xpath]
+      block_id = doc.get_elements('/paper/blocks//block').index(block)
       manage_element(block, {"base_info/title"=>block_name, "base_info/description"=>block_description},
-        {"time"=>block_time, "start_time"=>block_start_time})
+        {"id"=>block_id,"time"=>block_time, "start_time"=>block_start_time})
     else
       block = doc.elements["blocks"].add_element("block")
+      block_id = doc.get_elements('/paper/blocks//block').index(block)
       manage_element(block, {"base_info/title"=>block_name, "base_info/description"=>block_description, "problems"=>""},
-        {"total_score"=>"0", "total_num"=>"0", "time"=>block_time, "start_time"=>block_start_time})
+        {"id"=>block_id,"total_score"=>"0", "total_num"=>"0", "time"=>block_time, "start_time"=>block_start_time})
     end
     write_xml(doc, url)
     redirect_to request.referer
