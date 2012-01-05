@@ -221,7 +221,7 @@ span.mk_span_w { color: #000;}
 
 .qc_h { height: 32px; line-height: 32px; padding-left: 20px;}
 .qc_textarea1 { width: 380px; height: 200px; margin-left: 11px; padding: 5px;}
-.qc_textarea2 { width: 380px; height: 370px; margin-left: 11px; padding: 5px;}
+.qc_textarea2 { width: 380px; height: 270px; margin-left: 11px; padding: 5px;}
 
 .qu_con_explain { width: 380px; height: 150px; padding: 5px; border: 1px #CCC solid; margin-left: 11px; line-height: 24px; overflow: auto;}
 .qu_con_content { width: 380px; height: 320px; padding: 5px; border: 1px #CCC solid; margin-left: 11px; line-height: 24px; overflow: auto;}
