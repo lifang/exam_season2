@@ -44,6 +44,7 @@ class PapersController < ApplicationController
     block_xpath, block_name, block_description, block_time =
       params["block_xpath"], params["block_name"], params["block_description"], params["time"]
     block_start_time = change_start_time(params["start_time"])
+    block_time = (block_time=="0") ? "" : block_time
     paper = Paper.find(params[:id].to_i)
     paper.update_attribute("status",Paper::CHECKED[:NO])
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
@@ -317,9 +318,13 @@ class PapersController < ApplicationController
   end
 
   def change_start_time(time)
-    t = time.to_i
-    result="#{t/60}:#{t%60}"
-    return result
+    if time=="0"
+      return ""
+    else
+      t = time.to_i
+      result="#{t/60}:#{t%60}"
+      return result
+    end
   end
 
   # --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------
