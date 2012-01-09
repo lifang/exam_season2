@@ -41,8 +41,9 @@ class PapersController < ApplicationController
 
   #[post][member] 模块表单
   def post_block
-    block_xpath, block_name, block_description, block_time, block_start_time =
-      params["block_xpath"], params["block_name"], params["block_description"], params["time"], params["start_time"]
+    block_xpath, block_name, block_description, block_time =
+      params["block_xpath"], params["block_name"], params["block_description"], params["time"]
+    block_start_time = change_start_time(params["start_time"])
     paper = Paper.find(params[:id].to_i)
     paper.update_attribute("status",Paper::CHECKED[:NO])
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
@@ -115,7 +116,6 @@ class PapersController < ApplicationController
         render :json=>data
       }
     end
-
   end
 
   # [post][member][ajax] 编辑题目标题
@@ -314,6 +314,12 @@ class PapersController < ApplicationController
         render :json=>data
       }
     end
+  end
+
+  def change_start_time(time)
+    t = time.to_i
+    result="#{t/60}:#{t%60}"
+    return result
   end
 
   # --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------
