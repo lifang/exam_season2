@@ -267,22 +267,21 @@ class PapersController < ApplicationController
 
   #审核 创建试卷的js文件
   def examine
-    #    begin
+    begin
     @paper = Paper.find(params[:id])
     paper_doc = @paper.open_file
-
+    #生成答案解析文件
+    @paper.write_file(@paper.create_paper_answer_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "answerjs")
     #更新试卷总题数和试卷总分，以及各模块总题数和模块总分
     url = "#{Constant::PUBLIC_PATH}#{@paper.paper_url}"
     paper_doc = calculate_doc(paper_doc,url)
     #生成考卷文件
     @paper.create_paper_url(@paper.create_paper_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "paperjs")
-    #生成答案解析文件
-    @paper.write_file(@paper.create_paper_answer_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "answerjs")
     @paper.update_attributes(:status=>Paper::CHECKED[:YES])
     message = "试卷审核成功"
-    #    rescue
-    #      message = "试卷打开不成功，请检查试卷"
-    #    end
+    rescue
+      message = "试卷打开不成功，请检查试卷"
+    end
     respond_to do |format|
       format.json {
         data={:message => message}
