@@ -93,8 +93,8 @@ class ExaminationTagRelation < ActiveRecord::Base
           last_document.root.elements["blocks"].add_element(block)
           paper.create_paper_url(last_document.to_s, path, "xml", "special_paper")
           paper_doc = paper.open_file
-          paper.create_paper_url(paper.create_paper_js(paper_doc), path, "js", "special_paperjs")
           paper.write_file(paper.create_paper_answer_js(paper_doc), path, "js", "special_anwerjs")
+          paper.create_paper_url(paper.create_paper_js(paper_doc), path, "js", "special_paperjs")
         end
       end
     end unless doc.nil?

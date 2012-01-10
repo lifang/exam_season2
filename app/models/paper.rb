@@ -21,7 +21,6 @@ class Paper < ActiveRecord::Base
     sql += " and (status = #{CHECKED[:NO]} or status is null) " if checked==CHECKED[:NO]
     sql += " and status = #{CHECKED[:YES]}" if checked==CHECKED[:YES]
     sql += " order by created_at desc"
-    puts "#{sql}"
     return Paper.paginate_by_sql(sql, :per_page =>per_page, :page => page)
   end
 
@@ -114,9 +113,10 @@ class Paper < ActiveRecord::Base
   #生成试卷的答案
   def create_paper_answer_js(doc)
     paper_element = doc.root.clone
-    paper_element.add_element("questions")
+    new_problems = paper_element.add_element("problems")
     doc.root.elements["blocks"].each_element do |block|
       block.elements["problems"].each_element do |problem|
+        new_problem = new_problems.add_element("problem")
         problem.elements["questions"].each_element do |question|
           unless question.nil?
             q_element = question.clone
@@ -126,7 +126,7 @@ class Paper < ActiveRecord::Base
             analysis = Element.new("analysis")
             analysis.text = question.elements["analysis"].text if question.elements["analysis"]
             q_element.add_element(analysis)
-            paper_element.elements["questions"].add_element(q_element)
+            new_problem.add_element(q_element)
           end
         end unless problem.elements["questions"].nil?
       end unless block.elements["problems"].nil?

@@ -81,30 +81,61 @@ function check_edit() {
     return $("#post_question_loader>#post_question_div").length == 0;
 }
 
+
 //停止事件冒泡
 function stop_bunble() {
-    if (event.stopPropagation) {
-        event.stopPropagation();
-    } else
-    if (window.event) {
-        window.event.cancelBubble = true;
+    $(function() {  
+        var e = getEvent();
+        if (window.event) {
+            //e.returnValue=false;
+            e.cancelBubble=true;
+        }else{
+            //e.preventDefault();
+            e.stopPropagation();
+        }
     }
-;
+    );
 }
 
+//在火狐和Ie下取event事件
+function getEvent(){
+    if(window.event)    {
+        return window.event;
+    }
+    func=getEvent.caller;
+    while(func!=null){
+        var arg0=func.arguments[0];
+        if(arg0){
+            if((arg0.constructor==Event || arg0.constructor ==MouseEvent
+                || arg0.constructor==KeyboardEvent)
+            ||(typeof(arg0)=="object" && arg0.preventDefault
+                && arg0.stopPropagation)){
+                return arg0;
+            }
+        }
+        func=func.caller;
+    }
+    return null;
+}
 
 //载入编辑模块div
 function load_edit_block(block_xpath, block_name, block_description, block_start_time, block_time) {
+    block_name=unescape(block_name);
     $("#block_xpath").val(block_xpath);
     $("#block_name").val(block_name);
     $("#block_description").val(block_description);
-    if (block_start_time != "0" && block_start_time != "") {
-        $("#block_start_time_radio2").attr("checked", "true").val(block_start_time);
-        $("#block_start_time").removeAttr("disabled").val(block_start_time);
+    if (block_start_time != "0:0" && block_start_time != "") {
+        var block_start_time_arr=block_start_time.split(":");
+        var result_start_time=0;
+        result_start_time+=parseInt(block_start_time_arr[0])*60;
+        result_start_time+=parseInt(block_start_time_arr[1]);
+        $("#block_start_time_radio2").attr("checked", "true").val(result_start_time);
+        $("#block_start_time").removeAttr("disabled").val(result_start_time);
     } else {
         $("#block_start_time_radio1").attr("checked", "true").val('0');
         $("#block_start_time").attr("disabled", "disabled").val('0');
     }
+
     if (block_time != "0" && block_time != "") {
         $("#block_time_radio2").attr("checked", "true").val(block_time);
         $("#block_time").removeAttr("disabled").val(block_time);
@@ -780,13 +811,14 @@ function insert_words(origin_words_input,target_words_input,display){
 
 
 //请求网上单词
-function download_word(word) {
+function download_word(word, category_id) {
     $.ajax({
         type: "POST",
         url: "/words/download_word.html",
         dataType: "html",
         data : {
-            word : word
+            word : word,
+            category_id : category_id
         },
         beforeSend: function() {
             $(".web_load").html($("#ajax_loader").html());
@@ -851,6 +883,11 @@ function show_single_word(web_word){
     $(".single_word_li").removeClass("hover");
     $("#web_word").val(web_word);
     $("#xs_add_div").show();
+    if($("#web_word").val() == "0"){
+        $("#select_word").css("display", "none");
+    } else {
+        $("#select_word").css("display", "");
+    }
 }
 
 //载入富文本编辑框,编辑时用，新建题目时使用load_create_kindeditor
