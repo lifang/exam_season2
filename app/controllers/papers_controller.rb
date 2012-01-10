@@ -41,8 +41,10 @@ class PapersController < ApplicationController
 
   #[post][member] 模块表单
   def post_block
-    block_xpath, block_name, block_description, block_time, block_start_time =
-      params["block_xpath"], params["block_name"], params["block_description"], params["time"], params["start_time"]
+    block_xpath, block_name, block_description, block_time =
+      params["block_xpath"], params["block_name"], params["block_description"], params["time"]
+    block_start_time = change_start_time(params["start_time"])
+    block_time = (block_time=="0") ? "" : block_time
     paper = Paper.find(params[:id].to_i)
     paper.update_attribute("status",Paper::CHECKED[:NO])
     url="#{Constant::PAPER_XML_PATH}#{paper.paper_url}"
@@ -86,7 +88,7 @@ class PapersController < ApplicationController
     problem_element = doc.elements[@post[:problems_xpath]].add_element("problem")
     manage_element(problem_element, {:description=>@post[:problem_description], :title=>@post[:problem_title], :category=>@post[:category], :questions=>""}, {:id=>@problem.id, :question_type=>@post[:question_type]})
     question_element = problem_element.elements["questions"].add_element("question")
-    manage_element(question_element, {:description=>@post[:question_description], :answer=>@post[:question_answer], :questionattrs=>@post[:question_attrs], :tags=>@post[:question_tags], :words=>@post[:question_words], :analysis=>@post[:question_analysis]}, {:id=>@question.id, :score=>@post[:question_score], :correct_type=>@post[:correct_type], :flag=>@post[:question_flag]})
+    manage_element(question_element, {:description=>@post[:question_description], :answer=>@post[:question_answer], :questionattrs=>@post[:question_attrs], :tags=>@post[:question_tags], :words=>@post[:question_words], :analysis=>@post[:question_analysis]}, {:id=>@question.id, :score=>@post[:question_score].to_f, :correct_type=>@post[:correct_type], :flag=>@post[:question_flag]})
     write_xml(doc, url)
     redirect_to "/papers/#{params[:id]}/edit?category=#{@post[:category]}"
   end
@@ -115,7 +117,6 @@ class PapersController < ApplicationController
         render :json=>data
       }
     end
-
   end
 
   # [post][member][ajax] 编辑题目标题
@@ -160,7 +161,7 @@ class PapersController < ApplicationController
       @question=Question.find(doc.elements[question_xpath].attributes["id"])
       @question.update_attributes(:description=>@post[:question_description], :answer=>@post[:question_answer], :question_attrs=>@post[:question_attrs], :analysis=>@post[:question_analysis])
       question_element = doc.elements[question_xpath]
-      manage_element(question_element, {:description=>@post[:question_description], :answer=>@post[:question_answer], :questionattrs=>@post[:question_attrs], :tags=>@post[:question_tags], :words=>@post[:question_words], :analysis=>@post[:question_analysis]}, {:score=>@post[:question_score], :flag=>@post[:question_flag]})
+      manage_element(question_element, {:description=>@post[:question_description], :answer=>@post[:question_answer], :questionattrs=>@post[:question_attrs], :tags=>@post[:question_tags], :words=>@post[:question_words], :analysis=>@post[:question_analysis]}, {:score=>@post[:question_score].to_f, :flag=>@post[:question_flag]})
       write_xml(doc, url)
     end
 
@@ -267,12 +268,17 @@ class PapersController < ApplicationController
   #审核 创建试卷的js文件
   def examine
     begin
-      @paper = Paper.find(params[:id])
-      paper_doc = @paper.open_file
-      @paper.write_file(@paper.create_paper_answer_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "answerjs")
-      @paper.create_paper_url(@paper.create_paper_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "paperjs")
-      @paper.update_attributes(:status=>Paper::CHECKED[:YES])
-      message = "试卷审核成功"
+    @paper = Paper.find(params[:id])
+    paper_doc = @paper.open_file
+    #生成答案解析文件
+    @paper.write_file(@paper.create_paper_answer_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "answerjs")
+    #更新试卷总题数和试卷总分，以及各模块总题数和模块总分
+    url = "#{Constant::PUBLIC_PATH}#{@paper.paper_url}"
+    paper_doc = calculate_doc(paper_doc,url)
+    #生成考卷文件
+    @paper.create_paper_url(@paper.create_paper_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "paperjs")
+    @paper.update_attributes(:status=>Paper::CHECKED[:YES])
+    message = "试卷审核成功"
     rescue
       message = "试卷打开不成功，请检查试卷"
     end
@@ -314,6 +320,41 @@ class PapersController < ApplicationController
         render :json=>data
       }
     end
+  end
+
+  def change_start_time(time)
+    if time=="0"
+      return ""
+    else
+      t = time.to_i
+      result="#{t/60}:#{t%60}"
+      return result
+    end
+  end
+
+  #计算试卷的总分和总题数，以及各部分的总分和总题数
+  def calculate_doc(doc,url)
+    p_q_arr = doc.get_elements("/paper/blocks//block/problems//problem/questions//question")
+    paper_num = p_q_arr.length
+    paper_score = p_q_arr.map{|ele|"#{ele.attributes["score"]}".to_f}.inject(:+)
+    manage_element(doc.root,{},{:total_num=>paper_num,:total_score=>paper_score})
+    puts "paper ---- total_num : #{paper_num}"
+    puts "paper ---- total_score : #{paper_score}"
+    puts ""
+    blocks = doc.get_elements("/paper/blocks//block")
+    block_index=1
+    blocks.each do |block|
+      b_q_arr = doc.get_elements("/paper/blocks/block[#{block_index}]/problems//problem/questions//question")
+      block_num = b_q_arr.length
+      block_score = b_q_arr.map{|ele|"#{ele.attributes["score"]}".to_f}.inject(:+)
+      manage_element(block,{},{:total_num=>block_num,:total_score=>block_score})
+      block_index += 1
+      puts "block#{block_index} ---- total_num : #{block_num}"
+      puts "block#{block_index} ---- total_score : #{block_score}"
+      puts ""
+    end
+    write_xml(doc, url)
+    return doc
   end
 
   # --------- START -------XML文件操作--------require 'rexml/document'----------include REXML----------

@@ -81,32 +81,61 @@ function check_edit() {
     return $("#post_question_loader>#post_question_div").length == 0;
 }
 
+
 //停止事件冒泡
 function stop_bunble() {
-    if (event.stopPropagation) {
-        event.stopPropagation();
-    } else
-    if (window.event) {
-        window.event.cancelBubble = true;
+    $(function() {  
+        var e = getEvent();
+        if (window.event) {
+            //e.returnValue=false;
+            e.cancelBubble=true;
+        }else{
+            //e.preventDefault();
+            e.stopPropagation();
+        }
     }
-;
+    );
 }
 
+//在火狐和Ie下取event事件
+function getEvent(){
+    if(window.event)    {
+        return window.event;
+    }
+    func=getEvent.caller;
+    while(func!=null){
+        var arg0=func.arguments[0];
+        if(arg0){
+            if((arg0.constructor==Event || arg0.constructor ==MouseEvent
+                || arg0.constructor==KeyboardEvent)
+            ||(typeof(arg0)=="object" && arg0.preventDefault
+                && arg0.stopPropagation)){
+                return arg0;
+            }
+        }
+        func=func.caller;
+    }
+    return null;
+}
 
 //载入编辑模块div
 function load_edit_block(block_xpath, block_name, block_description, block_start_time, block_time) {
     block_name=unescape(block_name);
-    block_description=unescape(block_description);
     $("#block_xpath").val(block_xpath);
     $("#block_name").val(block_name);
     $("#block_description").val(block_description);
-    if (block_start_time != "0" && block_start_time != "") {
-        $("#block_start_time_radio2").attr("checked", "true").val(block_start_time);
-        $("#block_start_time").removeAttr("disabled").val(block_start_time);
+    if (block_start_time != "0:0" && block_start_time != "") {
+        var block_start_time_arr=block_start_time.split(":");
+        var result_start_time=0;
+        result_start_time+=parseInt(block_start_time_arr[0])*60;
+        result_start_time+=parseInt(block_start_time_arr[1]);
+        $("#block_start_time_radio2").attr("checked", "true").val(result_start_time);
+        $("#block_start_time").removeAttr("disabled").val(result_start_time);
     } else {
         $("#block_start_time_radio1").attr("checked", "true").val('0');
         $("#block_start_time").attr("disabled", "disabled").val('0');
     }
+
     if (block_time != "0" && block_time != "") {
         $("#block_time_radio2").attr("checked", "true").val(block_time);
         $("#block_time").removeAttr("disabled").val(block_time);
