@@ -1,12 +1,12 @@
 <% word = single_word %>
 <input id="web_word" value="" type="hidden" />
-<input type="hidden" id="single_word_enunciate_url" value="<%= word.enunciate_url %>"/>
+<input type="hidden" id="single_word_enunciate_url_<%= word.id %>" value="<%= word.enunciate_url %>"/>
 <input type="hidden" id="single_word_id" value="<%= word.id %>"/>
 <h2 id="single_word_name" class="single_word_element"><%= word.name %></h2>
 <span id="single_word_types" class="single_word_element"><%= Word::TYPES[word.types.nil? ? 0 : word.types] %></span>
 <span id="single_word_phonetic" class="single_word_element"><%= word.phonetic %></span>
 <a href="javascript:void(0);">
-  <img src="/assets/icon_lb.png" onclick="javascript:$(function(){alert($('#single_word_enunciate_url').val())});" />
+  <img src="/assets/icon_lb.png" onclick="javascript:$(function(){jplayer_play($('#single_word_enunciate_url_<%= word.id %>').val())});" />
 </a>
 <div id="single_word_en_mean" class="size_16 single_word_element"><%= word.en_mean %></div>
 <div id="single_word_ch_mean" class="single_word_element"><%= word.ch_mean %></div>

@@ -13,7 +13,6 @@ class UserMailer < ActionMailer::Base
     @rater=exam_rater
     @examination=examination
     @url  = Constant::SERVER_PATH
-    mail(:to => @rater.email, :subject => "赶考网阅卷老师确认")
-    
+    mail(:to => @rater.email, :subject => "赶考网阅卷老师阅卷信息")
   end
 end
