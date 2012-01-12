@@ -16,8 +16,6 @@ namespace :paper do
     dir = Constant::FRONT_PUBLIC_PATH
     paper_dir = "#{Rails.root}/public"
     exam_users.each do |exam_user|
-      #if exam_user.is_should_rate == 0 or
-      #    (exam_user.is_should_rate == 1 and !exam_user.is_authed.nil? and exam_user.is_authed != 0)
       puts exam_user.is_should_rate
       p_file = File.open(paper_dir + exam_user.paper_url)
       a_file = File.open(dir + exam_user.answer_sheet_url)
@@ -36,7 +34,6 @@ namespace :paper do
       puts exam_user.id.to_s + " rate success"
       Collection.auto_add_collection(answer_xml, paper_xml, exam_user.user_id)
       puts exam_user.id.to_s + " collection success"
-      #end
     end unless exam_users.blank?
     #统计排名
     exam_user_count = ExamUser.find_by_sql("select count(e.id) user_count, e.examination_id examination_id

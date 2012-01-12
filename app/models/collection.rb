@@ -81,7 +81,7 @@ class Collection < ActiveRecord::Base
     problem = collection_doc.elements["collection"].elements["problems"].elements["problem[@id='#{problem_id}']"]
     return problem
   end
-  
+
   #当前题点是否已经收藏到错题集
   def question_in_collection(problem, question_id)
     question = problem.elements["questions"].elements["question[@id='#{question_id}']"]
@@ -101,9 +101,8 @@ class Collection < ActiveRecord::Base
     end
     que.add_element("user_answer").add_text("#{answer_text}")
     return collection_xml
-    #    self.generate_collection_url(collection_xml.to_s, Constant::FRONT_PUBLIC_PATH, self.collection_url)
   end
-  
+
   #如果当前题目有题点已经收藏过，就只收藏题点
   def add_question(question, answer_text, collection_problem, collection_xml)
     question.add_element("user_answer").add_text("#{answer_text}")
@@ -112,7 +111,6 @@ class Collection < ActiveRecord::Base
     questions = collection_xml.elements["#{collection_problem.xpath}/questions"]
     questions.elements.add(question)
     return collection_xml
-    #    self.generate_collection_url(collection_xml.to_s, Constant::FRONT_PUBLIC_PATH, self.collection_url)
   end
 
   #如果当前题目没有做过笔记，则将题目加入到笔记
@@ -130,7 +128,6 @@ class Collection < ActiveRecord::Base
     last_question.add_attribute("error_percent", "0")
     collection_xml.elements["/collection/problems"].elements.add(paper_problem)
     return collection_xml
-    #    self.generate_collection_url(collection_xml.to_s, Constant::FRONT_PUBLIC_PATH, self.collection_url)
   end
 
   #根据问题的路径取出block中的音频文件
@@ -160,7 +157,7 @@ class Collection < ActiveRecord::Base
     file = File.open(Constant::FRONT_PUBLIC_PATH + collection.collection_url)
     last_problems = file.readlines.join
     unless last_problems == ""
-      already_hash = ActiveSupport::JSON.decode((JSON(last_problems.gsub("collections = ", ""))).to_json)
+      already_hash = JSON(last_problems.gsub("collections = ", ""))#ActiveSupport::JSON.decode(().to_json)
     end
     file.close
 
@@ -193,14 +190,20 @@ class Collection < ActiveRecord::Base
       end
     end
     problem_arr = (Hash.from_xml(collection_xml.to_s))["collection"]["problems"]["problem"]
-    unless already_hash.empty?
-      problem_arr.each do |problem|
+    problem_arr.each do |problem|
+      if already_hash["problems"]["problem"].class.to_s == "Hash"
+        if (already_hash["problems"]["problem"])["id"].to_i == problem["id"].to_i
+          already_hash["problems"]["problem"] = [problem]
+        else
+          already_hash["problems"]["problem"] = [already_hash["problems"]["problem"], problem]
+        end
+      else
         unless already_hash["problems"]["problem"].include?(problem)
           already_hash["problems"]["problem"] << problem
         end
       end
-    end
-    puts already_hash["problems"]["problem"].length
+    end unless problem_arr.nil? or problem_arr.blank?
+    
     collection_js = "collections = " + already_hash.to_json.to_s
     path_url = collection.collection_url.split("/")
     collection.generate_collection_url(collection_js, "/" + path_url[1] + "/" + path_url[2], collection.collection_url)
