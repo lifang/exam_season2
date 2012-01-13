@@ -152,11 +152,11 @@ class Collection < ActiveRecord::Base
     path = COLLECTION_PATH + "/" + Time.now.to_date.to_s
     url = path + "/#{collection.id}.js"
     collection.set_collection_url(path, url)
-    already_hash = {}
+    already_hash = {"problems" => {"problem" => []}}
     last_problems = ""
     file = File.open(Constant::FRONT_PUBLIC_PATH + collection.collection_url)
     last_problems = file.readlines.join
-    unless last_problems == ""
+    unless last_problems.nil? or last_problems.strip == ""
       already_hash = JSON(last_problems.gsub("collections = ", ""))#ActiveSupport::JSON.decode(().to_json)
     end
     file.close

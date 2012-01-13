@@ -95,7 +95,7 @@ class ExamUser < ActiveRecord::Base
   #自动批卷完成
   def set_auto_rater(total_score=nil)
     self.total_score = total_score
-#    self.toggle!(:is_auto_rate)
+    self.toggle!(:is_auto_rate)
     self.save
   end
 
