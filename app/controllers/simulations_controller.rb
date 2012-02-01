@@ -73,10 +73,13 @@ class SimulationsController < ApplicationController
   def create
     unless params[:title].empty? or params[:paper_id].empty?
       papers = Paper.find(params[:paper_id].split(","))
+      status = Examination::STATUS[:EXAMING]
+      status = Examination::STATUS[:LOCK] if params[:from_date].to_date>Time.now.to_date
+      status = Examination::STATUS[:CLOSED] if params[:end_date].to_date<Time.now.to_date
       options={
         :title => params[:title].strip, :creater_id => cookies[:user_id].to_i,
         :is_published => Examination::IS_PUBLISHED[:ALREADY], :category_id => params[:category_id],
-        :types => Examination::TYPES[:SIMULATION],:start_end_time=>params[:end_date],
+        :types => Examination::TYPES[:SIMULATION],:start_end_time=>params[:end_date],:status=>status,
         :start_at_time=>params[:from_date]
       }
       is_free=Examination::IS_FREE[:YES]
@@ -106,10 +109,13 @@ class SimulationsController < ApplicationController
   def update_rater
     unless params[:title].empty? or params[:paper_id].empty?
       papers = Paper.find(params[:paper_id].split(","))
+      status = Examination::STATUS[:EXAMING]
+      status = Examination::STATUS[:LOCK] if params[:from_date].to_date>Time.now.to_date
+      status = Examination::STATUS[:CLOSED] if params[:end_date].to_date<Time.now.to_date
       options={
         :title => params[:title].strip, :creater_id => cookies[:user_id].to_i, :category_id => params[:category_id],
         :types => Examination::TYPES[:SIMULATION],:start_end_time=>params[:end_date],
-        :start_at_time=>params[:from_date]
+        :start_at_time=>params[:from_date],:status=>status
       }
       is_free = Examination::IS_FREE[:YES]
       price = nil

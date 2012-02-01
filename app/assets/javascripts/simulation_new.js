@@ -29,6 +29,7 @@ $(function(){
         }
         if (checkspace($("#paper_id").attr("value"))) {
             tishi_alert("请选择作为本场考试的试卷。");
+            return false;
         }
         if($(".bj_sfei :checked").val()== undefined){
             tishi_alert("请选择收费方式");
