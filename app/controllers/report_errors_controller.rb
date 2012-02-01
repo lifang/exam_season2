@@ -38,7 +38,7 @@ class ReportErrorsController < ApplicationController
     end
     begin
       others=ReportError.count(:id,:conditions=>"question_id=#{error.question_id}")
-      sql="select re.id,re.question_id,re.description r_desc,re.paper_id,pe.paper_url,u.name from
+      sql="select re.id,re.question_id,re.description r_desc,pe.id paper_id,pe.paper_url,u.name from
        report_errors re inner join users u on u.id=re.user_id  inner join papers pe on pe.id=re.paper_id  where re.id=#{error.id}"
       single_error=ReportError.find_by_sql(sql)
       url=Constant::PUBLIC_PATH+single_error[0].paper_url

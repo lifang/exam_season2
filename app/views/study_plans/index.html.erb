@@ -31,13 +31,13 @@
 
 <div class="add_renwu" style="display:none">
   <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('.add_renwu').css('display','none');" /></span>
-  <div>周期： <input name="period" type="radio" value="0" />每天 <input name="period" type="radio" value="1" />整个期间</div>
+  <div>周期： <input name="period" type="radio" value="<%= PlanTask::PERIOD_TYPES[:EVERYDAY] %>" />每天 <input name="period" type="radio" value="<%= PlanTask::PERIOD_TYPES[:PERIOD] %>" />整个期间</div>
   <div>任务：
     <select name="">
       <option value="-1">任务类型</option>
-      <option value="0">做题</option>
-      <option value="1">背词</option>
-      <option value="2">模拟考试</option>
+      <option value="<%= PlanTask::TASK_TYPES[:PRACTICE] %>">做题</option>
+      <option value="<%= PlanTask::TASK_TYPES[:RECITE] %>">背词</option>
+      <option value="<%= PlanTask::TASK_TYPES[:EXAM] %>">模拟考试</option>
     </select>
   </div>
   <div>数量：<input id="amount" type="text" /></div>

@@ -35,7 +35,7 @@ class StudyPlansController < ApplicationController
     unless params[:info]==""||params[:info].nil?
       infos=params[:info].split(",")
       (0..infos.size/3-1).each do |index|
-        PlanTask.create(:study_plan_id=>study.id,:task_types=>infos[index*3+0].to_i,:period_types=>infos[index*3+1].to_i,:num=>infos[index*3+2].to_i)
+        PlanTask.create(:study_plan_id=>study.id,:task_types=>infos[index*3+1].to_i,:period_types=>infos[index*3+0].to_i,:num=>infos[index*3+2].to_i)
       end
     end
     delete_ids=params[:delete_task_ids].split(",")
