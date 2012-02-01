@@ -260,7 +260,7 @@ function create_problem_single_choose(block_index) {
     $(".question_attrs_block_" + block_index).val(attrs.join(";-;"));
 }
 
-//多选题 整理组织单选题选项和答案
+//多选题 整理组织多选题选项和答案
 function create_problem_multi_choose(block_index) {
     var answer_arr = [];
     $(".checkbox_1_block_" + block_index).each(function() {

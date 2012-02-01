@@ -7,7 +7,7 @@
 <div class="text_box">
   <div class="bianji_ny">
     <%= form_for :exam_info ,:url=>"/simulations",:html=>{:id=>"exam_info"} do %>
-
+    
       <div>名称 <input name="title" type="text" id="title" /></div>
       <div>日期 <input name="from_date"  id="from_date" readonly type="text" onClick="WdatePicker();" class="Wdate" /> 至
         <input name="end_date" id="end_date" type="text" readonly onClick="WdatePicker();" class="Wdate" /></div>
@@ -21,7 +21,7 @@
       <input type="hidden" name="category_id" id="category_id" value="<%= params[:category] %>" />
       <input type="hidden" name="paper_id" id="paper_id" value="" />
     <% end %>
-    <div><button class="t_btn">创建</button></div>
+      <div><button class="t_btn">创建</button></div>
   </div>
 </div>
 <%= render :partial => "/common/add_expaper" %>

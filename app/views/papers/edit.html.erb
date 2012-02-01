@@ -43,12 +43,13 @@
         <% count1=0;  @xml.elements['blocks'].each_element do |block| count1+=1 %>
           <li id="blocks_li" class="blocks_li" ondblclick="javascript:destroy_block(<%= params[:id] %>,<%= count1 %>);">
             <a href="javascript:void(0);"><%= block.elements['base_info/title'].text if block.elements['base_info/title']%></a>
+            <input type="hidden" value="<%= block.elements['base_info/title'].text if block.elements['base_info/title'] %>" id="block_title_<%= count1 %>" />
             <input type="hidden" value="<%= block.elements['base_info/description'].text if block.elements['base_info/description'] %>" id="block_description_<%= count1 %>" />
-            <span onclick="javascript:stop_bunble();if(!notice_edit()){return false};load_edit_block('<%= block.xpath %>',escape('<%= block.elements['base_info/title'].text if block.elements['base_info/title'] %>'),$('#block_description_<%= count1 %>').val(),'<%= block.attributes['start_time'] if block.attributes['start_time'] %>','<%= block.attributes['time'] if block.attributes['time'] %>');" ><img title="编辑" alt="icon_bi" src="/assets/icon_bi.png" /></span>
+            <span onclick="javascript:stop_bunble();if(!notice_edit()){return false};load_edit_block('<%= block.xpath %>',$('#block_title_<%= count1 %>').val(),$('#block_description_<%= count1 %>').val(),'<%= block.attributes['start_time'] if block.attributes['start_time'] %>','<%= block.attributes['time'] if block.attributes['time'] %>');" ><img title="编辑" alt="icon_bi" src="/assets/icon_bi.png" /></span>
           </li>
         <% end %>
       </ul>
-      <a href="#" class="add_a" onclick="javascript:if(!notice_edit()){return false};load_edit_block('','','','0','0');">添加部分</a>
+      <a href="#" class="add_a" onclick="javascript:if(!notice_edit()){return false};load_edit_block('','','','0:0','0');">添加部分</a>
     </div>
     <script type="text/javascript" >
       // 控制"block"模块的显示/隐藏
@@ -116,7 +117,7 @@
               </div>
               <div id="show_problem_description_<%= block_index %>_<%= problem_index %>" class="qu_con_explain" onselectstart="return false;" ondblclick="javascript:$('#edit_problem_description_<%= block_index %>_<%= problem_index %>').show();$(this).hide();$('#edit_problem_description_textarea_<%= block_index %>_<%= problem_index %>').val($(this).text()).focus();"><%= problem.elements["description"].text if problem.elements["description"] %></div>
               <div class="qc_h"><span class="yl_bc"></span>题目内容</div>
-              <div id="show_problem_title_<%= block_index %>_<%= problem_index %>" class="qu_con_content" onselectstart="return false;" ondblclick="javascript:load_edit_kindeditor('#show_problem_title_<%= block_index %>_<%= problem_index %>',<%= params[:id] %>,<%= block_index %>,<%= problem_index %>,<%= problem.elements["questions"].size if problem.elements["questions"] %>,<%= problem.attributes["question_type"] if problem.attributes["question_type"] %>);"><%= problem.elements["title"].text.html_safe if problem.elements["title"]&&problem.elements["title"].text %></div>
+              <div id="show_problem_title_<%= block_index %>_<%= problem_index %>" class="qu_con_content" onselectstart="return false;" ondblclick="javascript:load_edit_kindeditor('#show_problem_title_<%= block_index %>_<%= problem_index %>',<%= params[:id] %>,<%= block_index %>,<%= problem_index %>,<%= problem.get_elements("questions//question").length if problem.get_elements("questions//question") %>,<%= problem.attributes["question_type"] if problem.attributes["question_type"] %>);"><%= problem.elements["title"].text.html_safe if problem.elements["title"]&&problem.elements["title"].text %></div>
             </div>
 
             <div class="question_bianji">
