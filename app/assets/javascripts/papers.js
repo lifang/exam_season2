@@ -1003,6 +1003,7 @@ function jplayer_play(src){
     $("#jplayer_loader").jPlayer("setMedia", {
         mp3: src
     });
+    //alert($("#jplayer_loader").length);
     $("#jplayer_loader").jPlayer("play");
 }
 
