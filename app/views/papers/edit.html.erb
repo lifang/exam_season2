@@ -24,7 +24,7 @@
 <script type="text/javascript" >
   //初始化jplayer播放器
   $("#jplayer_loader").jPlayer({
-    swfPath: "/javascripts/jplayer",
+    swfPath: "/assets/jplayer",
     supplied: "mp3"
   });
 </script>
@@ -117,7 +117,7 @@
               </div>
               <div id="show_problem_description_<%= block_index %>_<%= problem_index %>" class="qu_con_explain" onselectstart="return false;" ondblclick="javascript:$('#edit_problem_description_<%= block_index %>_<%= problem_index %>').show();$(this).hide();$('#edit_problem_description_textarea_<%= block_index %>_<%= problem_index %>').val($(this).text()).focus();"><%= problem.elements["description"].text if problem.elements["description"] %></div>
               <div class="qc_h"><span class="yl_bc"></span>题目内容</div>
-              <div id="show_problem_title_<%= block_index %>_<%= problem_index %>" class="qu_con_content" onselectstart="return false;" ondblclick="javascript:load_edit_kindeditor('#show_problem_title_<%= block_index %>_<%= problem_index %>',<%= params[:id] %>,<%= block_index %>,<%= problem_index %>,<%= problem.get_elements("questions//question").length if problem.get_elements("questions//question") %>,<%= problem.attributes["question_type"] if problem.attributes["question_type"] %>);"><%= problem.elements["title"].text.html_safe if problem.elements["title"]&&problem.elements["title"].text %></div>
+              <div id="show_problem_title_<%= block_index %>_<%= problem_index %>" class="qu_con_content" onselectstart="return false;" ondblclick="javascript:load_edit_kindeditor('#show_problem_title_<%= block_index %>_<%= problem_index %>',<%= params[:id] %>,<%= block_index %>,<%= problem_index %>,<%= problem.get_elements("questions//question").length if problem.get_elements("questions//question") %>,<%= problem.attributes["question_type"].nil? ? "0" : problem.attributes["question_type"] %>);"><%= problem.elements["title"].text.html_safe if problem.elements["title"]&&problem.elements["title"].text %></div>
             </div>
 
             <div class="question_bianji">
@@ -225,7 +225,7 @@
                       <div class="clear"></div>
                       <div class="qa_h">分值: <span class="red" id="display_question_score"><%= question.attributes["score"] unless question.attributes["score"].nil? %></span></div>
                       <div class="qa_h">
-                        <button class="t_btn"  onclick="javascript:var q_ele='#show_q_l_answer_<%= block_index %>_<%= problem_index %>_<%= question_index %>';select_correct_type('#q_l_answer_',<%= problem.attributes["question_type"] %>,<%= block_index %>,<%= problem_index %>,<%= question_index %>,<%= correct_type %>,$(q_ele).find('#display_question_answer').text(),$(q_ele).find('#display_question_attrs').text(),$(q_ele).find('#display_question_description').text(),$(q_ele).find('#display_question_analysis').text(),$(q_ele).find('#display_question_score').text(),$(q_ele).find('#display_question_tags').text(),$(q_ele).find('#display_question_words').text(),$(q_ele).find('#display_question_flag').text(),$(q_ele).closest('.q_l_answer'));" >编辑</button>
+                        <button class="t_btn"  onclick="javascript:var q_ele='#show_q_l_answer_<%= block_index %>_<%= problem_index %>_<%= question_index %>';select_correct_type('#q_l_answer_',<%= problem.attributes["question_type"].nil? ? 0 : problem.attributes["question_type"] %>,<%= block_index %>,<%= problem_index %>,<%= question_index %>,<%= correct_type %>,$(q_ele).find('#display_question_answer').text(),$(q_ele).find('#display_question_attrs').text(),$(q_ele).find('#display_question_description').text(),$(q_ele).find('#display_question_analysis').text(),$(q_ele).find('#display_question_score').text(),$(q_ele).find('#display_question_tags').text(),$(q_ele).find('#display_question_words').text(),$(q_ele).find('#display_question_flag').text(),$(q_ele).closest('.q_l_answer'));" >编辑</button>
                       </div>
                     </div>
                     <div class="edit_question_form" id="q_l_answer_<%= block_index %>_<%= problem_index %>_<%= question_index %>"></div>
