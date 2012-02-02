@@ -116,6 +116,7 @@ class Collection < ActiveRecord::Base
   #如果当前题目没有做过笔记，则将题目加入到笔记
   def auto_add_problem(paper_xml, question_id, problem_path, answer_text, collection_xml)
     paper_problem = paper_xml.elements["#{problem_path}"]
+    paper_problem.add_attribute("paper_id", paper_xml.root.attributes["id"])
     paper_problem.elements["questions"].each_element do |question|
       if question.attributes["id"].to_i != question_id.to_i
         paper_xml.delete_element(question.xpath)

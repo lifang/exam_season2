@@ -98,7 +98,7 @@ $(document).ready(function(){
                 mp3:""+mp3_path
             });
         },
-        swfPath: "/assert/jplayer",
+        swfPath: "/assets/jplayer",
         supplied: "mp3",
         wmode: "window"
     });
