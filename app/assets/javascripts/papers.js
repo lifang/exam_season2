@@ -998,8 +998,6 @@ function jplayer_play(src){
     $("#jplayer_loader").jPlayer("setMedia", {
         mp3: src
     });
-    
-    alert(src);
     $("#jplayer_loader").jPlayer("play");
 }
 
