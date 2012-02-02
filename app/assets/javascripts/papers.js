@@ -837,11 +837,6 @@ function show_ready_word(jquery_ele, word_id) {
     jquery_ele.addClass("hover");
     $("#xs_add_div").show();
     $('#xs_add_div').html($('#show_word_'+word_id).html());
-    if ($("#web_word").val() == "0") {
-        $("#modify_word").css("display", "");
-    } else {
-        $("#modify_word").css("display", "none");
-    }
 }
 
 
@@ -1003,7 +998,8 @@ function jplayer_play(src){
     $("#jplayer_loader").jPlayer("setMedia", {
         mp3: src
     });
-    //alert($("#jplayer_loader").length);
+    
+    alert(src);
     $("#jplayer_loader").jPlayer("play");
 }
 
