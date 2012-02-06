@@ -30,7 +30,7 @@
             审核
           </button>
         <%# end %>
-        <button class="t_btn">预览</button>
+        <button class="t_btn" onclick="javascript:window.open('/papers/<%= paper.id %>/preview','_blank');">预览</button>
       </div>
       <h2><%= paper.title %></h2>
       <span id="paper_status_<%= paper.id %>"><%= paper.status? ? "已审核" : "未审核" %></span>

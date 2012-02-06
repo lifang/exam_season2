@@ -39,10 +39,15 @@ class Paper < ActiveRecord::Base
   def write_file(str, path, file_type, super_path)
     dir = "#{Rails.root}/public/#{super_path}"
     Dir.mkdir(dir) unless File.directory?(dir)
-    unless File.directory?(dir + "/" + path)
-      Dir.mkdir(dir + "/" + path)
+    if path!="preview"
+      unless File.directory?(dir + "/" + path)
+        Dir.mkdir(dir + "/" + path)
+      end
+      file_name = "/" + path + "/#{self.id}." + file_type
+    else
+      file_name = "/preview." + file_type
     end
-    file_name = "/" + path + "/#{self.id}." + file_type
+
     url = dir + file_name
     f=File.new(url,"w+")
     f.write("#{str.force_encoding('UTF-8')}")
