@@ -4,9 +4,10 @@ class StatisticsController < ApplicationController
 
   def index
     @count_num=Statistic.find(:first, :order => "created_at desc")
-    charts=Chart.find_by_sql("select max(created_at), image_url, types from charts group by types")
+    charts=Chart.find_by_sql("select  max(image_url) image_url, types from charts group by types")
     @chart_url={}
     charts.collect {|chart| @chart_url[chart.types]=chart.image_url }
+    puts @chart_url
   end
 
   def user_info

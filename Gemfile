@@ -20,7 +20,10 @@ gem 'gchartrb', '0.8'
 gem 'jquery-rails'
 gem 'mechanize', '2.0.1'
 gem 'hpricot', '0.8.4'
-
+gem "mongrel", "~> 1.2.0.pre2"
+#gem 'mongrel','1.1.5'
+gem 'dispatcher','0.0.1'
+gem 'daemons', '1.1.6'
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 

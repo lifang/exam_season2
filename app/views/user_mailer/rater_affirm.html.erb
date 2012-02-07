@@ -2,8 +2,8 @@
 <h4><%= @rater.name %>,您好！恭喜您成为<font><%= @examination.title %></font>阅卷老师</h4>
 <p><h4>您的阅卷码：<%= @rater.author_code %></h4></p>
 欢迎使用赶考，请点击如下链接来进行考试确认：<br/>
-<a href="<%= Constant::SERVER_PATH %>/rater/exam_raters/<%= @rater.id %>/rater_session?examination=<%= @examination.id %>" target="_blank">
-  <%= Constant::SERVER_PATH %>/rater/exam_raters/<%= @rater.id %>/rater_session?examination=<%= @examination.id %>
+<a href="<%= Constant::SERVER_PATH %>/exam_raters/<%= @rater.id %>/rater_session?examination=<%= @examination.id %>" target="_blank">
+  <%= Constant::SERVER_PATH %>/exam_raters/<%= @rater.id %>/rater_session?examination=<%= @examination.id %>
 </a>
 <br/>
 如果以上链接无法点击，请将上面的地址复制到你的浏览器(如IE)的地址栏，来完成激活操作。
