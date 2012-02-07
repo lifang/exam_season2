@@ -405,7 +405,20 @@ class PapersController < ApplicationController
       message = "顺序调整失败，请检查试卷是否正常。"
     end if paper
     render :text => message
-    
+  end
+
+  # 预览
+  def preview  
+    @paper = Paper.find(params[:id])
+    paper_doc = @paper.open_file
+    #生成答案解析文件
+    @paper.write_file(@paper.create_paper_answer_js(paper_doc), "answerjs", "js", "preview")
+    #更新试卷总题数和试卷总分，以及各模块总题数和模块总分
+    url = "#{Constant::PUBLIC_PATH}#{@paper.paper_url}"
+    paper_doc = calculate_doc(paper_doc,url)
+    #生成考卷文件
+    @paper.write_file(@paper.create_paper_js(paper_doc), "paperjs", "js", "preview")
+    redirect_to "#{FRONT_SERVER_PATH}/exam_users/preview?paper=#{params[:id]}"
   end
 
 end

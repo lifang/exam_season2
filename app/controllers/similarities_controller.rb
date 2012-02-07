@@ -35,7 +35,7 @@ class SimilaritiesController < ApplicationController
       is_free = (params[:is_free].to_i ==  Examination::IS_FREE[:YES]) ?
         Examination::IS_FREE[:YES] : Examination::IS_FREE[:NO]
       similarity = Examination.create!(:title => params[:title].strip, :creater_id => cookies[:user_id].to_i,
-        :is_published => true, :category_id => params[:category_id],
+        :is_published => true,:status=>Examination::STATUS[:GOING], :category_id => params[:category_id],
         :is_free => is_free, :types => Examination::TYPES[:OLD_EXAM])
       similarity.update_paper("create", papers.to_a)
       redirect_to "/similarities?category=#{params[:category_id]}"
