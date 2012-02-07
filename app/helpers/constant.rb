@@ -23,6 +23,7 @@ module Constant
     :e263 => ['http://www.263.net','263']
   }
   SERVER_PATH = "http://localhost:3000"
+  FRONT_SERVER_PATH = "http://localhost:3001"
   PUBLIC_PATH = "#{Rails.root}/public"
   PAPER_XML_PATH = "#{Rails.root}/public"
   #前台项目文件目录

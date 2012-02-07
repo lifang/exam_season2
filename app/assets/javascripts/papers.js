@@ -209,11 +209,15 @@ function generate_fill(answer, text) {
 //提交create_problem表单前组织单选题、多选题答案
 function submit_create_problem_form(block_index) {
     var correct_type = parseInt($("#create_problem_correct_type_" + block_index).val());
+    var question_type = parseInt($(".question_type_block_" + block_index).val());
     if (correct_type == 0) {
         create_problem_single_choose(block_index);
     }
     if (correct_type == 1) {
-        create_problem_multi_choose(block_index);
+        var ret = create_problem_multi_choose(block_index,question_type);
+        if(ret==false){
+            return false;
+        }
     }
 
     //验证题面不能为空
@@ -229,7 +233,6 @@ function submit_create_problem_form(block_index) {
     }
 
     //建题面中题目，匹配标记数量是否正确
-    var question_type = parseInt($(".question_type_block_" + block_index).val());
     if (question_type == 1) {
         var mark = "((sign))";
         var mark_sum = $('#problem_title_block_' + block_index).val().split(mark).length-1;
@@ -261,13 +264,19 @@ function create_problem_single_choose(block_index) {
 }
 
 //多选题 整理组织多选题选项和答案
-function create_problem_multi_choose(block_index) {
+function create_problem_multi_choose(block_index,question_type) {
     var answer_arr = [];
+    var answer_length = 0;
     $(".checkbox_1_block_" + block_index).each(function() {
         if (this.checked && $(this).next(".text_1_block_" + block_index).val() != "") {
             answer_arr.push($(this).next(".text_1_block_" + block_index).val());
+            answer_length += 1;
         }
     })
+    if(question_type==1 && answer_length > 1){
+        tishi_alert("此题型只能设置一个答案");
+        return false;
+    };
     $(".question_answer_block_" + block_index).val(answer_arr.join(";|;"));
     var attrs = [];
     $(".text_1_block_" + block_index).each(function() {
@@ -276,6 +285,7 @@ function create_problem_multi_choose(block_index) {
         }
     })
     $(".question_attrs_block_" + block_index).val(attrs.join(";-;"));
+    return true;
 }
 
 //ajax 编辑题目说明
@@ -447,13 +457,16 @@ function add_event_on_post_question_form(correct_type) {
 
 //提交post_question表单前组织单选题、多选题答案
 function submit_post_question_form() {
-
     var correct_type = parseInt($("#post_question_correct_type").val());
+    var question_type = parseInt($("#post_question_question_type").val());
     if (correct_type == 0) {
         post_question_single_choose();
     }
     if (correct_type == 1) {
-        post_question_multi_choose();
+        var ret = post_question_multi_choose(question_type);
+        if(ret==false){
+            return false;
+        }
     }
     //小题答案不能为空
     if(checkspace($("#post_question_question_answer").val())){
@@ -461,7 +474,6 @@ function submit_post_question_form() {
         return false;
     }
     //建题面中题目，匹配标记数量是否正确
-    var question_type = parseInt($("#post_question_question_type").val());
     var question_index = $("#post_question_question_index").val();
     if (question_type == 1 && question_index=="") {
         var form_position = $("#post_question_div").parent().attr("id").replace('question_list_', '').replace('q_l_answer_', '').split('_');
@@ -497,13 +509,19 @@ function post_question_single_choose() {
 }
 
 //多选题 整理组织单选题选项和答案
-function post_question_multi_choose() {
+function post_question_multi_choose(question_type) {
     var answer_arr = [];
+    var answer_length = 0;
     $(".checkbox_1_question").each(function() {
         if (this.checked && $(this).next(".text_1_question").val() != "") {
             answer_arr.push($(this).next(".text_1_question").val());
+            answer_length += 1;
         }
     })
+    if(question_type==1 && answer_length > 1){
+        tishi_alert("此题型只能设置一个答案");
+        return false;
+    };
     $("#post_question_question_answer").val(answer_arr.join(";|;"));
     var attrs = [];
     $(".text_1_question").each(function() {
@@ -512,6 +530,7 @@ function post_question_multi_choose() {
         }
     })
     $("#post_question_question_attrs").val(attrs.join(";-;"));
+    return true;
 }
 
 function ajax_edit_paper_title(paper_id, title) {
