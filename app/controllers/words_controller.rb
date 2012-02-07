@@ -121,7 +121,7 @@ class WordsController < ApplicationController
       enunciate_url = params[:en_url].nil? ? params[:enunciate_url] : params[:en_url]
       pram={:category_id => params[:category_id].to_i, :name => params[:name], :types => params[:types].to_i,
         :phonetic => params[:phonetic].strip, :enunciate_url => enunciate_url, :en_mean => params[:en_mean],
-        :ch_mean => params[:ch_mean], :level => 3}
+        :ch_mean => params[:ch_mean], :level => Word::WORD_LEVEL[:THIRD]}
       word = Word.find_by_name(params[:name])
       if word.nil?
         word = Word.create(pram)

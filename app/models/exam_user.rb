@@ -39,8 +39,9 @@ class ExamUser < ActiveRecord::Base
       old_block_score = 0.0
       block.elements["problems"].each_element do |problem|
         problem.elements["questions"].each_element do |question|
-          if question.attributes["correct_type"].to_i != Problem::QUESTION_TYPE[:CHARACTER] &&
-              question.attributes["correct_type"].to_i != Problem::QUESTION_TYPE[:SINGLE_CALK]
+          unless question.attributes["correct_type"].to_i == Question::CORRECT_TYPE[:CHARACTER] or
+              (question.attributes["correct_type"].to_i == Question::CORRECT_TYPE[:SINGLE_CALK] and
+                question.attributes["flag"].to_i != 1)
             unless answer_doc.root.elements["paper/questions"].nil?
               q_answer = answer_doc.root.elements["paper/questions"].elements["question[@id='#{question.attributes["id"]}']"]
               unless q_answer.nil? or q_answer.elements["answer"].nil?
