@@ -18,10 +18,10 @@ namespace :operate do
       x_label = (data.created_at.strftime("%Y%m%d").to_s)[4, 8]
       x_axis_labels << x_label
       xy_axis["0_#{x_label.to_i}"] = data.register.split(",")[1].to_i
-      xy_axis["1_#{x_label.to_i}"] = data.action.split(",")[1].to_i
-      xy_axis["2_#{x_label.to_i}"] = data.pay.split(",")[1].to_i
-      xy_axis["3_#{x_label.to_i}"] = data.money.split(",")[1].to_i
-      xy_axis["4_#{x_label.to_i}"] = data.login.split(",")[1].to_i
+      xy_axis["1_#{x_label.to_i}"] = data.login.split(",")[1].to_i
+      xy_axis["2_#{x_label.to_i}"] = data.action.split(",")[1].to_i
+      xy_axis["3_#{x_label.to_i}"] = data.pay.split(",")[1].to_i
+      xy_axis["4_#{x_label.to_i}"] = data.money.split(",")[1].to_i
       max_x = x_label.to_i if x_label.to_i > max_x
     end unless statistics.blank?
     x_axis = x_axis_labels.sort

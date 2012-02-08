@@ -6,13 +6,13 @@ def self.user_expr(types)
       file_name="/#{Time.now.to_date.to_s}_user_all.xls"
     elsif types.to_i==2
       file_name="/#{Time.now.to_date.to_s}_user_30.xls"
-      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(al.created_at)>=1"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1"
     elsif types.to_i==3
       file_name="/#{Time.now.to_date.to_s}_user_7.xls"
-      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)<=7 and TO_DAYS(NOW())-TO_DAYS(al.created_at)>=1"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=7 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1"
     else
       file_name="/#{Time.now.to_date.to_s}_user_1.xls"
-      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)=1"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(created_at)=1"
     end
     return [file_name,expression]
   end
@@ -24,13 +24,13 @@ def self.user_expr(types)
       expression=" where #{other}"
     elsif types.to_i==2
       file_name="/#{Time.now.to_date.to_s}_#{action}_30.xls"
-      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(al.created_at)>=1 and  #{other}"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1 and  #{other}"
     elsif types.to_i==3
       file_name="/#{Time.now.to_date.to_s}_#{action}_7.xls"
-      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)<=7 and TO_DAYS(NOW())-TO_DAYS(al.created_at)>=1 and  #{other}"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=7 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1 and  #{other}"
     else
       file_name="/#{Time.now.to_date.to_s}_#{action}_1.xls"
-      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)=1 and #{other}"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(created_at)=1 and #{other}"
     end
     return [file_name,expression]
   end
