@@ -44,6 +44,9 @@ module Constant
   #系统管理员的id
   ADMIN_ID = 1
 
+  #充值vip有效期
+  DATE_LONG={:vip=>90,:trail=>7} #试用七天
+
 
 
 end

@@ -74,32 +74,32 @@ class StatisticsController < ApplicationController
       book = Spreadsheet::Workbook.new
       sheet = book.create_worksheet
       if types==1 || types==2 || types==3 || types==4
-        sheet.row(0).concat %w{购买类型 购买人数}
-        buyers =Order.find_by_sql("select count(*) ids,ca.name from orders o inner join categories ca on ca.id=o.category_id #{file_name[1]}
-                                   group by category_id")
-        total_num=0
+        sheet.row(0).concat %w{购买科目 购买类型 用户名称 用户邮箱}
+        buyers =Order.find_by_sql("select o.category_id, ca.name, u.name u_name, u.email, o.types from orders o
+                                   inner join users u on u.id = o.user_id
+                                   left join categories ca on ca.id=o.category_id
+                                   #{file_name[1]} and o.types not in (#{Order::TYPES[:TRIAL_SEVEN]})
+                                   order by o.category_id desc ")
         buyers.each_with_index do |buyer, index|
-          total_num +=buyer.ids
-          sheet.row(index+1).concat ["#{buyer.name}","#{buyer.ids}"]
-        end
-        next_line=buyers.size+1
-        fees=Compete.find_by_sql("select count(*) ids from competes #{file_name[1]}")
-        sheet.row(next_line+1).concat ["模考统计", "#{fees[0].ids}"]
-        sheet.row(next_line+3).concat ["人数总计","#{total_num+fees[0].ids}"]
+          buyer_name = buyer.category_id.nil? ? "模考收费" : buyer.name
+          sheet.row(index+1).concat ["#{buyer_name}", "#{Order::TYPE_NAME[buyer.types]}", "#{buyer.u_name}", "#{buyer.email}"]
+        end unless buyers.blank?
+        next_line=buyers.size+2
+        sheet.row(next_line).concat ["人数总计","#{buyers.size}"]
       elsif types==5 || types==6|| types==7|| types==8
-        sheet.row(0).concat %w{fee_types total_price}
-        buyers =Order.find_by_sql("select sum(o.total_price) total_prices,ca.name from orders o inner join categories ca on
-                                   ca.id=o.category_id #{file_name[1]} group by category_id")
+        sheet.row(0).concat %w{购买科目 购买类型 价格 用户名称  用户邮箱}
+        buyers =Order.find_by_sql("select o.category_id, ifnull(o.total_price, 0) total_prices, ca.name, u.name u_name, u.email, o.types
+                                   from orders o inner join users u on u.id = o.user_id
+                                   left join categories ca on ca.id=o.category_id
+                                   #{file_name[1]} and o.types not in (#{Order::TYPES[:TRIAL_SEVEN]})
+                                   order by o.category_id desc ")
         num=0
         buyers.each_with_index do |buyer, index|
-          sheet.row(index+1).concat ["#{buyer.name}","#{buyer.total_prices}"]
-          num +=buyer.total_prices
+          buyer_name = buyer.category_id.nil? ? "模考收费" : buyer.name
+          sheet.row(index+1).concat ["#{buyer_name}", "#{Order::TYPE_NAME[buyer.types]}", "#{buyer.total_prices}", "#{buyer.u_name}", "#{buyer.email}"]
+          num += buyer.total_prices
         end
-        sheet.row(buyers.size+1).concat ["小计", "#{num}"]
-        next_line=buyers.size+1
-        fees=Compete.find_by_sql("select sum(price) prices from competes #{file_name[1]}")
-        sheet.row(next_line+2).concat ["模考统计", "#{fees[0].prices}"]
-        sheet.row(next_line+3).concat ["总计", "#{num+fees[0].prices}"] unless fees[0].prices.nil?
+        sheet.row(buyers.size+2).concat ["总计", "#{num}"]
       end
       book.write file_url
     end

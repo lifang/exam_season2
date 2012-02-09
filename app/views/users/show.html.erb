@@ -1,3 +1,4 @@
+<script type="text/javascript" src="/assets/My97DatePicker/WdatePicker.js" ></script>
 <%= javascript_include_tag "users" %>
 <%
 if !params[:rels].nil?  and session[:rels] != params[:rels]
@@ -50,11 +51,15 @@ end
                   <%= link_to "#{relation.name}", "/users/#{@user.id}/category_logs?category_id=#{relation.c_id}",
                     :remote => true %>
                 </td>
-                <td><%= UserCategoryRelation::TYPE_NAME[relation.ucr_type] %></td>
+                <td><% if relation.order_type == Order::TYPES[:ACCREDIT] %>免费试用<% else %>收费<% end %></td>
                 <td><%= Order::TYPE_NAME[relation.order_type] %></td>
                 <td><%= relation.remark %></td>
                 <td><%= relation.end_time.strftime("%Y-%m-%d") if relation.end_time %></td>
-                <td><% unless relation.ucr_type == UserCategoryRelation::TYPES[:CHARGE] %><a href="#">升级</a><% end %></td>
+                <td>
+                  <% if relation.order_type == Order::TYPES[:ACCREDIT] %>
+                    <a href="javascript:void(0);" onclick="javascript:user_goto_vip(<%= relation.c_id %>);">升级</a>
+                  <% end %>
+                </td>
               </tr>
             <% end %>
           <% else %>
@@ -100,17 +105,41 @@ end
 <div class="user_big_tab" id="user_category_div" style="display: none;">
 </div>
 <%= form_for :message_form, :url => "/notices/single_notice", :method => "post",
-      :html => {:onsubmit => "return user_notice_form()"}, :remote => true do |f| -%>
-<div class="send_message_tab" style="display:none;">
-  <a href="javascript:void(0);" class="right_float">
-    <img src="/assets/x.gif" onclick="javascript:pop_window_closed(this);" />
-  </a><div class="clear"></div><br/>
-  <div>
-    <input type="hidden" name="user_id" id="user_id" value=""/>
-    <textarea name="description" id="description" cols="" rows=""></textarea>
+  :html => {:onsubmit => "return user_notice_form()"}, :remote => true do |f| -%>
+  <div class="send_message_tab" style="display:none;">
+    <a href="javascript:void(0);" class="right_float">
+      <img src="/assets/x.gif" onclick="javascript:pop_window_closed(this);" />
+    </a><div class="clear"></div><br/>
+    <div>
+      <input type="hidden" name="user_id" id="user_id" value=""/>
+      <textarea name="description" id="description" cols="" rows=""></textarea>
+    </div>
+    <div><button class="t_btn">发送</button></div>
   </div>
-  <div><button class="t_btn">发送</button></div>
-</div>
+<% end %>
+<%= form_for :vip_form, :url => "/users/#{@user.id}/goto_vip", :method => "post" do |f| -%>
+  <div class="add_sjTab" id="up_tab" style="display: none;">
+    <input type="hidden" name="vip_c_id" id="vip_c_id" value="" />
+    <div class="add_sjList"><label>类型：</label>
+      <select name="order_type" id="order_type">
+        <% Order::TYPE_NAME.each do |key, value| %>
+          <% if key <= 3 %>
+            <option value="<%= key %>"><%= value %></option>
+          <% end %>
+        <% end %>
+      </select>
+    </div>
+    <div class="add_sjList"><label>有效期至：</label>
+      <input name="end_time" readonly type="text" onClick="WdatePicker();" class="Wdate" />
+    </div>
+    <div class="add_sjList"><label>理由：</label>
+      <textarea name="reason" id="reason" cols="" rows=""></textarea>
+    </div>
+    <div class="sj_btn_div">
+      <button class="t_btn" type="submit">确定</button>
+      <button class="t_btn" onclick="javascript:pop_window_closed(this);">取消</button>
+    </div>
+  </div>
 <% end %>
 <%  
 session[:pays] = params[:pays].nil? ? 1 : params[:pays]

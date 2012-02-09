@@ -24,7 +24,8 @@
         <p>今日状态</p>
         <p>
           <strong>
-            <% if @today_plan.updated_at.to_date == Time.now.to_date or @today_plan.updated_at.to_date == @study_plan.ended_at.to_date %>
+            <% if @today_plan and
+                (@today_plan.updated_at.to_date == Time.now.to_date or @today_plan.updated_at.to_date == @study_plan.ended_at.to_date) %>
               已完成
             <% else %>未完成
             <% end %>
@@ -32,9 +33,10 @@
         </p>
       </div>
       <div class="st_load_box">
-        <% if @today_plan.updated_at.to_date < Time.now.to_date and @today_plan.updated_at.to_date != @study_plan.ended_at.to_date  %>
-          <% fact_percent = ((@today_plan.updated_at.to_date -
-                @study_plan.created_at.to_date + 1.day)/(@study_plan.study_date * 1.day)).to_f %>
+        <% if @today_plan and @today_plan.updated_at.to_date < Time.now.to_date and
+            @today_plan.updated_at.to_date != @study_plan.ended_at.to_date  %>
+          <% fact_percent = @today_plan ? ((@today_plan.updated_at.to_date -
+                @study_plan.created_at.to_date + 1.day)/(@study_plan.study_date * 1.day)).to_f : 0 %>
           <div class="st_hpjg"
                style="left:<%= fact_percent*500 - 49 %>px;">
             <img src="/assets/icon_hpjg.png" />
