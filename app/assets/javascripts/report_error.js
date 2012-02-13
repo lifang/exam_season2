@@ -28,3 +28,26 @@ function get_others(question_id){
     });
     return false;   
 }
+
+function get_flowplayer(selector,audio_src){
+    $("#jplayer_location_"+selector).append($("#flowplayer_loader"));
+    $f("flowplayer", "/assets/flowplayer/flowplayer-3.2.7.swf", {
+        plugins: {
+            controls: {
+                fullscreen: false,
+                height: 30,
+                autoHide: false
+            }
+        },
+        clip: {
+            autoPlay: false,
+            onBeforeBegin: function() {
+                this.close();
+            }
+        },
+        onLoad: function() {
+            this.setVolume(90);
+            this.setClip(audio_src);
+        }
+    });
+}

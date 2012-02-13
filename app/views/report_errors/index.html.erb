@@ -8,7 +8,7 @@
 <% else %>
   <%error=@info[0] %>
   <div class="error_top">
-    <%= render :partial=>"/report_errors/types" %>
+    <%= render :partial=>"/report_errors/types" %>  
     <div class="error_baog"><p>报告人：<span><%= error.name %></span></p><p><a href="javascript:show_div('.error_tab_list');">共有<%=@info[7] %>人报告</a></p></div>
     <div class="error_explain">错误说明：
       <span><%= error.r_desc %></span>
@@ -37,13 +37,33 @@
          <% end %>><img src="/assets/icon_down.png" /></a>
     </div>
   </div>
+<%= render :partial=>"/common/flowplayer" %>
   <div class="error_box">
     <div class="error_text_h">
       <p><%=@info[2].text unless @info[2].nil? %></p>
       <h2>第<%=@info[5] %>题（共<%=@info[6] %>题）</h2>
     </div>
     <div class="error_nr">
-      <%= @info[3].text.to_s.html_safe unless @info[3].nil?  %>
+      <% problem=@info[3] %>
+      <div id='jplayer_location_<%= problem.attributes["id"] %>'></div>
+      <% audio_title = (problem.elements["title"].nil? or problem.elements["title"].text.nil?) ? [] : problem.elements["title"].text.split("((mp3))")  %>
+      <% if audio_title[1] != nil %>
+        <% audio_title[1]="<input type='button' style='display:none' class='video_button' id='jplayer_button_#{problem.attributes["id"]}' value='更新音频' onclick=javascript:get_flowplayer('#{problem.attributes["id"]}','"+ audio_title[1]+"'); />" %>
+      <% end %>
+      <% if !problem.attributes["question_type"].nil? and problem.attributes["question_type"].to_i==Problem::QUESTION_TYPE[:INNER] %>
+        <%  problem.elements["title"].text=audio_title.join("") %>
+        <%= render :partial=>"/report_errors/problem_title",:object=>problem %>
+      <% else %>
+        <%= audio_title.join("").html_safe %>
+      <% end %>
+      <div class="drag_tk_box" id="<%= problem.attributes["id"] %>">
+        <div class="drag_tk border_radius" id="drag_tk_<%= problem.attributes["id"] %>">
+          <ul id="draggable_list_<%= problem.attributes["id"] %>"></ul>
+        </div>
+      </div>
+      <script type="text/javascript">
+        $("#draggable_list_"+'<%= problem.attributes["id"] %>').html($("#drag_li_"+<%= problem.attributes["id"] %>).val());
+      </script>
     </div>
   </div>
   <%  question_desc=@info[1].elements["description"] %>
@@ -62,5 +82,12 @@
   <div class="error_tab_list"></div>
   <script type="text/javascript">
     get_others(<%= error.question_id %>);
+    $(function(){
+      $(".drag_tk_box").each(function(){
+        $("#"+this.id).css("height",$("#drag_tk_"+this.id).height()+20);
+      })
+      $(".video_button").trigger("onclick");
+    })
+    
   </script>
 <% end %>
