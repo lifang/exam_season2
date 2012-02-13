@@ -35,6 +35,7 @@
               <li><a href="#" class="hover"><%= Category.find(params['category']).name %></a></li>
             <% end %>
             <li><a href="/notices" <% if controller.controller_name =="notices" %> class="hover" <% end %>>消息</a></li>
+            <li><a href="/licenses" <% if controller.controller_name =="licenses" %> class="hover" <% end %>>授权码</a></li>
           </ul>
         </div>
       </div>

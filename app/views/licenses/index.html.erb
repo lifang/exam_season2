@@ -1,0 +1,47 @@
+<%= javascript_include_tag "licenses" %>
+<div class="main_title">
+  <div class="m_t_h">授权码管理</div>
+</div>
+
+<div class="text_box">
+  <div class="code_top">
+    <%= form_for :license ,:url=>"/licenses/search", :method => "post",
+      :html => {:onsubmit => "return search_license_form()"} do |f|%>
+      <span>
+        <input name="code" id="code" type="text" />
+        <button type="submit" class="t_search"></button>
+      </span>
+    <span><button type="button" class="t_btn">生成授权码</button></span>
+      <span><button type="button" class="t00_btn">授权码使用详情</button></span>
+    <% end %>
+  </div>
+  <div class="user_list">
+    <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
+      <tr class="tr_bg">
+        <td>授权码号</td>
+        <td>代理人</td>
+        <td>生成时间</td>
+        <td>使用人</td>
+        <td>使用时间</td>
+        <td>操作</td>
+      </tr>
+      <% unless @invite_codes.blank? %>
+        <% @invite_codes.each do |invite| %>
+          <tr>
+            <td><%= invite.code %></td>
+            <td><%= invite.v_name %></td>
+            <td><%= invite.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td><%= invite.u_name %></td>
+            <td><%= invite.use_time %></td>
+            <td>作废</td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr>
+          <td colspan="6">暂无记录</td>
+        </tr>
+      <% end %>
+    </table>
+    <%=  will_paginate @invite_codes ,:previous_label=>" &lt;", :next_label=>" &gt;" %>
+  </div>
+</div>

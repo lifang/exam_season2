@@ -91,6 +91,11 @@ RailsTest3::Application.routes.draw do
       post "login_from"
     end
   end
+  resources :licenses do
+    collection do
+      post "search"
+    end
+  end
 
   match '/signout'=> 'sessions#destroy'
   # The priority is based upon order of creation:

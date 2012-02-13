@@ -464,6 +464,38 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 	cursor: pointer;
 }
 
+/*授权码管理----------------*/
+
+.code_top { height: 35px;}
+.code_top span { margin: 0 10px; overflow: hidden;}
+
+
+.t00_btn {
+	margin: 0 5px;
+	width: 112px;
+	height: 27px;
+	line-height: 27px;
+	background: url(../images/t00_btn.png) no-repeat;
+	border: none;
+	cursor: pointer;
+}
+
+/*授权码管理----------------*/
+
+.code_top { height: 35px;}
+.code_top span { margin: 0 10px; overflow: hidden;}
+
+
+.t00_btn {
+	margin: 0 5px;
+	width: 112px;
+	height: 27px;
+	line-height: 27px;
+	background: url(/assets/t00_btn.png) no-repeat;
+	border: none;
+	cursor: pointer;
+}
+
 /*生成授权码tab*/
 .add_codeTab { width: 400px; padding: 10px; border: 3px #999 solid; background: #FFF; position:fixed; overflow: hidden;}
 .c_btn_div { width: 91px; height: 27px; margin: 10px auto;}
