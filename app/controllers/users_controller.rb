@@ -73,4 +73,21 @@ class UsersController < ApplicationController
     end
   end
 
+  #升级为vpi
+  def goto_vip
+    order = Order.find(:first, 
+      :conditions => ["status = #{Order::STATUS[:NOMAL]} and user_id = ? and category_id = ?",
+        params[:id].to_i, params[:vip_c_id].to_i])
+    if order
+      order.update_attributes(:types => params[:order_type].to_i)
+    else
+      Order.create(:user_id => params[:id].to_i, :types => params[:order_type].to_i,
+        :status => Order::STATUS[:NOMAL], :start_time => Time.now.to_datetime, :total_price => 0,
+        :end_time => params[:end_time],
+        :category_id => params[:vip_c_id].to_i, :remark => params[:reason])
+    end
+    flash[:notice] = "升级成功。"
+    redirect_to request.referer
+  end
+
 end

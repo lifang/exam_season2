@@ -20,3 +20,10 @@ function user_notice_form() {
     }
     return true;
 }
+
+function user_goto_vip(category_id) {
+    generate_flash_div(".add_sjTab");
+    $("#vip_c_id").attr("value", category_id);
+    $("#reason").attr("value", "");
+    $("#up_tab").css("display", "block");
+}

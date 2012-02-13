@@ -89,7 +89,7 @@ class Collection < ActiveRecord::Base
   end
 
   #更新当前提点的答案
-  def update_question(answer_text, question_path, collection_xml)
+  def update_question(answer_text, question_path, collection_xml, problem_type)
     que = collection_xml.elements[question_path]
     if que.elements["user_answer"]
       true_num = (((que.attributes["error_percent"].to_i.to_f)/100) * (que.attributes["repeat_num"].to_i)).round
@@ -99,6 +99,7 @@ class Collection < ActiveRecord::Base
       que.add_attribute("repeat_num", "1")
       que.add_attribute("error_percent", "0")
     end
+    que.add_attribute("c_flag", "1") if problem_type.to_i == Problem::QUESTION_TYPE[:INNER]
     que.add_element("user_answer").add_text("#{answer_text}")
     return collection_xml
   end
@@ -117,15 +118,16 @@ class Collection < ActiveRecord::Base
   def auto_add_problem(paper_xml, question_id, problem_path, answer_text, collection_xml)
     paper_problem = paper_xml.elements["#{problem_path}"]
     paper_problem.add_attribute("paper_id", paper_xml.root.attributes["id"])
-    paper_problem.elements["questions"].each_element do |question|
-      if question.attributes["id"].to_i != question_id.to_i
-        paper_xml.delete_element(question.xpath)
+    if paper_problem and paper_problem.attributes["question_type"].to_i == Problem::QUESTION_TYPE[:OUTER]
+      paper_problem.elements["questions"].each_element do |question|
+        paper_xml.delete_element(question.xpath) if question.attributes["id"].to_i != question_id.to_i
       end
-    end if paper_problem
+    end
     add_audio_to_title(paper_xml, paper_problem)
     last_question = paper_problem.elements["questions"].elements["question[@id='#{question_id.to_i}']"]
     last_question.add_element("user_answer").add_text("#{answer_text}")
     last_question.add_attribute("repeat_num", "1")
+    last_question.add_attribute("c_flag", "1") if paper_problem.attributes["question_type"].to_i == Problem::QUESTION_TYPE[:INNER]
     last_question.add_attribute("error_percent", "0")
     collection_xml.elements["/collection/problems"].elements.add(paper_problem)
     return collection_xml
@@ -140,11 +142,22 @@ class Collection < ActiveRecord::Base
         block.elements["base_info"].elements["description"].text.to_s.html_safe =~ /<mp3>/
       block_audio = block.elements["base_info"].elements["description"].text.to_s.html_safe.split("<mp3>")[1]
       unless problem.elements["title"].nil?
-        problem.elements["title"].text = problem.elements["title"].text + "<mp3>" + block_audio + "<mp3>"
+        problem.elements["title"].text = problem.elements["title"].text + "((mp3))" + block_audio + "((mp3))"
       else
-        problem.add_element("title").add_text("<mp3>#{block_audio}<mp3>")
+        problem.add_element("title").add_text("((mp3))#{block_audio}((mp3))")
       end
     end
+    if !block.nil? and !block.elements["base_info"].elements["description"].nil? and
+        block.elements["base_info"].elements["description"].text.to_s.html_safe =~ /((mp3))/
+      block_audio = block.elements["base_info"].elements["description"].text.to_s.html_safe.split("((mp3))")[1]
+      unless problem.elements["title"].nil?
+        problem.elements["title"].text = problem.elements["title"].text + "((mp3))" + block_audio + "((mp3))"
+      else
+        problem.add_element("title").add_text("((mp3))#{block_audio}((mp3))")
+      end
+      puts problem.elements["title"].text
+    end
+
   end
 
   #自动阅卷保存错题
@@ -167,8 +180,9 @@ class Collection < ActiveRecord::Base
     paper_xml.root.elements["blocks"].each_element do |block|
       block.elements["problems"].each_element do |problem|
         problem.elements["questions"].each_element do |question|
-          if question.attributes["correct_type"].to_i != Problem::QUESTION_TYPE[:CHARACTER] and
-              question.attributes["correct_type"].to_i != Problem::QUESTION_TYPE[:SINGLE_CALK]
+          unless question.attributes["correct_type"].to_i == Question::CORRECT_TYPE[:CHARACTER] or
+              (question.attributes["correct_type"].to_i == Question::CORRECT_TYPE[:SINGLE_CALK] and
+                question.attributes["flag"].to_i != 1)
             answer_question = answer_questions.elements["question[@id='#{question.attributes["id"]}']"]
             if answer_question.nil? or (answer_question.attributes["score"].to_f != question.attributes["score"].to_f)
               collection_problem = collection.problem_in_collection(problem.attributes["id"], collection_xml)
@@ -177,7 +191,8 @@ class Collection < ActiveRecord::Base
               if collection_problem
                 collection_question = collection.question_in_collection(collection_problem, question.attributes["id"])
                 if collection_question
-                  collection_xml = collection.update_question(answer, collection_question.xpath, collection_xml)
+                  collection_xml = collection.update_question(answer, collection_question.xpath,
+                    collection_xml, problem.attributes["question_type"])
                 else
                   collection_xml = collection.add_question(question, answer, collection_problem, collection_xml)
                 end

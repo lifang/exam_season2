@@ -10,7 +10,7 @@ class Problem < ActiveRecord::Base
   include REXML
 
   #小题类型 题面外：0  题面内：1
-  QUESTION_TYPE = {:OUTER=>0,:INNER=>1}
+  QUESTION_TYPE = {:OUTER => 0,:INNER => 1}
 
 
   

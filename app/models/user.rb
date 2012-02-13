@@ -4,8 +4,6 @@ class User < ActiveRecord::Base
   has_many :roles,:through=>:user_role_relations,:foreign_key=>"role_id"
   has_many :category_manages,:dependent=>:destroy
   has_one :user_action_log
-  has_many :user_category_relations,:dependent => :destroy
-  has_many :categories,:through=>:user_category_relations, :source => :category
   has_many :user_plan_relations,:dependent => :destroy
   has_many :study_plans,:through=>:user_plan_relations, :source => :study_plan
   has_many :send_notices, :foreign_key => "send_id", :source => :notice
@@ -52,12 +50,10 @@ class User < ActiveRecord::Base
 
   #用户参与的科目
   def category_relations(page)
-    category_sql = "select c.id c_id, c.name, ucr.types ucr_type, o.types order_type, o.remark,
-          o.end_time from user_category_relations ucr
-          left join orders o on ucr.user_id = o.user_id
-          inner join categories c on c.id = ucr.category_id
-          where ucr.user_id = ? and o.status = #{Order::STATUS[:NOMAL]} and ucr.status = #{UserCategoryRelation::STATUS[:NOMAL]} "
-    return UserCategoryRelation.paginate_by_sql([category_sql, self.id],
+    category_sql = "select c.id c_id, c.name, o.types order_type, o.remark,
+          o.end_time from orders o inner join categories c on c.id = o.category_id
+          where o.user_id = ? and o.status = #{Order::STATUS[:NOMAL]} "
+    return Order.paginate_by_sql([category_sql, self.id],
       :per_page => 10, :page => page)
   end
 

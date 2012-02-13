@@ -55,6 +55,7 @@ RailsTest3::Application.routes.draw do
     end
     member do
       get :category_logs, :user_action_logs, :user_simulations
+      post :goto_vip
     end
   end
   resources :similarities do
