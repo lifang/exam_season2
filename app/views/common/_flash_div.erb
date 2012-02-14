@@ -14,10 +14,11 @@
   </div>
   <script type='text/javascript'>show_flash_div();</script>
 <% elsif flash[:pic_warn] %>
-  <div id='flash_notice' class="tishi_tab">
-    <p><%= flash[:pic_warn] %></p>
+  <div class="add_codeTab" id="add_codeT">
+    <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:pop_window_closed(this);" /></span>
+    <div class="add_codeList" style="text-align: center;"><%= flash[:pic_warn].html_safe %></div>
   </div>
-  <script type='text/javascript'>show_flash_div();</script>
+  <script type='text/javascript'>generate_flash_div("#add_codeT");</script>
 <% elsif flash[:success] %>
   <div id='flash_notice' class="tishi_tab">
     <p><%= flash[:success]%></p>

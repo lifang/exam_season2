@@ -1,3 +1,4 @@
+<script type="text/javascript" src="/assets/My97DatePicker/WdatePicker.js" ></script>
 <%= javascript_include_tag "licenses" %>
 <div class="main_title">
   <div class="m_t_h">授权码管理</div>
@@ -11,7 +12,7 @@
         <input name="code" id="code" type="text" />
         <button type="submit" class="t_search"></button>
       </span>
-      <span><button type="button" class="t_btn">生成授权码</button></span>
+      <span><button type="button" class="t_btn" onclick="javascript:show_gen_code();" >生成授权码</button></span>
       <span><button type="button" class="t00_btn" onclick="javascript:show_div('.code_syong_tab');">授权码使用详情</button></span>
     <% end %>
   </div>
@@ -30,10 +31,14 @@
           <tr>
             <td><%= invite.code %></td>
             <td><%= invite.v_name %></td>
-            <td><%= invite.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td><%= invite.created_at.strftime("%Y-%m-%d %H:%M:%S") if invite.created_at %></td>
             <td><%= invite.u_name %></td>
-            <td><%= invite.use_time.strftime("%Y-%m-%d %H:%M:%S") %></td>
-            <td><%=invite.status==1 ? "作废" : "有效" %></td>
+            <td><%= invite.use_time.strftime("%Y-%m-%d %H:%M:%S") if invite.use_time %></td>
+            <td>
+              <% if invite.status == InviteCode::STATUS[:INVALID] %>已作废
+              <% else %><a href="#">作废</a>
+              <% end %>
+            </td>
           </tr>
         <% end %>
       <% else %>
@@ -44,6 +49,25 @@
     </table>
     <%=  will_paginate @invite_codes ,:previous_label=>" &lt;", :next_label=>" &gt;" %>
   </div>
+</div>
+<div class="add_codeTab" id="add_codeTab" style="display: none;">
+  <%= form_for :license ,:url=>"/licenses/generate", :method => "post",
+    :html => {:onsubmit => "return gen_license_form()"} do |f|%>
+    <span class="yj_x" onclick="javascript:pop_window_closed(this);"><img src="/assets/x.gif" /></span>
+    <div class="add_codeList">
+      <label>生成数量：</label><input name="num" id="num" type="text"/>
+    </div>
+    <div class="add_codeList">
+      <label>有效期至：</label><input name="ended_at" id="ended_at" type="text" onClick="WdatePicker();" class="Wdate"/>
+    </div>
+    <div class="add_codeList">
+      <label>指定代理人：</label><input name="vicegerent" id="vicegerent" type="text" value=""/>
+      <button type="button" class="t_search" onclick="javascript:search_vicegerent();" ></button>
+    </div>
+    <div class="add_codeList" id="v_list_div" style="display:none;">
+    </div>
+    <div class="c_btn_div"><button class="t_btn">确定</button></div>
+  <% end %>
 </div>
 <div class="code_syong_tab" style="display:none">
   <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('.code_syong_tab').css('display','none');code_details(1);"/></span>
