@@ -19,12 +19,12 @@ img { border: none;}
 .red { color: #F00;}
 .t_search {
     margin: 0 5px;
-	width: 40px;
-	height: 27px;
-	line-height: 27px;
-	background: url(/assets/t_search.png) no-repeat;
-	border: none;
-	cursor: pointer;
+    width: 40px;
+    height: 27px;
+    line-height: 27px;
+    background: url(/assets/t_search.png) no-repeat;
+    border: none;
+    cursor: pointer;
 }
 .t_se_input { height: 25px; line-height: 25px; float: left; color: #999;}
 
@@ -49,12 +49,12 @@ img { border: none;}
 .nav li a:hover {}
 .nav li a.hover {
     width: 116px;
-	height: 38px;
-	line-height: 38px;
-	color: #FFF;
-	font-weight: bold;
-	border: none;
-	background: url(/assets/a_hover.png) no-repeat;
+    height: 38px;
+    line-height: 38px;
+    color: #FFF;
+    font-weight: bold;
+    border: none;
+    background: url(/assets/a_hover.png) no-repeat;
 }
 .nav_list {background: #139dd3; padding: 5px 0 5px 50px; overflow: hidden;}
 .nav_list li { float: left; display: inline; font-size: 12px; padding: 6px; color: #FFF;}
@@ -70,28 +70,28 @@ img { border: none;}
 .m_t_btn { width: 100px; float: right; padding-top: 10px;}
 .m_t_btn button {
     width: 82px;
-	height: 28px;
-	line-height: 28px;
-	text-align: center;
-	color: #FFF;
-	font-size: 12px;
-	border: none;
-	background: url(/assets/btn.png) no-repeat;
-	cursor: pointer;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    color: #FFF;
+    font-size: 12px;
+    border: none;
+    background: url(/assets/btn.png) no-repeat;
+    cursor: pointer;
 }
 
 .text_box { width: 920px; margin: 0 auto;}
 .t_list {
-	width: 900px;
-	padding: 0 9px;
-	height: 70px;
-	line-height: 70px;
-	margin: 7px auto;
-	border: 1px #ebebeb solid;
-	border-bottom: 2px #ebebeb solid;
-	border-right: 2px #ebebeb solid;
-	overflow: hidden;
-	position: relative;
+    width: 900px;
+    padding: 0 9px;
+    height: 70px;
+    line-height: 70px;
+    margin: 7px auto;
+    border: 1px #ebebeb solid;
+    border-bottom: 2px #ebebeb solid;
+    border-right: 2px #ebebeb solid;
+    overflow: hidden;
+    position: relative;
 }
 .t_list span { padding: 0 5px; color: #999;}
 .t_list h2 { float: left; font-size: 16px;}
@@ -100,12 +100,12 @@ img { border: none;}
 .text_btn img { float: left;}
 .t_btn {
     margin: 0 5px;
-	width: 81px;
-	height: 27px;
-	line-height: 27px;
-	background: url(/assets/t_btn.png) no-repeat;
-	border: none;
-	cursor: pointer;
+    width: 81px;
+    height: 27px;
+    line-height: 27px;
+    background: url(/assets/t_btn.png) no-repeat;
+    border: none;
+    cursor: pointer;
 }
 
 .tl_hover { background: #f7f7f7; border-left: 1px #CCC solid; border-top: 1px #CCC solid; border-bottom: 2px #CCC solid; border-right: 2px #c1c1c1 solid;}
@@ -134,13 +134,13 @@ img { border: none;}
 /*科目管理------------*/
 .kemu_box {
     width: 350px;
-	padding: 20px;
-	border: 1px #CCC solid;
-	line-height: 30px;
-	position: relative;
-	float: left;
-	display: inline;
-	margin: 10px 34px;
+    padding: 20px;
+    border: 1px #CCC solid;
+    line-height: 30px;
+    position: relative;
+    float: left;
+    display: inline;
+    margin: 10px 34px;
 }
 .kemu_box h1 { font-size: 14px;}
 .km_a { position: absolute; top: 10px; right: 20px;}
@@ -164,24 +164,24 @@ span.mk_span_w { color: #000;}
 
 .bj_info_left li {
     color: #333;
-	height: 30px;
-	line-height: 30px;
-	padding-left: 3px;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 3px;
     border: 1px #CCC solid;
-	margin: 5px 0;
+    margin: 5px 0;
 }
 .bj_info_left li a {
     display: block;
-	float: left;
-	width: 60px;
-	display: block;
-	overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    float: left;
+    width: 60px;
+    display: block;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
 .bj_info_left li.hover {
     border: 1px #139DD3 solid;
-	background: #d8f4ff;
-	font-weight:bold;
-	border-right: none;
+    background: #d8f4ff;
+    font-weight:bold;
+    border-right: none;
 }
 .bj_info_left li span { margin: 8px 0 0 3px; cursor: pointer; float: left;}
 
@@ -193,26 +193,26 @@ span.mk_span_w { color: #000;}
 .info_ul li { float: left; position: relative;}
 .info_ul li a {
     display: block;
-	width: 30px;
-	height: 31px;
-	margin: 0 6px;
-	background: #effaff;
-	color: #333;
-	font-size: 16px;
-	border: 1px #CCC solid;
+    width: 30px;
+    height: 31px;
+    margin: 0 6px;
+    background: #effaff;
+    color: #333;
+    font-size: 16px;
+    border: 1px #CCC solid;
     border-bottom: none;
-	text-align: center;
+    text-align: center;
 }
 .info_ul li a.hover { height: 31px; background: #FFF; border: 1px #139DD3 solid; border-bottom: none; font-weight: bold;}
 
 .xx_btn { position: absolute; top: 0px; right: 6px; cursor: pointer;}
 .add_a {
     height: 32px;
-	line-height: 32px;
-	padding-left: 20px;
-	margin-left: 5px;
-	text-decoration: underline;
-	background: url(/assets/icon_tj.png) no-repeat left center;
+    line-height: 32px;
+    padding-left: 20px;
+    margin-left: 5px;
+    text-decoration: underline;
+    background: url(/assets/icon_tj.png) no-repeat left center;
 }
 .bj_info_box { width: 813px; height: 565px; margin: 0 auto; background: #FFF; border: 1px #139DD3 solid;}
 
@@ -230,15 +230,15 @@ span.mk_span_w { color: #000;}
 .q_tab_ul { height: 32px; line-height: 32px;}
 .q_tab_ul li {
     width: 120px;
-	height: 31px;
-	background: #EFFAFF;
-	float: left;
-	display: inline;
-	border: 1px #CCC solid;
-	border-bottom: none;
-	cursor: pointer;
-	text-align: center;
-	margin: 0 5px;
+    height: 31px;
+    background: #EFFAFF;
+    float: left;
+    display: inline;
+    border: 1px #CCC solid;
+    border-bottom: none;
+    cursor: pointer;
+    text-align: center;
+    margin: 0 5px;
 }
 .q_tab_ul li.hover { background: #FFF; border: 1px #139DD3 solid; border-bottom: none; height: 31px; font-weight: bold;}
 .q_tab_div { padding: 0 5px; border: 1px #CCC solid; height: 32px; line-height: 32px;}
@@ -294,8 +294,8 @@ span.mk_span_w { color: #000;}
 .user_tb { background: #CCC; font-size: 16px;}
 .user_tb tr { background: #FFF;}
 .user_tb td { height: 24px; line-height: 24px; padding: 5px; text-align: center;}
-.tr_bg { background: #333; color: #FFF;}
-.tr_bg a { color: #FFF;}
+tr.tr_bg { background: #333; color: #FFF;}
+tr.tr_bg a { color: #FFF;}
 
 /*用户详细*/
 .user_xx_box { width: 230px; float: left; font-size: 14px;}
@@ -392,14 +392,14 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 .user_tab_ul { height: 31px; line-height: 31px; overflow: hidden; border-bottom: 1px #CCC solid;}
 .user_tab_ul li {
     width: 80px;
-	height: 31px;
-	float: left;
-	border: 1px #CCC solid;
-	border-bottom: none;
-	margin: 0 10px;
-	display: inline;
-	text-align: center;
-	cursor: pointer;
+    height: 31px;
+    float: left;
+    border: 1px #CCC solid;
+    border-bottom: none;
+    margin: 0 10px;
+    display: inline;
+    text-align: center;
+    cursor: pointer;
 }
 .user_tab_ul li.hover { border: 1px #289FDB solid; color:#289FDB; background: #D0E7EE; border-bottom: none; font-weight: bold;}
 
@@ -455,13 +455,13 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 
 
 .t00_btn {
-	margin: 0 5px;
-	width: 112px;
-	height: 27px;
-	line-height: 27px;
-	background: url(../images/t00_btn.png) no-repeat;
-	border: none;
-	cursor: pointer;
+    margin: 0 5px;
+    width: 112px;
+    height: 27px;
+    line-height: 27px;
+    background: url(../images/t00_btn.png) no-repeat;
+    border: none;
+    cursor: pointer;
 }
 
 /*授权码管理----------------*/
@@ -471,13 +471,13 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 
 
 .t00_btn {
-	margin: 0 5px;
-	width: 112px;
-	height: 27px;
-	line-height: 27px;
-	background: url(../images/t00_btn.png) no-repeat;
-	border: none;
-	cursor: pointer;
+    margin: 0 5px;
+    width: 112px;
+    height: 27px;
+    line-height: 27px;
+    background: url(../images/t00_btn.png) no-repeat;
+    border: none;
+    cursor: pointer;
 }
 
 /*授权码管理----------------*/
@@ -487,13 +487,13 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 
 
 .t00_btn {
-	margin: 0 5px;
-	width: 112px;
-	height: 27px;
-	line-height: 27px;
-	background: url(/assets/t00_btn.png) no-repeat;
-	border: none;
-	cursor: pointer;
+    margin: 0 5px;
+    width: 112px;
+    height: 27px;
+    line-height: 27px;
+    background: url(/assets/t00_btn.png) no-repeat;
+    border: none;
+    cursor: pointer;
 }
 
 /*生成授权码tab*/
@@ -506,7 +506,7 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 
 
 
-.code_syong_tab { width: 400px; padding: 10px; border: 3px #999 solid; background: #FFF; position:fixed; overflow: hidden;}
+.code_syong_tab { width: 600px; padding: 10px; border: 3px #999 solid; background: #FFF; position:fixed; overflow: hidden;}
 
 /*用户升价TAB------*/
 .add_sjTab { width: 400px; padding: 10px; border: 3px #999 solid; background: #FFF; position:fixed; overflow: hidden;}

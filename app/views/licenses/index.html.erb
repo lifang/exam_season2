@@ -11,8 +11,8 @@
         <input name="code" id="code" type="text" />
         <button type="submit" class="t_search"></button>
       </span>
-    <span><button type="button" class="t_btn">生成授权码</button></span>
-      <span><button type="button" class="t00_btn">授权码使用详情</button></span>
+      <span><button type="button" class="t_btn">生成授权码</button></span>
+      <span><button type="button" class="t00_btn" onclick="javascript:show_div('.code_syong_tab');">授权码使用详情</button></span>
     <% end %>
   </div>
   <div class="user_list">
@@ -32,8 +32,8 @@
             <td><%= invite.v_name %></td>
             <td><%= invite.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
             <td><%= invite.u_name %></td>
-            <td><%= invite.use_time %></td>
-            <td>作废</td>
+            <td><%= invite.use_time.strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td><%=invite.status==1 ? "作废" : "有效" %></td>
           </tr>
         <% end %>
       <% else %>
@@ -43,5 +43,11 @@
       <% end %>
     </table>
     <%=  will_paginate @invite_codes ,:previous_label=>" &lt;", :next_label=>" &gt;" %>
+  </div>
+</div>
+<div class="code_syong_tab" style="display:none">
+  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('.code_syong_tab').css('display','none');code_details(1);"/></span>
+  <div class="add_codeList"><input name="" id="search_detail" type="text" /><button class="t_search" onclick="code_details(0)"></button></div>
+  <div class="user_list" id="detail">
   </div>
 </div>

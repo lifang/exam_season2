@@ -94,6 +94,7 @@ RailsTest3::Application.routes.draw do
   resources :licenses do
     collection do
       post "search"
+      get "code_details"
     end
   end
 
