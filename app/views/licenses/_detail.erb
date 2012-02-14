@@ -18,6 +18,6 @@
         <td><%= @detail[code.id][4] %></td>
       </tr>
     <% end %>
-
   </table>
+   <%= will_paginate_remote(@vices ,  "" ,{:url => "/licenses/code_details"}) %>
 <% end %>

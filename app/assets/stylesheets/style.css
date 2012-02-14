@@ -514,3 +514,6 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 .add_sjList label { display: inline-block; width: 100px; height: 24px; text-align: right; margin-right: 5px; float: left;}
 .add_sjList textarea { width: 250px; height: 100px;}
 .sj_btn_div {width: 200px; height: 27px; margin: 10px auto;}
+
+
+.add_dailiTab {width: 400px; padding: 10px; border: 3px #999 solid; background: #FFF; position: absolute; overflow: hidden;}

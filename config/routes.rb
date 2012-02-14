@@ -1,5 +1,8 @@
 RailsTest3::Application.routes.draw do
 
+  
+  resources :vicegerents do
+  end
   resources :papers do
     member do
       post :post_block,:create_problem,:post_question

@@ -1,0 +1,32 @@
+<%= javascript_include_tag "vices" %>
+<div class="main_title">
+  <div class="user_search">
+    <input name="search_text" id="search_text" type="text" class="t_se_input"
+           value="<%= session[:search_text].nil? ? "代理人姓名" : session[:search_text] %>" />
+    <button type="submit" class="t_search"></button>
+  </div>
+  <div class="m_t_h">用户列表</div>
+</div>
+<div class="text_box">
+  <div class="user_list">
+    <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
+      <tr class="tr_bg">
+        <td width="10%">姓名</td>
+        <td width="20%">联系电话</td>
+        <td width="20%">在线qq/msn</td>
+        <td width="25%">地址</td>
+        <td width="15%">创建日期</td>
+      </tr>
+      <% @vices.each do |vice| %>
+        <tr>
+          <td><%= vice.name %></td>
+          <td><%= vice.phone %></td>
+          <td><%= vice.inline %></td>
+          <td><%= vice.address %></td>
+          <td><%= vice.created_at.nil? ? "" : vice.created_at.strftime("%Y-%m-%d")%></td>
+        </tr>
+      <% end unless @vices.blank? %>
+    </table>
+    <%=  will_paginate @vices ,:previous_label=>" &lt;", :next_label=>" &gt;" %>
+  </div>
+</div>
