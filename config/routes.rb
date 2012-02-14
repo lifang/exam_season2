@@ -93,7 +93,7 @@ RailsTest3::Application.routes.draw do
   end
   resources :licenses do
     collection do
-      post "search"
+      post "search", "generate", "search_vicegerent"
     end
   end
 
