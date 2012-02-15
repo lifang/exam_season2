@@ -28,7 +28,7 @@ class LicensesController < ApplicationController
   def code_details
     sql="select id,name,created_at from vicegerents v where 1=1"
     sql += " and v.name like '%#{params[:info]}%'" if params[:info]!="" and !params[:info].nil?
-    @vices =Vicegerent.paginate_by_sql(sql,:per_page =>1, :page => params[:page])
+    @vices =Vicegerent.paginate_by_sql(sql,:per_page =>10, :page => params[:page])
     @detail={}
     @vices.each do |vice|
       codes=InviteCode.find_by_sql("select bu.num number,ic.id,ic.user_id from invite_codes ic inner join buses bu on bu.id=ic.bus_id where ic.vicegerent_id=#{vice.id} and ic.status=#{InviteCode::STATUS[:NOMAL]}")
