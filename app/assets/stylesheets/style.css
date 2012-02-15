@@ -498,10 +498,10 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 
 /*生成授权码tab*/
 .add_codeTab { width: 400px; padding: 10px; border: 3px #999 solid; background: #FFF; position:fixed; overflow: hidden;}
-.c_btn_div { width: 91px; height: 27px; margin: 10px auto;}
+.c_btn_div { width: 91px; height: 27px; margin: 20px auto;}
 .add_codeList { height: 24px; line-height: 24px; margin: 10px 0;}
 .add_codeList label { display: inline-block; width: 120px; height: 24px; text-align: right; margin-right: 5px;}
-.add_codeList select { margin-left: 125px; width: 150px;}
+.add_codeList select { width: 150px;}
 
 
 

@@ -21,6 +21,7 @@
       <tr class="tr_bg">
         <td>授权码号</td>
         <td>代理人</td>
+        <td>所属产品</td>
         <td>生成时间</td>
         <td>使用人</td>
         <td>使用时间</td>
@@ -31,19 +32,21 @@
           <tr>
             <td><%= invite.code %></td>
             <td><%= invite.v_name %></td>
+            <td><%= invite.c_name %></td>
             <td><%= invite.created_at.strftime("%Y-%m-%d %H:%M:%S") if invite.created_at %></td>
             <td><%= invite.u_name %></td>
             <td><%= invite.use_time.strftime("%Y-%m-%d %H:%M:%S") if invite.use_time %></td>
             <td>
-              <% if invite.status == InviteCode::STATUS[:INVALID] %>已作废
-              <% else %><a href="#">作废</a>
+              <% if invite.status == InviteCode::STATUS[:INVALID] %>
+              <a href="/licenses/<%= invite.id %>/uninvalid">不作废</a>
+              <% else %><a href="/licenses/<%= invite.id %>/invalid">作废</a>
               <% end %>
             </td>
           </tr>
         <% end %>
       <% else %>
         <tr>
-          <td colspan="6">暂无记录</td>
+          <td colspan="7">暂无记录</td>
         </tr>
       <% end %>
     </table>
@@ -61,12 +64,20 @@
       <label>有效期至：</label><input name="ended_at" id="ended_at" type="text" onClick="WdatePicker();" class="Wdate"/>
     </div>
     <div class="add_codeList">
+      <label>所属产品：</label>
+      <select name="category_id" id="category_id">
+        <% Category.all.each do |c| %>
+        <option value="<%= c.id %>"><%= c.name %></option>
+        <% end %>
+      </select>
+    </div>
+    <div class="add_codeList">
       <label>指定代理人：</label><input name="vicegerent" id="vicegerent" type="text" value=""/>
       <button type="button" class="t_search" onclick="javascript:search_vicegerent();" ></button>
     </div>
     <div class="add_codeList" id="v_list_div" style="display:none;">
     </div>
-    <div class="c_btn_div"><button class="t_btn">确定</button></div>
+    <div class="c_btn_div"><button type="submit" class="t_btn">确定</button></div>
   <% end %>
 </div>
 <div class="code_syong_tab" style="display:none">

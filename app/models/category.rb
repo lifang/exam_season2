@@ -7,6 +7,7 @@ class Category < ActiveRecord::Base
   has_one :study_plan
   has_many :notices
   has_many :words
+  has_many :invite_codes
   #判断分类是否存在
   FAURTH = 2
   SIXTH = 3

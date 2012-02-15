@@ -94,7 +94,10 @@ RailsTest3::Application.routes.draw do
   resources :licenses do
     collection do
       post "search", "generate", "search_vicegerent"
-      get "code_details"
+      get "code_details", "search_list"
+    end
+    member do
+      get "invalid", "uninvalid"
     end
   end
 

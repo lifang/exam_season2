@@ -9,7 +9,13 @@ class LicensesController < ApplicationController
   end
 
   def search
-    @invite_codes = InviteCode.search(params[:code].strip, params[:page])
+    session[:invite_code] = nil
+    session[:invite_code] = params[:code].strip
+    redirect_to search_list_licenses_path
+  end
+
+  def search_list
+    @invite_codes = InviteCode.search(session[:invite_code], params[:page])
     render "index"
   end
 
@@ -70,7 +76,8 @@ class LicensesController < ApplicationController
       bus = Bus.create(:num => bus_code)
       (code_array.uniq)[0, params[:num].to_i].each_with_index do |code, index|
         InviteCode.create(:code => bus_code + code, :vicegerent_id => params[:v_id], :bus_id => bus.id,
-          :status => 0, :ended_at => params[:ended_at])
+          :status => InviteCode::STATUS[:NOMAL], :ended_at => params[:ended_at],
+          :category_id => params[:category_id].to_i)
         sheet.row(index+1).concat ["#{bus_code}", "#{bus_code}#{code}", "#{vicegerent.name}", "#{params[:ended_at]}"]
       end
       sheet.row(params[:num].to_i + 2).concat ["总计", "#{params[:num].to_i}"]
@@ -79,6 +86,20 @@ class LicensesController < ApplicationController
     rescue
       flash[:notice] = "授权码生成失败，请重新尝试生成"      
     end
+    redirect_to request.referer
+  end
+
+  def invalid
+    invite = InviteCode.find(params[:id])
+    invite.update_attributes(:status => InviteCode::STATUS[:INVALID]) if invite
+    flash[:notice] = "操作成功"
+    redirect_to request.referer
+  end
+
+  def uninvalid
+    invite = InviteCode.find(params[:id])
+    invite.update_attributes(:status => InviteCode::STATUS[:NOMAL]) if invite
+    flash[:notice] = "操作成功"
     redirect_to request.referer
   end
 

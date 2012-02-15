@@ -3,7 +3,7 @@ class Collection < ActiveRecord::Base
 
   require 'rexml/document'
   include REXML
-  COLLECTION_PATH = "/collections"
+  COLLECTION_PATH = "/collection_datas"
 
   def set_collection_url(path, url)
     if self.collection_url.nil?
