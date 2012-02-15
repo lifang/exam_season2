@@ -2,6 +2,9 @@ RailsTest3::Application.routes.draw do
 
   
   resources :vicegerents do
+    collection do
+      post :search
+    end
   end
   resources :papers do
     member do

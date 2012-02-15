@@ -1,14 +1,15 @@
-<%if @vices.blank?%>
-  <div class="add_codeList"><center>未搜索到详情</center></div>
-<% else %>
-  <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
-    <tr class="tr_bg">
-      <td>代理人</td>
-      <td>批次号</td>
-      <td>数量</td>
-      <td>时间</td>
-      <td>已使用/未使用</td>
-    </tr>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
+  <tr class="tr_bg">
+    <td>代理人</td>
+    <td>批次号</td>
+    <td>数量</td>
+    <td>时间</td>
+    <td>已使用/未使用</td>
+  </tr>
+  <%if @vices.blank?%>
+    <tr> <td colspan="5">未搜索到详情</td></tr>
+  <% else %>
     <% @vices.each do |code| %>
       <tr>
         <td><%= @detail[code.id][0] %></td>
@@ -18,6 +19,6 @@
         <td><%= @detail[code.id][4] %></td>
       </tr>
     <% end %>
-  </table>
-   <%= will_paginate_remote(@vices ,  "" ,{:url => "/licenses/code_details"}) %>
-<% end %>
+  <% end %>
+</table>
+<%= will_paginate_remote(@vices ,  "" ,{:url => "/licenses/code_details"}) %>

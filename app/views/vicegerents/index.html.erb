@@ -1,13 +1,17 @@
 <%= javascript_include_tag "vices" %>
 <div class="main_title">
-  <div class="user_search">
-    <input name="search_text" id="search_text" type="text" class="t_se_input"
-           value="<%= session[:search_text].nil? ? "代理人姓名" : session[:search_text] %>" />
-    <button type="submit" class="t_search"></button>
-  </div>
   <div class="m_t_h">用户列表</div>
 </div>
 <div class="text_box">
+  <div class="code_top">
+    <%= form_for :similarity ,:url=>"/vicegerents/search", :method => "post" do |f|%>
+      <span>
+        <input name="vice_name" id="search_text" type="text" value="代理人姓名" />
+        <button class="t_search"></button>
+      </span>
+      <span><button class="t_btn">新建代理人</button></span>
+    <% end %>
+  </div>
   <div class="user_list">
     <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
       <tr class="tr_bg">
@@ -29,4 +33,15 @@
     </table>
     <%=  will_paginate @vices ,:previous_label=>" &lt;", :next_label=>" &gt;" %>
   </div>
+</div>
+
+
+<div class="add_dailiTab">
+  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('.add_dailiTab').css('display','none')" /></span>
+  <div class="add_codeList"><label>姓名：</label><input name="" type="text" /></div>
+  <div class="add_codeList"><label>手机/电话：</label><input name="" type="text" /></div>
+  <div class="add_codeList"><label>通信工具：</label><input name="" type="text" /></div>
+  <div class="add_codeList"><label>地址：</label><input name="" type="text" /></div>
+
+  <div class="c_btn_div"><button class="t_btn">确定</button></div>
 </div>
