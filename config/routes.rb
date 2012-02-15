@@ -1,5 +1,12 @@
 RailsTest3::Application.routes.draw do
 
+  
+  resources :vicegerents do
+    collection do
+      post :vice_search,:vice_create
+      get :vice_list
+    end
+  end
   resources :papers do
     member do
       post :post_block,:create_problem,:post_question

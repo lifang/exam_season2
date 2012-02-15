@@ -1,0 +1,48 @@
+<%= javascript_include_tag "vices" %>
+<div class="main_title">
+  <div class="m_t_h">用户列表</div>
+</div>
+<div class="text_box">
+  <div class="code_top">
+    <%= form_for :license ,:url=>"/vicegerents/vice_search", :method => "post", :html => {:onsubmit => "return vice_form()"} do |f|%>
+      <span>
+        <input name="vice_name" id="code" type="text" onfocus="javascript:$(this).val('');"   value="<%= session[:search_text].nil? ? "代理人姓名" : session[:search_text] %>" />
+        <button  class="t_search"></button>
+      </span>
+      <span><button type="button" class="t_btn" onclick="javascript:show_div('.add_dailiTab')" >新建代理人</button></span>
+    <% end %>
+  </div>
+  <div class="user_list">
+    <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
+      <tr class="tr_bg">
+        <td width="10%">姓名</td>
+        <td width="20%">联系电话</td>
+        <td width="20%">在线qq/msn</td>
+        <td width="25%">地址</td>
+        <td width="15%">创建日期</td>
+      </tr>
+      <% @vices.each do |vice| %>
+        <tr>
+          <td><%= vice.name %></td>
+          <td><%= vice.phone %></td>
+          <td><%= vice.inline %></td>
+          <td><%= vice.address %></td>
+          <td><%= vice.created_at.nil? ? "" : vice.created_at.strftime("%Y-%m-%d")%></td>
+        </tr>
+      <% end unless @vices.blank? %>
+    </table>
+    <%=  will_paginate @vices ,:previous_label=>" &lt;", :next_label=>" &gt;" %>
+  </div>
+</div>
+
+
+<div class="add_dailiTab">
+  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('.add_dailiTab').css('display','none')" /></span>
+  <%= form_for :vices,:url=>"/vicegerents/vice_create", :method => "post", :html =>{:id=>"vice_form"} do |f|%>
+    <div class="add_codeList"><label>姓名：</label><input name="name" id="vice_name" type="text" /></div>
+    <div class="add_codeList"><label>手机/电话：</label><input name="phone"  id="vice_phone" type="text" /></div>
+    <div class="add_codeList"><label>通信工具：</label><input name="connect" id="vice_connect" type="text" /></div>
+    <div class="add_codeList"><label>地址：</label><input name="connect" id="vice_address" type="text" /></div>
+  <% end %>
+  <div class="c_btn_div"><button class="t_btn" onclick="javascript:vice_create()">确定</button></div>
+</div>
