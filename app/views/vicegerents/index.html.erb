@@ -45,8 +45,8 @@
   <%= form_for :vices,:url=>"/vicegerents/vice_create", :method => "post", :html =>{:id=>"vice_form"} do |f|%>
     <div class="add_codeList"><label>姓名：</label><input name="name" id="vice_name" type="text" /></div>
     <div class="add_codeList"><label>手机/电话：</label><input name="phone"  id="vice_phone" type="text" /></div>
-    <div class="add_codeList"><label>通信工具：</label><input name="connect" id="vice_connect" type="text" /></div>
-    <div class="add_codeList"><label>地址：</label><input name="connect" id="vice_address" type="text" /></div>
+    <div class="add_codeList"><label>通信工具：</label><textarea  rows="3" name="connect" id="vice_connect" ></textarea></div>
+    <div class="add_codeList"><label>地址：</label><textarea rows="3" name="address" id="vice_address" ></textarea></div>
   <% end %>
   <div class="c_btn_div"><button class="t_btn" onclick="javascript:vice_create()">确定</button></div>
 </div>
