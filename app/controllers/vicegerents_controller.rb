@@ -21,13 +21,15 @@ class VicegerentsController < ApplicationController
   def vice_create
     vice=Vicegerent.first(:conditions=>"name='#{params[:name].strip}'")
     if vice.nil?
-      Vicegerent.create(:name=>params[:name],:phone=>params[:phone],:inline=>params[:connect],:address=>params[:address])
+      Vicegerent.create(:name => params[:name].strip, :phone => params[:phone].strip,
+        :inline => params[:connect].strip, :address => params[:address].strip)
       flash[:notice]="代理人创建成功"
     else
       flash[:notice]="代理人已存在"
     end
-    @vices=Vicegerent.paginate_by_sql("select * from vicegerents order by created_at desc",:per_page=>10,:page=>params[:page])
-    render "index"
+    redirect_to request.referer
+#    @vices=Vicegerent.paginate_by_sql("select * from vicegerents order by created_at desc",:per_page=>10,:page=>params[:page])
+#    render "index"
   end
 
 end

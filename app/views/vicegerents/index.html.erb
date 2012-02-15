@@ -18,8 +18,9 @@
         <td width="10%">姓名</td>
         <td width="20%">联系电话</td>
         <td width="20%">在线qq/msn</td>
-        <td width="25%">地址</td>
+        <td width="20%">地址</td>
         <td width="15%">创建日期</td>
+        <td width="5%">操作</td>
       </tr>
       <% unless @vices.blank? %>
         <% @vices.each do |vice| %>
@@ -29,10 +30,11 @@
             <td><%= vice.inline %></td>
             <td><%= vice.address %></td>
             <td><%= vice.created_at.nil? ? "" : vice.created_at.strftime("%Y-%m-%d")%></td>
+            <td><a href="#">修改</a></td>
           </tr>
         <% end %>
       <% else %>
-        <tr><td colspan="5">暂无记录</td></tr>
+        <tr><td colspan="6">暂无记录</td></tr>
       <% end %>
     </table>
     <%=  will_paginate @vices ,:previous_label=>" &lt;", :next_label=>" &gt;" %>
