@@ -1,17 +1,17 @@
 <%= javascript_include_tag "vices" %>
 <div class="main_title">
-  <div class="m_t_h">用户列表</div>
-</div>
-<div class="text_box">
-  <div class="code_top">
-    <%= form_for :license ,:url=>"/vicegerents/vice_search", :method => "post", :html => {:onsubmit => "return vice_form()"} do |f|%>
-      <span>
-        <input name="vice_name" id="code" type="text" onfocus="javascript:$(this).val('');"   value="<%= session[:search_text].nil? ? "代理人姓名" : session[:search_text] %>" />
-        <button  class="t_search"></button>
-      </span>
+  <div class="user_search">
+    <%= form_for :license ,:url=>"/vicegerents/vice_search",
+      :method => "post", :html => {:onsubmit => "return vice_form()"} do |f|%>
+      <input name="vice_name" id="code" type="text" onfocus="javascript:$(this).val('');"
+             value="<%= session[:search_text].nil? ? "代理人姓名" : session[:search_text] %>" />
+      <button type="submit" class="t_search"></button>
       <span><button type="button" class="t_btn" onclick="javascript:show_div('.add_dailiTab')" >新建代理人</button></span>
     <% end %>
   </div>
+  <div class="m_t_h">代理人列表</div>
+</div>
+<div class="text_box">  
   <div class="user_list">
     <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
       <tr class="tr_bg">
@@ -21,15 +21,19 @@
         <td width="25%">地址</td>
         <td width="15%">创建日期</td>
       </tr>
-      <% @vices.each do |vice| %>
-        <tr>
-          <td><%= vice.name %></td>
-          <td><%= vice.phone %></td>
-          <td><%= vice.inline %></td>
-          <td><%= vice.address %></td>
-          <td><%= vice.created_at.nil? ? "" : vice.created_at.strftime("%Y-%m-%d")%></td>
-        </tr>
-      <% end unless @vices.blank? %>
+      <% unless @vices.blank? %>
+        <% @vices.each do |vice| %>
+          <tr>
+            <td><%= vice.name %></td>
+            <td><%= vice.phone %></td>
+            <td><%= vice.inline %></td>
+            <td><%= vice.address %></td>
+            <td><%= vice.created_at.nil? ? "" : vice.created_at.strftime("%Y-%m-%d")%></td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr><td colspan="5">暂无记录</td></tr>
+      <% end %>
     </table>
     <%=  will_paginate @vices ,:previous_label=>" &lt;", :next_label=>" &gt;" %>
   </div>

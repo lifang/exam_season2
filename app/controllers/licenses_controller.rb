@@ -32,25 +32,32 @@ class LicensesController < ApplicationController
   end
 
   def code_details
-    sql="select id,name,created_at from vicegerents v where 1=1"
-    sql += " and v.name like '%#{params[:info]}%'" if params[:info]!="" and !params[:info].nil?
-    @vices =Vicegerent.paginate_by_sql(sql,:per_page =>1, :page => params[:page])
-    @detail={}
-    @vices.each do |vice|
-      codes=InviteCode.find_by_sql("select bu.num number,ic.id,ic.user_id from invite_codes ic inner join buses bu on bu.id=ic.bus_id where ic.vicegerent_id=#{vice.id} and ic.status=#{InviteCode::STATUS[:NOMAL]}")
-      num=codes.blank? ? 0 : codes.size
-      no=codes.blank? ?  "未关联" : codes[0].number
-      no_used=0
-      used=0
-      codes.each do |code|
-        if code.user_id.nil?
-          no_used +=1
-        else
-          used +=1
-        end
-      end unless codes.blank?
-      @detail[vice.id]=[vice.name,no,num,vice.created_at,"#{used}/#{no_used}"]
-    end unless @vices.blank?
+    sql = "select count(i.id) total_count, ifnull(count(case when i.user_id is null then i.id end), 0) n_used_count,
+      ifnull(count(case when i.user_id is not null then i.id end), 0) used_count, b.num, b.created_at, v.name v_name from invite_codes i
+      inner join buses b on b.id = i.bus_id inner join vicegerents v on v.id = i.vicegerent_id "
+    sql += " where v.name like '%#{params[:info].strip}%'" unless params[:info].nil? or params[:info].strip.empty?
+    sql += " group by b.id"
+    @vices = InviteCode.paginate_by_sql(sql, :per_page =>10, :page => params[:page])
+
+#    sql="select id,name,created_at from vicegerents v where 1=1"
+#    sql += " and v.name like '%#{params[:info]}%'" if params[:info]!="" and !params[:info].nil?
+#    @vices =Vicegerent.paginate_by_sql(sql,:per_page =>10, :page => params[:page])
+#    @detail={}
+#    @vices.each do |vice|
+#      codes=InviteCode.find_by_sql("select bu.num number,ic.id,ic.user_id from invite_codes ic inner join buses bu on bu.id=ic.bus_id where ic.vicegerent_id=#{vice.id} and ic.status=#{InviteCode::STATUS[:NOMAL]}")
+#      num=codes.blank? ? 0 : codes.size
+#      no=codes.blank? ?  "未关联" : codes[0].number
+#      no_used=0
+#      used=0
+#      codes.each do |code|
+#        if code.user_id.nil?
+#          no_used +=1
+#        else
+#          used +=1
+#        end
+#      end unless codes.blank?
+#      @detail[vice.id]=[vice.name,no,num,vice.created_at,"#{used}/#{no_used}"]
+#    end unless @vices.blank?
     respond_with do |format|
       format.js
     end
