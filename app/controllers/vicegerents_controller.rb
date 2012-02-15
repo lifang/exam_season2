@@ -22,15 +22,12 @@ class VicegerentsController < ApplicationController
     vice=Vicegerent.first(:conditions=>"name='#{params[:name].strip}'")
     if vice.nil?
       Vicegerent.create(:name=>params[:name],:phone=>params[:phone],:inline=>params[:connect],:address=>params[:address])
-      message="代理人创建成功"
+      flash[:notice]="代理人创建成功"
     else
-      message="代理人已存在"
+      flash[:notice]="代理人已存在"
     end
-    respond_to do |format|
-      format.json {
-        render :json=>{:message=>message}
-      }
-    end
+    @vices=Vicegerent.paginate_by_sql("select * from vicegerents order by created_at desc",:per_page=>10,:page=>params[:page])
+    render "index"
   end
 
 end
