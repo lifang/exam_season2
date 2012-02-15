@@ -516,4 +516,4 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 .sj_btn_div {width: 200px; height: 27px; margin: 10px auto;}
 
 
-.add_dailiTab {width: 400px; padding: 10px; border: 3px #999 solid; background: #FFF; position: absolute; overflow: hidden;}
+.add_dailiTab {width: 400px; padding: 10px; border: 3px #999 solid; background: #FFF; position: fixed; overflow: hidden;display:none;}
