@@ -3,7 +3,7 @@ RailsTest3::Application.routes.draw do
   
   resources :vicegerents do
     collection do
-      post :vice_search,:vice_create
+      post :vice_search,:vice_create,:vice_update
       get :vice_list
     end
   end
