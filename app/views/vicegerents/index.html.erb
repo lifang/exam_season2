@@ -6,7 +6,7 @@
       <input name="vice_name" id="code" type="text" onfocus="javascript:$(this).val('');"
              value="<%= session[:search_text].nil? ? "代理人姓名" : session[:search_text] %>" />
       <button type="submit" class="t_search"></button>
-      <span><button type="button" class="t_btn" onclick="javascript:show_div('.add_dailiTab')" >新建代理人</button></span>
+      <span><button type="button" class="t_btn" onclick="javascript:show_div('#dailiTab1')" >新建代理人</button></span>
     <% end %>
   </div>
   <div class="m_t_h">代理人列表</div>
@@ -24,13 +24,13 @@
       </tr>
       <% unless @vices.blank? %>
         <% @vices.each do |vice| %>
-          <tr>
+          <tr id="tr<%= vice.id %>">
             <td><%= vice.name %></td>
             <td><%= vice.phone %></td>
             <td><%= vice.inline %></td>
             <td><%= vice.address %></td>
             <td><%= vice.created_at.nil? ? "" : vice.created_at.strftime("%Y-%m-%d")%></td>
-            <td><a href="#">修改</a></td>
+            <td><a href="#" onclick="javascript:show_div('#dailiTab2');vice_update('<%= vice.id %>')" >修改</a></td>
           </tr>
         <% end %>
       <% else %>
@@ -42,8 +42,8 @@
 </div>
 
 
-<div class="add_dailiTab">
-  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('.add_dailiTab').css('display','none')" /></span>
+<div class="add_dailiTab" id="dailiTab1">
+  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('#dailiTab1').css('display','none')" /></span>
   <%= form_for :vices,:url=>"/vicegerents/vice_create", :method => "post", :html =>{:id=>"vice_form"} do |f|%>
     <div class="add_codeList"><label>姓名：</label><input name="name" id="vice_name" type="text" /></div>
     <div class="add_codeList"><label>手机/电话：</label><input name="phone"  id="vice_phone" type="text" /></div>
@@ -51,4 +51,16 @@
     <div class="add_codeList"><label>地址：</label><textarea rows="3" name="address" id="vice_address" ></textarea></div>
   <% end %>
   <div class="c_btn_div"><button class="t_btn" onclick="javascript:vice_create()">确定</button></div>
+</div>
+
+<div class="add_dailiTab" id="dailiTab2">
+  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('#dailiTab2').css('display','none')" /></span>
+  <%= form_for :vices,:url=>"/vicegerents/vice_update", :method => "post", :html =>{:id=>"update_vice"} do |f|%>
+    <div class="add_codeList"><label>姓名：</label><input name="name" id="update_name" type="text" /></div>
+    <div class="add_codeList"><label>手机/电话：</label><input name="phone"  id="update_phone" type="text" /></div>
+    <div class="add_codeList"><label>通信工具：</label><textarea  rows="3" name="connect" id="update_connect" ></textarea></div>
+    <div class="add_codeList"><label>地址：</label><textarea rows="3" name="address" id="update_address" ></textarea></div>
+    <input type="hidden" value="" name="update_id" id="update_id"/>
+  <% end %>
+  <div class="c_btn_div"><button class="t_btn" onclick="javascript:update_form()">确定</button></div>
 </div>

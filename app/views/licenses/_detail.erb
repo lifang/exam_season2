@@ -12,11 +12,11 @@
   <% else %>
     <% @vices.each do |code| %>
       <tr>
-        <td><%= @detail[code.id][0] %></td>
-        <td><%=@detail[code.id][1] %></td>
-        <td><%= @detail[code.id][2] %></td>
-        <td><%= @detail[code.id][3].nil?? "" : @detail[code.id][3].strftime("%Y-%m-%d") %></td>
-        <td><%= @detail[code.id][4] %></td>
+        <td><%=code.v_name %></td>
+        <td><%=code.num %></td>
+        <td><%= code.total_count %></td>
+        <td><%= code.created_at.nil?? "" : code.created_at.strftime("%Y-%m-%d") %></td>
+        <td><%="#{code.used_count}/#{code.n_used_count}" %></td>
       </tr>
     <% end %>
   <% end %>
