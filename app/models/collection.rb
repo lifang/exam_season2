@@ -155,7 +155,6 @@ class Collection < ActiveRecord::Base
       else
         problem.add_element("title").add_text("((mp3))#{block_audio}((mp3))")
       end
-      puts problem.elements["title"].text
     end
 
   end
@@ -177,6 +176,7 @@ class Collection < ActiveRecord::Base
 
     collection_xml = Document.new("<collection><problems></problems></collection>")
     answer_questions = answer_xml.elements["exam"].elements["paper"].elements["questions"]
+    question_ids = []
     paper_xml.root.elements["blocks"].each_element do |block|
       block.elements["problems"].each_element do |problem|
         problem.elements["questions"].each_element do |question|
@@ -185,6 +185,7 @@ class Collection < ActiveRecord::Base
                 question.attributes["flag"].to_i != 1)
             answer_question = answer_questions.elements["question[@id='#{question.attributes["id"]}']"]
             if answer_question.nil? or (answer_question.attributes["score"].to_f != question.attributes["score"].to_f)
+              question_ids << question.attributes["id"]
               collection_problem = collection.problem_in_collection(problem.attributes["id"], collection_xml)
               answer = (answer_question.nil? or answer_question.elements["answer"].nil?) ? ""
               : answer_question.elements["answer"].text
@@ -206,7 +207,8 @@ class Collection < ActiveRecord::Base
       end
     end
     problem_arr = (Hash.from_xml(collection_xml.to_s))["collection"]["problems"]["problem"]
-    problem_arr.each do |problem|
+    problem_arr = [problem_arr] if problem_arr.class.to_s == "Hash"
+    problem_arr.each do |problem|      
       if already_hash["problems"]["problem"].class.to_s == "Hash"
         if (already_hash["problems"]["problem"])["id"].to_i == problem["id"].to_i
           already_hash["problems"]["problem"] = [problem]
@@ -219,10 +221,11 @@ class Collection < ActiveRecord::Base
         end
       end
     end unless problem_arr.nil? or problem_arr.blank?
-    
     collection_js = "collections = " + already_hash.to_json.to_s
     path_url = collection.collection_url.split("/")
     collection.generate_collection_url(collection_js, "/" + path_url[1] + "/" + path_url[2], collection.collection_url)
+    CollectionInfo.update_collection_infos(paper_xml.root.attributes["id"].to_i,
+      user_id, question_ids)
   end
 
 end
