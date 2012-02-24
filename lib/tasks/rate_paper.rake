@@ -6,7 +6,8 @@ namespace :paper do
   task(:rate => :environment) do
     #自动批卷
     exam_users = ExamUser.find_by_sql("select e.id, e.user_id,
-        e.total_score, e.paper_id, p.paper_url, e.answer_sheet_url, e.is_auto_rate, rur.is_authed, exm.is_should_rate
+        e.total_score, e.paper_id, p.paper_url, e.answer_sheet_url,
+        e.is_auto_rate, rur.is_authed, exm.is_should_rate, exm.category_id
         from exam_users e inner join papers p on p.id = e.paper_id
         left join rater_user_relations rur on rur.exam_user_id = e.id
         inner join examinations exm on exm.id = e.examination_id
@@ -30,9 +31,9 @@ namespace :paper do
       eu = ExamUser.find(exam_user.id)
       total_score = answer_xml.root.elements["paper"].attributes["score"].nil? ? 0
       : answer_xml.root.elements["paper"].attributes["score"].to_f.round
-#      eu.set_auto_rater(total_score)
+      eu.set_auto_rater(total_score)
       puts exam_user.id.to_s + " rate success"
-      Collection.auto_add_collection(answer_xml, paper_xml, exam_user.user_id)
+      Collection.auto_add_collection(answer_xml, paper_xml, exam_user.user_id, exam_user.category_id)
       puts exam_user.id.to_s + " collection success"
     end unless exam_users.blank?
     #统计排名
