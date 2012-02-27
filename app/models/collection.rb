@@ -1,5 +1,6 @@
 # encoding: utf-8
 class Collection < ActiveRecord::Base
+  belongs_to :user
 
   require 'rexml/document'
   include REXML
@@ -160,8 +161,8 @@ class Collection < ActiveRecord::Base
   end
 
   #自动阅卷保存错题
-  def self.auto_add_collection(answer_xml, paper_xml, user_id)
-    collection = Collection.find_or_create_by_user_id(user_id)
+  def self.auto_add_collection(answer_xml, paper_xml, user_id, category_id)
+    collection = Collection.find_or_create_by_user_id_and_category_id(user_id, category_id)
     path = COLLECTION_PATH + "/" + Time.now.to_date.to_s
     url = path + "/#{collection.id}.js"
     collection.set_collection_url(path, url)
