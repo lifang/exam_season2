@@ -276,7 +276,12 @@ class PapersController < ApplicationController
       url = "#{Constant::PUBLIC_PATH}#{@paper.paper_url}"
       paper_doc = calculate_doc(paper_doc,url)
       #生成考卷文件
-      @paper.create_paper_url(@paper.create_paper_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "paperjs")
+      if @paper.paper_js_url && File.exist?("#{Constant::PUBLIC_PATH}#{@paper.paper_js_url}")
+        path = @paper.paper_js_url.split("/")[2]
+      else
+       path = "#{Time.now.strftime("%Y%m%d")}"
+      end
+      @paper.create_paper_url(@paper.create_paper_js(paper_doc), path, "js", "paperjs")
       @paper.update_attributes(:status=>Paper::CHECKED[:YES])
       message = "试卷审核成功"
     rescue
