@@ -423,7 +423,7 @@ class PapersController < ApplicationController
     paper_doc = calculate_doc(paper_doc,url)
     #生成考卷文件
     @paper.write_file(@paper.create_paper_js(paper_doc), "paperjs", "js", "preview")
-    redirect_to "#{FRONT_SERVER_PATH}/exam_users/preview?paper=#{params[:id]}&user_id=#{cookies[:user_id]}"
+    redirect_to "#{FRONT_SERVER_PATH}/exam_users/preview?paper=#{params[:id]}&preview=1"
   end
 
   def delete
