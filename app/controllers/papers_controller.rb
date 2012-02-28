@@ -423,7 +423,24 @@ class PapersController < ApplicationController
     paper_doc = calculate_doc(paper_doc,url)
     #生成考卷文件
     @paper.write_file(@paper.create_paper_js(paper_doc), "paperjs", "js", "preview")
-    redirect_to "#{FRONT_SERVER_PATH}/exam_users/preview?paper=#{params[:id]}"
+    redirect_to "#{FRONT_SERVER_PATH}/exam_users/preview?paper=#{params[:id]}&user_id=#{cookies[:user_id]}"
+  end
+
+  def delete
+    paper = Paper.find(params[:id])
+    if paper
+      relations = ExaminationPaperRelation.find_by_sql(["select e.title from examination_paper_relations epr
+        inner join examinations e on e.id = epr.examination_id where epr.paper_id = ?", paper.id])
+      if relations.blank?
+        paper.destroy
+        flash[:notice] = "试卷删除成功！"
+      else
+        str = ""
+        relations.each { |re| str = str.empty? ? re.title : (str + "," + re.title) }
+        flash[:notice] = "试卷已经被 #{str} 所使用。"
+      end
+    end
+    redirect_to request.referer
   end
 
 end

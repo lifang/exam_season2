@@ -11,7 +11,7 @@ RailsTest3::Application.routes.draw do
     member do
       post :post_block,:create_problem,:post_question
       post :ajax_edit_problem_description,:ajax_edit_problem_title,:ajax_edit_paper_title,:ajax_edit_paper_time
-      get :examine,:destroy_element,:preview
+      get :examine,:destroy_element,:preview, :delete
     end
     collection do
       post :select_question_type,:select_correct_type, :sort    #ajax
@@ -67,7 +67,7 @@ RailsTest3::Application.routes.draw do
   end
   resources :similarities do
     member do
-      get :statistics
+      get :statistics, :delete
     end
     collection do
       get :paper_list
@@ -77,7 +77,7 @@ RailsTest3::Application.routes.draw do
   resources :simulations do
     member do
       post :update_rater
-      get :count_detail
+      get :count_detail, :delete
     end
     collection do
       post :add_rater,:delete_rater,:stop_exam

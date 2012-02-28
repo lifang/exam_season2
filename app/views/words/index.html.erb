@@ -17,7 +17,10 @@
     <ul>
       <% unless @words.blank? %>
         <% @words.each do |word| %>
-          <li><a href="/words/<%= word.id %>?category=<%= params[:category] %>"><%= word.name %></a></li>
+          <li><a href="/words/<%= word.id %>?category=<%= params[:category] %>"><%= word.name %></a>
+            <a href="/words/<%= word.id %>" data-confirm="确定要删除当前单词么？"
+               data-method="delete" rel="nofollow"><img src='/assets/xx.png'/></a>
+          </li>
         <% end %>
       <% else %>
         <li>当前科目下暂无词汇</li>

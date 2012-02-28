@@ -30,6 +30,9 @@
           <% action="暂停" %>
           <% action="恢复" if simulation.is_published==false %>
           <button class="t_btn" onclick="javascript:over_exam(<%= simulation.id  %>,$(this))"><%= action %></button>
+          <button class="t_btn"
+                  onclick="javascript:if(window.confirm('您确定要删除当前试卷么？')){window.location.href='/similarities/<%= simulation.id %>/delete';}">
+            删除</button>
         </div>
         <h2>
           <%= simulation.title %></h2>

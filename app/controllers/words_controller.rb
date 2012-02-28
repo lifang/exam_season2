@@ -151,5 +151,12 @@ class WordsController < ApplicationController
     @word = params[:all_message].split(",;,")
     @category_id = params[:category]
   end
+
+  def destroy
+    word = Word.find(params[:id])
+    word.destroy if word
+    flash[:notice] = "删除成功！"
+    redirect_to request.referer
+  end
   
 end
