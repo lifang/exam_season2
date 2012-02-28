@@ -84,17 +84,14 @@ function check_edit() {
 
 //停止事件冒泡
 function stop_bunble() {
-    $(function() {  
-        var e = getEvent();
-        if (window.event) {
-            //e.returnValue=false;
-            e.cancelBubble=true;
-        }else{
-            //e.preventDefault();
-            e.stopPropagation();
-        }
+    var e = getEvent();
+    if (window.event) {
+        //e.returnValue=false;
+        e.cancelBubble=true;
+    }else{
+        //e.preventDefault();
+        e.stopPropagation();
     }
-    );
 }
 
 //在火狐和Ie下取event事件
