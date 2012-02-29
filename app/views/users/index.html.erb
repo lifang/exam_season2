@@ -4,7 +4,7 @@
     <%= form_for :similarity ,:url=>"/users/search", :method => "post",
       :html => {:onsubmit => "return search_user_form()"} do |f|%>
       <input name="search_text" id="search_text" type="text" class="t_se_input"
-             value="<%= session[:search_text].nil? ? "昵称或E-mail" : session[:search_text] %>" />
+             value="<%= session[:search_text].nil? ? "编号或昵称或E-mail" : session[:search_text] %>" />
       <button type="submit" class="t_search"></button>
     <% end %>
   </div>
@@ -14,6 +14,7 @@
   <div class="user_list">
     <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
       <tr class="tr_bg">
+        <td width="5%">编号</td>
         <td width="10%">昵称</td>
         <td width="20%">E-mail</td>
         <td width="10%">来源</td>
@@ -25,11 +26,12 @@
           <% end %>
         </td>
         <td width="10%">动作次数</td>
-        <td width="20%">最后动作时间</td>
+        <td width="15%">最后动作时间</td>
         <td width="10%">周动作次数</td>
       </tr>
       <% @users.each do |user| %>
         <tr>
+          <td><%= user.user_id %></td>
           <td><a href="/users/<%= user.user_id %>"><%= user.username %></a></td>
           <td><%= user.email %></td>
           <td><%= User::FROM["#{user.code_type}"].nil? ? "注册用户" : User::FROM["#{user.code_type}"] %></td>

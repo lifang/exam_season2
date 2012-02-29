@@ -78,13 +78,12 @@ class UsersController < ApplicationController
     order = Order.find(:first, 
       :conditions => ["status = #{Order::STATUS[:NOMAL]} and user_id = ? and category_id = ?",
         params[:id].to_i, params[:vip_c_id].to_i])
-    if order
-      order.update_attributes(:types => params[:order_type].to_i)
-    else
+    if order.nil? || order.types==Order::TYPES[:COMPETE] || order.types==Order::TYPES[:TRIAL_SEVEN]
       Order.create(:user_id => params[:id].to_i, :types => params[:order_type].to_i,
         :status => Order::STATUS[:NOMAL], :start_time => Time.now.to_datetime, :total_price => 0,
         :end_time => params[:end_time],
         :category_id => params[:vip_c_id].to_i, :remark => params[:reason])
+      order.update_attributes(:status=>Order::STATUS[:INVALIDATION]) unless order.nil?
     end
     flash[:notice] = "升级成功。"
     redirect_to request.referer

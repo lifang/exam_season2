@@ -51,12 +51,12 @@ end
                   <%= link_to "#{relation.name}", "/users/#{@user.id}/category_logs?category_id=#{relation.c_id}",
                     :remote => true %>
                 </td>
-                <td><% if relation.order_type == Order::TYPES[:ACCREDIT] %>免费试用<% else %>收费<% end %></td>
+                <td><% if relation.order_type == Order::TYPES[:TRIAL_SEVEN] %>免费试用<% else %>收费<% end %></td>
                 <td><%= Order::TYPE_NAME[relation.order_type] %></td>
                 <td><%= relation.remark %></td>
                 <td><%= relation.end_time.strftime("%Y-%m-%d") if relation.end_time %></td>
                 <td>
-                  <% if relation.order_type == Order::TYPES[:ACCREDIT] %>
+                  <% if relation.order_type == Order::TYPES[:TRIAL_SEVEN] %>
                     <a href="javascript:void(0);" onclick="javascript:user_goto_vip(<%= relation.c_id %>);">升级</a>
                   <% end %>
                 </td>
