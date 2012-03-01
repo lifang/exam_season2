@@ -4,17 +4,19 @@ class WordsController < ApplicationController
   before_filter :is_category_in?
   
   def index
-    @words = Word.get_words(params[:category].to_i, nil, params[:page])
+    @words = Word.get_words(params[:category].to_i, nil, nil, params[:page])
   end
 
   def search
+    session[:word_level] = nil
+    session[:word_level] = params[:word_level]
     session[:word_text] = nil
     session[:word_text] = params[:word_text]
     redirect_to "/words/search_list?category=#{params[:category]}"
   end
 
   def search_list
-    @words = Word.get_words(params[:category].to_i, session[:word_text], params[:page])
+    @words = Word.get_words(params[:category].to_i, session[:word_level], session[:word_text], params[:page])
     render "index"
   end
 
