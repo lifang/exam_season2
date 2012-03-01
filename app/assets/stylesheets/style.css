@@ -17,6 +17,8 @@ img { border: none;}
 .left_float { float: left;}
 .right_float { float: right;}
 .red { color: #F00;}
+
+
 .t_search {
     margin: 0 5px;
     width: 40px;
@@ -26,6 +28,8 @@ img { border: none;}
     border: none;
     cursor: pointer;
 }
+
+.t_select { height: 27px; line-height: 27px; float: left; color: #999; margin: 0 5px; }
 .t_se_input { height: 25px; line-height: 25px; float: left; color: #999;}
 
 
