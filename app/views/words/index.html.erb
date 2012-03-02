@@ -4,9 +4,9 @@
   </div>
   <div class="word_search">
     <%= form_for :words ,:url=>"/words/search?category=#{params[:category]}", :method => "post" do |f|%>
-      <select class="t_select" name="word_level"><option value="">未选择等级</option>
+      <select class="t_select" name="word_level"><option value="">请选择单词等级</option>
         <% Word::LEVEL.each do |key,value| %>
-          <option <% if session[:word_level]=="#{key}" %>selected="selected" <% end %> value="<%= key %>">词汇等级<%= value %></option>
+          <option <% if session[:word_level]=="#{key}" %>selected="selected" <% end %> value="<%= key %>"><%= value %></option>
         <% end %>
       </select>
 

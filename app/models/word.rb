@@ -26,8 +26,6 @@ class Word < ActiveRecord::Base
     7 => "七", 8 => "八", 9 => "九", 10 => "十"}  #单词的等级
   
   def self.get_words(category_id, search_level, search_text, page)
-    puts search_text
-    puts "---------------------------"
     sql = "select w.id, w.name from words w where w.category_id = ? "
     sql += " and level = #{search_level}" unless search_level.nil? or search_level.strip.empty?
     sql += " and name like ? " unless search_text.nil? or search_text.strip.empty? or search_text=="搜索词汇"
