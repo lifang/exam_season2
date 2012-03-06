@@ -120,8 +120,15 @@ class WordsController < ApplicationController
 
   def create_word
     Word.transaction do
+      type = 0
+      Word::TYPES.each do |k, v|
+        if params[:types].strip.include?(v.gsub(".", ""))
+          type = k
+          break
+        end
+      end
       enunciate_url = params[:en_url].nil? ? params[:enunciate_url] : params[:en_url]
-      pram={:category_id => params[:category_id].to_i, :name => params[:name], :types => params[:types].to_i,
+      pram={:category_id => params[:category_id].to_i, :name => params[:name], :types => type,
         :phonetic => params[:phonetic].strip, :enunciate_url => enunciate_url, :en_mean => params[:en_mean],
         :ch_mean => params[:ch_mean], :level => Word::WORD_LEVEL[:THIRD]}
       word = Word.find_by_name(params[:name])
