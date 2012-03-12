@@ -24,13 +24,13 @@ def self.user_expr(types)
       expression=" where #{other}"
     elsif types.to_i==2
       file_name="/#{Time.now.to_date.to_s}_#{action}_30.xls"
-      expression=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1 and  #{other}"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(al.created_at)>=1 and  #{other}"
     elsif types.to_i==3
       file_name="/#{Time.now.to_date.to_s}_#{action}_7.xls"
-      expression=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=7 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1 and  #{other}"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)<=7 and TO_DAYS(NOW())-TO_DAYS(al.created_at)>=1 and  #{other}"
     else
       file_name="/#{Time.now.to_date.to_s}_#{action}_1.xls"
-      expression=" where TO_DAYS(NOW())-TO_DAYS(created_at)=1 and #{other}"
+      expression=" where TO_DAYS(NOW())-TO_DAYS(al.created_at)=1 and #{other}"
     end
     return [file_name,expression]
   end
@@ -40,24 +40,24 @@ def self.user_expr(types)
       file_name="/#{Time.now.to_date.to_s}_buyer_all.xls"
     elsif types.to_i==2
       file_name="/#{Time.now.to_date.to_s}_buyer_30.xls"
-      expr=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1"
+      expr=" where TO_DAYS(NOW())-TO_DAYS(o.created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(o.created_at)>=1"
     elsif types.to_i==3
       file_name="/#{Time.now.to_date.to_s}_buyer_7.xls"
-      expr=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=7 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1"
+      expr=" where TO_DAYS(NOW())-TO_DAYS(o.created_at)<=7 and TO_DAYS(NOW())-TO_DAYS(o.created_at)>=1"
     elsif types.to_i==4
       file_name="/#{Time.now.to_date.to_s}_buyer_1.xls"
-      expr=" where TO_DAYS(NOW())-TO_DAYS(created_at)=1"
+      expr=" where TO_DAYS(NOW())-TO_DAYS(o.created_at)=1"
     elsif types.to_i==5
       file_name="/#{Time.now.to_date.to_s}_fee_all.xls"
     elsif types.to_i==6
       file_name="/#{Time.now.to_date.to_s}_fee_30.xls"
-      expr=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1"
+      expr=" where TO_DAYS(NOW())-TO_DAYS(o.created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(o.created_at)>=1"
     elsif types.to_i==7
       file_name="/#{Time.now.to_date.to_s}_fee_7.xls"
-      expr=" where TO_DAYS(NOW())-TO_DAYS(created_at)<=7 and TO_DAYS(NOW())-TO_DAYS(created_at)>=1"
+      expr=" where TO_DAYS(NOW())-TO_DAYS(o.created_at)<=7 and TO_DAYS(NOW())-TO_DAYS(o.created_at)>=1"
     elsif types.to_i==8
       file_name="/#{Time.now.to_date.to_s}_fee_1.xls"
-      expr=" where TO_DAYS(NOW())-TO_DAYS(created_at)=1"
+      expr=" where TO_DAYS(NOW())-TO_DAYS(o.created_at)=1"
     end
     return [file_name,expr]
   end
