@@ -8,14 +8,14 @@ class SessionsController < ApplicationController
   
   def login_from
     @user = User.find_by_email(params[:user_name])
-    if  @user.nil?||!@user.has_password?(params[:user_password])
+    if  @user.nil? or !@user.has_password?(params[:user_password])
       flash[:error] = "用户名或密码错误"
       redirect_to request.referer
     else
       cookies[:user_id]={:value =>@user.id, :path => "/", :secure  => false}
       cookies[:user_name]={:value =>@user.name, :path => "/", :secure  => false}
       cookie_role(cookies[:user_id])
-      if is_admin? || is_paper_creater?
+      if is_admin? or is_paper_creater? or is_vicegerent?
         redirect_to "/categories"
       else
         cookies.delete(:user_id)

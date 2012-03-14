@@ -5,7 +5,7 @@ class CategoriesController < ApplicationController
 
   #[get][collection]科目列表页面
   def index
-    if is_admin?
+    if is_admin? or is_vicegerent?
       @categories=Category.paginate(:per_page => 4, :page => params[:page])
     else
       if is_paper_creater?
