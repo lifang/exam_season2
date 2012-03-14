@@ -119,6 +119,12 @@ class WordsController < ApplicationController
   end
 
   def create_word
+    types=0
+    Word::TYPES.each do |k,v|
+     if params[:types].include?(v.gsub(".",""))
+       types=k
+     end
+    end
     Word.transaction do
       type = 0
       Word::TYPES.each do |k, v|
@@ -153,7 +159,6 @@ class WordsController < ApplicationController
     else
       redirect_to "/words?category=#{params[:category_id]}"
     end
-    #    redirect_to request.referer
   end
 
   def new_word

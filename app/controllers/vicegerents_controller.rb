@@ -4,6 +4,7 @@ class VicegerentsController < ApplicationController
   before_filter :access?
 
   def index
+    session[:vice_text] = nil
     @vices=Vicegerent.paginate_by_sql("select * from vicegerents order by created_at desc",:per_page=>10,:page=>params[:page])
   end
 
@@ -37,4 +38,6 @@ class VicegerentsController < ApplicationController
     flash[:notice]="更新成功"
     redirect_to request.referer
   end
+ 
+
 end
