@@ -1,0 +1,76 @@
+<%= javascript_include_tag "vices" %>
+<div class="main_title">
+  <div class="user_search">
+    <%= form_for :license ,:url=>"/adverts/advert_search", :method => "post" do |f|%>
+
+      <span>省：<select  name="search_region" id="search_region"  onchange="city_search($('#search_region option:selected').val())">
+          <option>请选择省份</option>
+          <% @provines.each do |provice| %>
+            <option value="<%= provice.id %>" <% if session[:advert_region].to_i==provice.id %> selected <% end %> id="search_<%= provice.id %>"><%= provice.name %></option>
+          <% end unless @provines.blank? %>
+        </select>
+        市：<select name="search_city" id="search_city">
+        </select>
+      </span>
+      <button type="submit" class="t_search"></button>
+      <span><button type="button" class="t_btn" onclick="javascript:show_div('.add_label');advert_create();render_city($('#region option:selected').val());" >新建广告</button></span>
+    <% end %>
+  </div>
+  <div class="m_t_h">广告列表</div>
+</div>
+<script type="text/javascript">
+  var city=$('#search_region option:selected').val();
+  if (city!=null&&city!=""&&city.length!=0){
+    $("#search_region").trigger("onchange");
+<% unless  session[:search_city].nil? %>
+      setTimeout(function(){
+        $("#search_city #"+<%= session[:search_city] %>).attr("selected",true);
+      },1000);
+<% end %>
+  }
+</script>
+<div class="text_box">
+  <div class="user_list">
+    <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
+      <tr class="tr_bg">
+        <td width="20%">省市</td>
+        <td width="40%">广告内容</td>
+        <td width="15%">创建日期</td>
+        <td width="5%">操作</td>
+      </tr>
+      <% unless @adverts.blank? %>
+        <% @adverts.each do |advert| %>
+          <input id="advert_<%=advert.a_id  %>" value="<%= advert.content %>" type="hidden"/>
+          <tr id="tr<%= advert.id %>">
+            <td><%= "#{advert.r_name}-#{advert.name}" %></td>
+            <td><%= advert.content %></td>
+            <td><%= advert.created_at.nil? ? "" : advert.created_at.strftime("%Y-%m-%d")%></td>
+            <td><a href="#" onclick="javascript:show_div('.add_label');advert_update('<%= advert.parent_id %>','<%= advert.id %>','<%= advert.a_id %>')" >修改</a></td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr><td colspan="6">暂无记录</td></tr>
+      <% end %>
+    </table>
+    <%=  will_paginate @adverts ,:previous_label=>" &lt;", :next_label=>" &gt;" %>
+  </div>
+</div>
+<div class="add_label">
+  <span class="yj_x"><img src="/assets/x.gif" onclick="javascript:$('.add_label').css('display','none');"/></span>
+  <%= form_for :vices,:url=>"/adverts/advert_create", :method => "post", :html =>{:id=>"advert_form"} do |f|%>
+    <input type="hidden" value="" name="advert_id" id="advert_id"/>
+    <div>省：<select name="region" id="region" onchange="render_city($('#region option:selected').val())">
+        <% @provines.each do |provice| %>
+          <option value="<%= provice.id %>" id="<%= provice.id %>"><%= provice.name %></option>
+        <% end unless @provines.blank? %>
+      </select>
+      市：<select name="city" id="city">
+      </select>
+    </div>
+    <div id="tishi_div"><span class="red">*</span><em>双竖线(||)隔开可以输入多条广告内容。</em></div>
+    <div>
+      <textarea  id="text_content" name="text_content" cols="33" rows="5"></textarea>
+    </div>
+  <% end %>
+  <div><button class="t_btn" onclick="javascript:advert_check()">提交</button></div>
+</div>

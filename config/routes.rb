@@ -1,6 +1,11 @@
 RailsTest3::Application.routes.draw do
 
-  
+  resources :adverts do
+    collection do
+      post :advert_search,:list_city,:advert_create,:advert_search,:search_city
+      get :advert_list
+    end
+  end
   resources :vicegerents do
     collection do
       post :vice_search,:vice_create,:vice_update

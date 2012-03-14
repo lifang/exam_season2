@@ -117,9 +117,15 @@ class WordsController < ApplicationController
   end
 
   def create_word
+    types=0
+    Word::TYPES.each do |k,v|
+     if params[:types].include?(v.gsub(".",""))
+       types=k
+     end
+    end
     Word.transaction do
       enunciate_url = params[:en_url].nil? ? params[:enunciate_url] : params[:en_url]
-      pram={:category_id => params[:category_id].to_i, :name => params[:name], :types => params[:types].to_i,
+      pram={:category_id => params[:category_id].to_i, :name => params[:name], :types =>types,
         :phonetic => params[:phonetic].strip, :enunciate_url => enunciate_url, :en_mean => params[:en_mean],
         :ch_mean => params[:ch_mean], :level => Word::WORD_LEVEL[:THIRD]}
       word = Word.find_by_name(params[:name])
@@ -144,7 +150,6 @@ class WordsController < ApplicationController
     else
       redirect_to "/words?category=#{params[:category_id]}"
     end
-    #    redirect_to request.referer
   end
 
   def new_word

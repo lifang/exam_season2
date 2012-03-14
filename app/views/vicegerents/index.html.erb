@@ -4,7 +4,7 @@
     <%= form_for :license ,:url=>"/vicegerents/vice_search",
       :method => "post", :html => {:onsubmit => "return vice_form()"} do |f|%>
       <input name="vice_name" id="code" type="text" onfocus="javascript:$(this).val('');"
-             value="<%= session[:search_text].nil? ? "代理人姓名" : session[:search_text] %>" />
+             value="<%= session[:vice_text].nil? ? "代理人姓名" : session[:vice_text] %>" />
       <button type="submit" class="t_search"></button>
       <span><button type="button" class="t_btn" onclick="javascript:show_div('#dailiTab1')" >新建代理人</button></span>
     <% end %>
