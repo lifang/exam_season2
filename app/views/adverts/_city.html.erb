@@ -1,4 +1,4 @@
-<option>请选择城市</option>
+<option value="">请选择城市</option>
 <% @city.each do |one_city| %>
   <option value="<%= one_city.id %>" id="<%= one_city.id %>"><%= one_city.name %></option>
 <% end%>

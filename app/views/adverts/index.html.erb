@@ -4,7 +4,7 @@
     <%= form_for :license ,:url=>"/adverts/advert_search", :method => "post" do |f|%>
 
       <span>省：<select  name="search_region" id="search_region"  onchange="city_search($('#search_region option:selected').val())">
-          <option>请选择省份</option>
+          <option value="">请选择省份</option>
           <% @provines.each do |provice| %>
             <option value="<%= provice.id %>" <% if session[:advert_region].to_i==provice.id %> selected <% end %> id="search_<%= provice.id %>"><%= provice.name %></option>
           <% end unless @provines.blank? %>
