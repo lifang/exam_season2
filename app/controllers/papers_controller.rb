@@ -270,13 +270,18 @@ class PapersController < ApplicationController
     begin
       @paper = Paper.find(params[:id])
       paper_doc = @paper.open_file
+      if @paper.paper_js_url && File.exist?("#{Constant::PUBLIC_PATH}#{@paper.paper_js_url}")
+        path = @paper.paper_js_url.split("/")[2]
+      else
+       path = "#{Time.now.strftime("%Y%m%d")}"
+      end
       #生成答案解析文件
-      @paper.write_file(@paper.create_paper_answer_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "answerjs")
+      @paper.write_file(@paper.create_paper_answer_js(paper_doc), path, "js", "answerjs")
       #更新试卷总题数和试卷总分，以及各模块总题数和模块总分
       url = "#{Constant::PUBLIC_PATH}#{@paper.paper_url}"
       paper_doc = calculate_doc(paper_doc,url)
       #生成考卷文件
-      @paper.create_paper_url(@paper.create_paper_js(paper_doc), "#{Time.now.strftime("%Y%m%d")}", "js", "paperjs")
+      @paper.create_paper_url(@paper.create_paper_js(paper_doc), path, "js", "paperjs")
       @paper.update_attributes(:status=>Paper::CHECKED[:YES])
       message = "试卷审核成功"
     rescue
@@ -418,7 +423,24 @@ class PapersController < ApplicationController
     paper_doc = calculate_doc(paper_doc,url)
     #生成考卷文件
     @paper.write_file(@paper.create_paper_js(paper_doc), "paperjs", "js", "preview")
-    redirect_to "#{FRONT_SERVER_PATH}/exam_users/preview?paper=#{params[:id]}"
+    redirect_to "#{FRONT_SERVER_PATH}/exam_users/preview?paper=#{params[:id]}&preview=1"
+  end
+
+  def delete
+    paper = Paper.find(params[:id])
+    if paper
+      relations = ExaminationPaperRelation.find_by_sql(["select e.title from examination_paper_relations epr
+        inner join examinations e on e.id = epr.examination_id where epr.paper_id = ?", paper.id])
+      if relations.blank?
+        paper.destroy
+        flash[:notice] = "试卷删除成功！"
+      else
+        str = ""
+        relations.each { |re| str = str.empty? ? re.title : (str + "," + re.title) }
+        flash[:notice] = "试卷已经被 #{str} 所使用。"
+      end
+    end
+    redirect_to request.referer
   end
 
 end

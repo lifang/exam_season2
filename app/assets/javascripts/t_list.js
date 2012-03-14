@@ -43,18 +43,18 @@ $(function() {
 
 //用户列表search
 $(function(){
-    $('.user_search input').focus(function(){
+    $('.word_search input').focus(function(){
         var thisVal = $(this).val();
         if(thisVal == this.defaultValue){
             $(this).val('');
         }
     })
-    $('.user_search input').blur(function(){
-        var thisVal = $(this).val();
-        if(thisVal == ''){
-            $(this).val(this.defaultValue);
-        }
-    })
+//    $('.word_search input').blur(function(){
+//        var thisVal = $(this).val();
+//        if(thisVal == ''){
+//            $(this).val(this.defaultValue);
+//        }
+//    })
 })
 
 /*试卷信息，添加小题，左右滑动--*/

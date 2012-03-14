@@ -8,7 +8,7 @@
 //= require jquery_ujs
 //= require cookie
 //= require t_list
-//= require jquery.ui.core
-//= require jquery.ui.widget
-//= require jquery.ui.mouse
-//= require jquery.ui.sortable
+//= require jquery.ui.core.min
+//= require jquery.ui.widget.min
+//= require jquery.ui.mouse.min
+//= require jquery.ui.sortable.min

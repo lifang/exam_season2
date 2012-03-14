@@ -6,7 +6,7 @@ class Bus < ActiveRecord::Base
     bus_code = "AAAA"
     last_bus = Bus.find(:first, :select => "max(num) num")
     letters = ('A'..'Z').to_a
-    unless last_bus.nil?
+    unless last_bus.nil? or last_bus.num.nil?
       old_bus = last_bus.num.split("")
         if old_bus[3] < "Z"
           bus_code = old_bus[0, 3].join + letters.at(letters.index(old_bus[3]) + 1)

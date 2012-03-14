@@ -4,17 +4,19 @@ class WordsController < ApplicationController
   before_filter :is_category_in?
   
   def index
-    @words = Word.get_words(params[:category].to_i, nil, params[:page])
+    @words = Word.get_words(params[:category].to_i, nil, nil, params[:page])
   end
 
   def search
+    session[:word_level] = nil
+    session[:word_level] = params[:word_level]
     session[:word_text] = nil
     session[:word_text] = params[:word_text]
     redirect_to "/words/search_list?category=#{params[:category]}"
   end
 
   def search_list
-    @words = Word.get_words(params[:category].to_i, session[:word_text], params[:page])
+    @words = Word.get_words(params[:category].to_i, session[:word_level], session[:word_text], params[:page])
     render "index"
   end
 
@@ -124,8 +126,15 @@ class WordsController < ApplicationController
      end
     end
     Word.transaction do
+      type = 0
+      Word::TYPES.each do |k, v|
+        if params[:types].strip.include?(v.gsub(".", ""))
+          type = k
+          break
+        end
+      end
       enunciate_url = params[:en_url].nil? ? params[:enunciate_url] : params[:en_url]
-      pram={:category_id => params[:category_id].to_i, :name => params[:name], :types =>types,
+      pram={:category_id => params[:category_id].to_i, :name => params[:name], :types => type,
         :phonetic => params[:phonetic].strip, :enunciate_url => enunciate_url, :en_mean => params[:en_mean],
         :ch_mean => params[:ch_mean], :level => Word::WORD_LEVEL[:THIRD]}
       word = Word.find_by_name(params[:name])
@@ -155,6 +164,13 @@ class WordsController < ApplicationController
   def new_word
     @word = params[:all_message].split(",;,")
     @category_id = params[:category]
+  end
+
+  def destroy
+    word = Word.find(params[:id])
+    word.destroy if word
+    flash[:notice] = "删除成功！"
+    redirect_to request.referer
   end
   
 end

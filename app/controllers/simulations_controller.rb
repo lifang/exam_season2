@@ -196,4 +196,20 @@ class SimulationsController < ApplicationController
     exam=Examination.find(params[:exam_id])
     exam.update_attributes(:is_published=>params[:types].to_i)
   end
+
+  def delete
+    simulation = Examination.find(params[:id])
+    if simulation
+      exam_users = ExamUser.count_by_sql(["select count(eu.id) from examinations e
+          inner join exam_users eu on eu.examination_id = e.id where e.id = ?", simulation.id])
+      if exam_users > 0
+        flash[:notice] = "当前真题已经有用户使用。"
+      else
+        similarity.destroy
+        flash[:notice] = "当前真题删除成功。"
+      end
+    end
+    redirect_to request.referer
+  end
+  
 end

@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
   has_many :study_plans,:through=>:user_plan_relations, :source => :study_plan
   has_many :send_notices, :foreign_key => "send_id", :source => :notice
   has_many :recive_notices, :foreign_key => "target_id", :source => :notice
+  has_many :collections
 
   attr_accessor :password
   validates:password, :confirmation=>true,:length=>{:within=>6..20}, :allow_nil => true
@@ -20,7 +21,7 @@ class User < ActiveRecord::Base
     sql = "select u.id user_id, u.username, u.email, u.created_at, u.code_type,
         al.total_num, al.last_update_time, al.week_num from users u
         left join user_action_logs al on al.user_id = u.id "
-    sql += " where u.username like ? or u.email like ? " unless search_flag.nil? or search_text.strip.empty?
+    sql += " where u.id = ? or u.username like ? or u.email like ? " unless search_flag.nil? or search_text.strip.empty?
     if time_sort.nil?
       sql += " order by u.username "
     else
@@ -30,7 +31,7 @@ class User < ActiveRecord::Base
     if search_text.nil? or search_text.strip.empty?
       users = User.paginate_by_sql(sql, :per_page => 10, :page => page)
     else
-      users = User.paginate_by_sql([sql, "%#{search_text.strip}%", "%#{search_text.strip}%"],
+      users = User.paginate_by_sql([sql, search_text.strip.to_i, "%#{search_text.strip}%", "%#{search_text.strip}%"],
         :per_page => 10, :page => page)
     end
     return users

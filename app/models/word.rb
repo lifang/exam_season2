@@ -25,11 +25,12 @@ class Word < ActiveRecord::Base
   LEVEL = {1 => "一", 2 => "二", 3 => "三", 4 => "四", 5 => "五", 6 => "六",
     7 => "七", 8 => "八", 9 => "九", 10 => "十"}  #单词的等级
   
-  def self.get_words(category_id, search_text, page)
+  def self.get_words(category_id, search_level, search_text, page)
     sql = "select w.id, w.name from words w where w.category_id = ? "
-    sql += " and name like ? " unless search_text.nil? or search_text.strip.empty?
+    sql += " and level = #{search_level}" unless search_level.nil? or search_level.strip.empty?
+    sql += " and name like ? " unless search_text.nil? or search_text.strip.empty? or search_text=="搜索词汇"
     sql += " order by name "
-    unless search_text.nil? or search_text.strip.empty?
+    unless search_text.nil? or search_text.strip.empty? or search_text=="搜索词汇"
       words = Word.paginate_by_sql([sql, category_id, "%#{search_text.strip}%"], :per_page => 40, :page => page)
     else
       words = Word.paginate_by_sql([sql, category_id], :per_page => 40, :page => page)

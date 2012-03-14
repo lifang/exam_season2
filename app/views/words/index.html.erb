@@ -2,8 +2,14 @@
   <div class="m_t_btn">
     <button onclick="javascript:window.location.href='/words/new?category=<%= params[:category] %>';">增加词汇</button>
   </div>
-  <div class="user_search">
+  <div class="word_search">
     <%= form_for :words ,:url=>"/words/search?category=#{params[:category]}", :method => "post" do |f|%>
+      <select class="t_select" name="word_level"><option value="">请选择单词等级</option>
+        <% Word::LEVEL.each do |key,value| %>
+          <option <% if session[:word_level]=="#{key}" %>selected="selected" <% end %> value="<%= key %>"><%= value %></option>
+        <% end %>
+      </select>
+
       <input name="word_text" id="word_text" type="text" class="t_se_input"
              value="<%= session[:word_text].nil? ? "搜索词汇" : session[:word_text] %>" />
       <button type="submit" class="t_search"></button>
@@ -17,10 +23,13 @@
     <ul>
       <% unless @words.blank? %>
         <% @words.each do |word| %>
-          <li><a href="/words/<%= word.id %>?category=<%= params[:category] %>"><%= word.name %></a></li>
+          <li><a href="/words/<%= word.id %>?category=<%= params[:category] %>"><%= word.name %></a>
+            <a href="/words/<%= word.id %>" data-confirm="确定要删除当前单词么？"
+               data-method="delete" rel="nofollow"><img src='/assets/xx.png'/></a>
+          </li>
         <% end %>
       <% else %>
-        <li>当前科目下暂无词汇</li>
+        <li>未搜索到词汇</li>
       <% end %>
     </ul>
   </div>
