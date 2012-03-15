@@ -5,7 +5,9 @@ class AdvertsController < ApplicationController
 
   def index
     session[:advert_text] = nil
-    @adverts=Advert.paginate_by_sql("select r.id,a.created_at,a.content,r.name,r.parent_id,a.id a_id,re.name r_name from adverts a inner join regions r on r.id=a.region_id inner join regions re on re.id=r.parent_id order by a.created_at desc",:per_page=>8,:page=>params[:page])
+    @adverts=Advert.paginate_by_sql("select r.id,a.created_at,a.content,r.name,r.parent_id,a.id a_id,re.name 
+      r_name from adverts a inner join regions r on r.id=a.region_id
+      inner join regions re on re.id=r.parent_id order by a.created_at desc",:per_page=>8,:page=>params[:page])
     @provines=Region.all(:conditions=>"parent_id=0")
   end
 
@@ -39,7 +41,8 @@ class AdvertsController < ApplicationController
   end
 
   def advert_list
-    sql="select r.id,a.created_at,a.content,r.name,r.parent_id,a.id a_id,re.name r_name from adverts a inner join regions r on r.id=a.region_id inner join regions re on re.id=r.parent_id where 1=1"
+    sql="select r.id,a.created_at,a.content,r.name,r.parent_id,a.id a_id,re.name r_name
+      from adverts a inner join regions r on r.id=a.region_id inner join regions re on re.id=r.parent_id where 1=1"
     sql += " and re.id=#{session[:advert_region]}" unless session[:advert_region].nil?
     sql += " and a.region_id=#{session[:search_city]}" unless session[:search_city].nil?
     sql +="  order by a.created_at desc"
