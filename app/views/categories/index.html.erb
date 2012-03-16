@@ -26,10 +26,12 @@
           <% end %>
         </div>
       <% end %>
+      <% if is_admin? or is_paper_creater? %>
       <div class="km_a">
         <a href="/papers?category=<%= category.id %>">管理</a>
         <a href="/categories/<%= category.id %>/edit">修改</a>
       </div>
+      <% end %>
     </div>
   <% end %>
   <div class="clear space20"></div>

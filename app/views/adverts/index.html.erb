@@ -10,6 +10,7 @@
           <% end unless @provines.blank? %>
         </select>
         市：<select name="search_city" id="search_city">
+          <option value="">请选择城市</option>
         </select>
       </span>
       <button type="submit" class="t_search"></button>
@@ -60,11 +61,13 @@
   <%= form_for :vices,:url=>"/adverts/advert_create", :method => "post", :html =>{:id=>"advert_form"} do |f|%>
     <input type="hidden" value="" name="advert_id" id="advert_id"/>
     <div>省：<select name="region" id="region" onchange="render_city($('#region option:selected').val())">
+        <option value="">请选择省份</option>
         <% @provines.each do |provice| %>
           <option value="<%= provice.id %>" id="<%= provice.id %>"><%= provice.name %></option>
         <% end unless @provines.blank? %>
       </select>
       市：<select name="city" id="city">
+        <option value="">请选择城市</option>
       </select>
     </div>
     <div id="tishi_div"><span class="red">*</span><em>双竖线(||)隔开可以输入多条广告内容。</em></div>
