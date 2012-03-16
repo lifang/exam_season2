@@ -35,7 +35,7 @@
           <td><a href="/users/<%= user.user_id %>"><%= user.username %></a></td>
           <td><%= user.email %></td>
           <td><%= User::FROM["#{user.code_type}"].nil? ? "注册用户" : User::FROM["#{user.code_type}"] %></td>
-          <td><%= user.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+          <td><%= user.created_at.strftime("%Y-%m-%d %H:%M:%S") if user.created_at %></td>
           <td><%= user.total_num ? user.total_num.split(",")[0] : 0 %></td>
           <td><%= user.last_update_time ? user.last_update_time.strftime("%Y-%m-%d %H:%M:%S") : "--" %></td>
           <td><%= user.week_num ? user.week_num : 0 %></td>
