@@ -14,7 +14,7 @@ end
   <div class="user_xx_box"><a href="javascript:show_notice_div(<%= @user.id %>);">发送系统消息</a></div>
 </div>
 <div class="main_title">
-  <div class="user_xx_box">创建时间：<%= @user.created_at.strftime("%Y-%m-%d %H:%M") %></div>
+  <div class="user_xx_box">创建时间：<%= @user.created_at.strftime("%Y-%m-%d %H:%M") if @user.created_at %></div>
   <div class="user_xx_box">最后登录时间：<%= @login_log.updated_at.strftime("%Y-%m-%d %H:%M") if @login_log %></div>
   <div class="user_xx_box">
     总动作<%= (@user_action_logs and  @user_action_logs.total_num) ? @user_action_logs.total_num.split(",")[0] : 0 %>次

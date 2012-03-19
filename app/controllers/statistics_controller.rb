@@ -78,7 +78,7 @@ class StatisticsController < ApplicationController
         buyers =Order.find_by_sql("select o.category_id, ca.name, u.name u_name, u.email, o.types from orders o
                                    inner join users u on u.id = o.user_id
                                    left join categories ca on ca.id=o.category_id
-                                   #{file_name[1]} and o.types not in (#{Order::TYPES[:TRIAL_SEVEN]})
+                                   #{file_name[1]} and o.types = #{Order::TYPES[:CHARGE]} 
                                    order by o.category_id desc ")
         buyers.each_with_index do |buyer, index|
           buyer_name = buyer.category_id.nil? ? "模考收费" : buyer.name
@@ -91,7 +91,7 @@ class StatisticsController < ApplicationController
         buyers =Order.find_by_sql("select o.category_id, ifnull(o.total_price, 0) total_prices, ca.name, u.name u_name, u.email, o.types
                                    from orders o inner join users u on u.id = o.user_id
                                    left join categories ca on ca.id=o.category_id
-                                   #{file_name[1]} and o.types not in (#{Order::TYPES[:TRIAL_SEVEN]})
+                                   #{file_name[1]} and o.types = #{Order::TYPES[:CHARGE]} 
                                    order by o.category_id desc ")
         num=0
         buyers.each_with_index do |buyer, index|

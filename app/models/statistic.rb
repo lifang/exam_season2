@@ -38,6 +38,7 @@ def self.user_expr(types)
   def self.download_info(types)
     if types.to_i==1
       file_name="/#{Time.now.to_date.to_s}_buyer_all.xls"
+      expr=" where 1=1 "
     elsif types.to_i==2
       file_name="/#{Time.now.to_date.to_s}_buyer_30.xls"
       expr=" where TO_DAYS(NOW())-TO_DAYS(o.created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(o.created_at)>=1"
@@ -49,6 +50,7 @@ def self.user_expr(types)
       expr=" where TO_DAYS(NOW())-TO_DAYS(o.created_at)=1"
     elsif types.to_i==5
       file_name="/#{Time.now.to_date.to_s}_fee_all.xls"
+      expr=" where 1=1 "
     elsif types.to_i==6
       file_name="/#{Time.now.to_date.to_s}_fee_30.xls"
       expr=" where TO_DAYS(NOW())-TO_DAYS(o.created_at)<=30 and TO_DAYS(NOW())-TO_DAYS(o.created_at)>=1"
