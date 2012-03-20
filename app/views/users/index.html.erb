@@ -20,7 +20,7 @@
         <td width="10%">来源</td>
         <td width="20%">
           <% if params[:time_sort].nil? or params[:time_sort].to_i == User::TIME_SORT[:ASC] %>
-          <a href="<%= request.path %>?time_sort=<%= User::TIME_SORT[:DESC] %>">创建时间&nbsp;<img src="/assets/tr_bg_a.png" /></a>
+            <a href="<%= request.path %>?time_sort=<%= User::TIME_SORT[:DESC] %>">创建时间&nbsp;<img src="/assets/tr_bg_a.png" /></a>
           <% else %>
             <a href="<%= request.path %>?time_sort=<%= User::TIME_SORT[:ASC] %>">创建时间&nbsp;<img src="/assets/tr_bg_a0.png" /></a>
           <% end %>
@@ -32,7 +32,10 @@
       <% @users.each do |user| %>
         <tr>
           <td><%= user.user_id %></td>
-          <td><a href="/users/<%= user.user_id %>"><%= user.username %></a></td>
+          <td><a href="/users/<%= user.user_id %>">
+              <%= (user.username.nil? or user.username.empty?) ? (user.name ? user.name : "游客") : user.username %>
+            </a>
+          </td>
           <td><%= user.email %></td>
           <td><%= User::FROM["#{user.code_type}"].nil? ? "注册用户" : User::FROM["#{user.code_type}"] %></td>
           <td><%= user.created_at.strftime("%Y-%m-%d %H:%M:%S") if user.created_at %></td>
