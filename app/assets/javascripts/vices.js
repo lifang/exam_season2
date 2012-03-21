@@ -99,3 +99,10 @@ function city_search(privin){
     });
     return false;
 }
+
+function advert_delete(id){
+    if (confirm("确定删除这则广告吗？")){
+        $("#delete_ad_id").val(id);
+        $("#delete_form").submit();
+    }
+}
