@@ -58,4 +58,9 @@ class AdvertsController < ApplicationController
       format.js
     end
   end
+
+  def advert_delete
+    Advert.delete(params[:delete_ad_id].to_i)
+    redirect_to request.referer
+  end
 end

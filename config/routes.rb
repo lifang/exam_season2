@@ -2,7 +2,7 @@ RailsTest3::Application.routes.draw do
 
   resources :adverts do
     collection do
-      post :advert_search,:list_city,:advert_create,:advert_search,:search_city
+      post :advert_search,:list_city,:advert_create,:advert_search,:search_city,:advert_delete
       get :advert_list
     end
   end
