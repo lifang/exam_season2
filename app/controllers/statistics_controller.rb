@@ -47,7 +47,7 @@ class StatisticsController < ApplicationController
       sheet = book.create_worksheet
       sheet.row(0).concat %w{uid 姓名 邮箱 动作对象 所属科目 动作类型 动作次数}
       actions =ActionLog.find_by_sql("select u.id u_id,u.name u_name,u.email,al.types,al.remark,ca.name ca_name,total_num from action_logs al
-                           inner join users u on u.id=al.user_id inner join categories ca on ca.id=al.category_id #{file_name[1]}")
+                           inner join users u on u.id=al.user_id left join categories ca on ca.id=al.category_id #{file_name[1]}")
       actions.each_with_index do |action, index|
         sheet.row(index+1).concat ["#{action.u_id}","#{action.u_name}", "#{action.email}","#{action.remark}","#{action.ca_name}","#{ActionLog::TYPE_NAMES[action.types]}","#{action.total_num}"]
       end unless actions.blank?
@@ -120,10 +120,10 @@ class StatisticsController < ApplicationController
       sheet = book.create_worksheet
       sheet.row(0).concat %w{uid 姓名 邮箱 动作对象 所属科目 动作类型 动作次数}
       actions =ActionLog.find_by_sql("select u.id,u.name u_name,u.email,al.types,al.remark,ca.name ca_name ,total_num from action_logs al
-                               inner join users u on u.id=al.user_id inner join categories ca on ca.id=al.category_id #{file_name[1]}")
+                               inner join users u on u.id=al.user_id left join categories ca on ca.id=al.category_id #{file_name[1]}")
       actions.each_with_index do |action, index|
         sheet.row(index+1).concat ["#{action.id}","#{action.u_name}", "#{action.email}","#{action.remark}","#{action.ca_name}","#{ActionLog::TYPE_NAMES[action.types]}","#{action.total_num}"]
-      end
+      end unless actions.blank?
       sheet.row(actions.size+1).concat ["总计", "#{actions.size}"]
       book.write file_url
     end
