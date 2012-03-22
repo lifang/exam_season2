@@ -43,7 +43,7 @@ class ExaminationTagRelation < ActiveRecord::Base
       block.elements["problems"].each_element do |problem|
         special_problem = nil
         problem.elements["questions"].each_element do |question|
-          if question.elements["tags"].text.strip == tag.strip
+          if question.elements["tags"].text and question.elements["tags"].text.strip == tag.strip
             if special_problem.nil?
               special_problem = problem.clone
               special_problem.add_element(problem.elements["title"])

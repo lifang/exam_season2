@@ -21,7 +21,7 @@ namespace :special do
       end
     end unless papers.blank?
     puts "category_ids #{category_ids.join(",")}"
-    begin
+    #begin
       category_ids.each do |c|
         paper_urls = category_papers[c]
         unless paper_urls.nil? or paper_urls.blank?
@@ -31,9 +31,9 @@ namespace :special do
           puts "category #{c}'s special paper end"
         end
       end unless category_ids.blank?
-    rescue
-      puts "special update error"
-    end
+    #rescue
+      #puts "special update error"
+    #end
     
   end
 end
