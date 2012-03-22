@@ -205,6 +205,7 @@ function change_tab(item) {
 
 //将弹出层放置在页面中间
 function show_div(id){
+    alert(id);
     var scolltop = document.body.scrollTop|document.documentElement.scrollTop;
     var win_height = document.documentElement.clientHeight;//jQuery(document).height();
     var win_width = jQuery(window).width();
