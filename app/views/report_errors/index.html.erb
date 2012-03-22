@@ -8,7 +8,7 @@
 <% else %>
   <%error=@info[0] %>
   <div class="error_top">
-    <%= render :partial=>"/report_errors/types" %>  
+    <%= render :partial=>"/report_errors/types" %>
     <div class="error_baog"><p>报告人：<span><%= error.name %></span></p><p><a href="javascript:show_div('.error_tab_list');">共有<%=@info[7] %>人报告</a></p></div>
     <div class="error_explain">错误说明：
       <span><%= error.r_desc %></span>
@@ -17,7 +17,9 @@
       <input type="hidden" value="<%=session[:error_type]%>" id="error_type" name="error_type"/>
       <input type="hidden" value="<%= params[:category] %>" id="category" name="category"/>
       <input type="hidden" value="" id="status" name="status"/>
-      <input type="hidden" value="<%= error.id %>" name="id" id="id"/>
+      <input type="hidden" value="<%= error.question_id %>" name="id" id="id"/>
+      <input type="hidden" value="<%= @info[2].text %>" name="title"/>
+      <input type="hidden" value="<%= @info[5] %>" name="question_index"/>
     <% end %>
     <div><button class="t_btn" onclick="javascript:modify_status(1)">改好了</button><button class="t_btn" onclick="javascript:modify_status(2)">忽略</button></div>
     <div><a class="updown" href="javascript:void(0);"
@@ -37,7 +39,7 @@
          <% end %>><img src="/assets/icon_down.png" /></a>
     </div>
   </div>
-<%= render :partial=>"/common/flowplayer" %>
+  <%= render :partial=>"/common/flowplayer" %>
   <div class="error_box">
     <div class="error_text_h">
       <p><%=@info[2].text unless @info[2].nil? %></p>
