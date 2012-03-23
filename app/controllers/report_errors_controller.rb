@@ -63,7 +63,7 @@ class ReportErrorsController < ApplicationController
 
 
   def modify_status
-    begin
+#    begin
       errors=ReportError.find_by_sql("select * from report_errors where question_id=#{params[:id].to_i}
         and status=#{ReportError::STATUS[:UNSOVLED]} order by created_at asc")
       category_name=Category.find(errors[0].category_id).name
@@ -104,9 +104,9 @@ class ReportErrorsController < ApplicationController
         url=my_params.sort.map{|k,v|"#{k}=#{v}" unless (v.nil? or v.empty?)}.join("&")
       end
       redirect_to "/report_errors?#{url}"
-    rescue
-      render :text=>"系统繁忙，请您稍后再试"
-    end
+#    rescue
+#      render :text=>"系统繁忙，请您稍后再试"
+#    end
   end
 
   def other_users
