@@ -8,16 +8,17 @@ class ReportErrorsController < ApplicationController
 
   def index
     category_id = params[:category].nil? ? 2 : params[:category]
-    error_sql="select id,question_id from report_errors where status=0 and category_id=#{category_id}"
-    unless params["error_type"].nil?|| params["error_type"]==""
-      session[:error_type]=params["error_type"]
+    error_sql = "select id,question_id from report_errors where status = #{ReportError::STATUS[:UNSOVLED]}
+      and category_id = #{category_id}"
+    unless params["error_type"].nil?|| params["error_type"] == ""
+      session[:error_type] = params["error_type"]
     else
-      session[:error_type]=nil
+      session[:error_type] = nil
     end
-    num_sql="status=0 and category_id=#{category_id}"
+    num_sql="status = #{ReportError::STATUS[:UNSOVLED]} and category_id = #{category_id}"
     unless session[:error_type].nil?
-      error_sql += " and error_type=#{session[:error_type].to_i}"
-      num_sql += " and error_type=#{session[:error_type].to_i}"
+      error_sql += " and error_type = #{session[:error_type].to_i}"
+      num_sql += " and error_type = #{session[:error_type].to_i}"
     end
     unless params[:page].nil?||params[:page]==""||params[:page].to_i<0
       @last=params[:page].to_i-1
@@ -62,17 +63,17 @@ class ReportErrorsController < ApplicationController
 
 
   def modify_status
-#    begin
-      errors=ReportError.find_by_sql("select * from report_errors where question_id=#{params[:id].to_i} and status=#{ReportError::STATUS[:UNSOVLED]} order by created_at asc")
+    begin
+      errors=ReportError.find_by_sql("select * from report_errors where question_id=#{params[:id].to_i}
+        and status=#{ReportError::STATUS[:UNSOVLED]} order by created_at asc")
       errors.each_with_index  do |error,index|
-        if params[:status].to_i== ReportError::STATUS[:OVER]
+        if params[:status].to_i== ReportError::STATUS[:OVER]          
+          message="亲，你报告的试卷#{params[:title]}第#{params[:question_index]}题的错误已经修改完成，欢迎你监督检查"
           if index==0
-            message="亲，你报告的试卷#{params[:title]}第#{params[:question_index]}题的错误已经修改完成，欢迎你监督检查"
+            message += "为了表示谢意，我们将您升级网站的正式用户，您将免费使用我们网站的功能。"
             Order.create(:user_id=>error.user_id,:types=>Order::TYPES[:OTHER],
               :status=>Order::STATUS[:NOMAL],:category_id=>error.category_id) if
             Order.first(:conditions=>"user_id=#{error.user_id} and status=#{Order::STATUS[:NOMAL]} and category_id=#{error.category_id} and types in (#{Order::TYPES[:CHARGE]},#{Order::TYPES[:OTHER]},#{Order::TYPES[:ACCREDIT]},#{Order::TYPES[:RENREN]},#{Order::TYPES[:SINA]})").nil?
-          else
-            message="亲，你报告的试卷#{params[:title]}第#{params[:question_index]}题的错误已经被人抢先报告了，感谢你的参与。"
           end
         else
           message="亲，你报告的试卷 #{parmas[:title]}第#{params[:question_index]}题的错误我们反复研究，仔细查看，觉得好像没什么不对,
@@ -100,9 +101,9 @@ class ReportErrorsController < ApplicationController
         url=my_params.sort.map{|k,v|"#{k}=#{v}" unless (v.nil? or v.empty?)}.join("&")
       end
       redirect_to "/report_errors?#{url}"
-#    rescue
-#      render :text=>"系统繁忙，请您稍后再试"
-#    end
+    rescue
+      render :text=>"系统繁忙，请您稍后再试"
+    end
   end
 
   def other_users
