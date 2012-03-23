@@ -74,7 +74,7 @@ class ReportErrorsController < ApplicationController
               and types in (#{Order::TYPES[:CHARGE]},#{Order::TYPES[:OTHER]},#{Order::TYPES[:ACCREDIT]},#{Order::TYPES[:RENREN]},#{Order::TYPES[:SINA]})").nil?
             message += "为了表示谢意，我们将您升级网站#{category_name}的正式用户，您将免费使用我们网站#{category_name}的功能。"
             Order.create(:user_id=>error.user_id,:types=>Order::TYPES[:OTHER],
-              :status=>Order::STATUS[:NOMAL],:category_id=>error.category_id)
+              :status=>Order::STATUS[:NOMAL],:category_id=>error.category_id) 
           end
         else
           message="亲，你报告的试卷#{parmas[:title]}第#{params[:question_index]}题的错误我们反复研究，仔细查看，觉得好像没什么不对,
