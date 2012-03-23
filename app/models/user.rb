@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
 
   #查询用户的操作记录统计
   def self.search_action_log(time_sort, search_text, page, search_flag)
-    sql = "select u.id user_id, u.username, u.email, u.created_at, u.code_type,
+    sql = "select u.id user_id, u.username, u.name, u.email, u.created_at, u.code_type,
         al.total_num, al.last_update_time, al.week_num from users u
         left join user_action_logs al on al.user_id = u.id "
     sql += " where u.id = ? or u.username like ? or u.email like ? " unless search_flag.nil? or search_text.strip.empty?
