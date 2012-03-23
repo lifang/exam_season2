@@ -7,13 +7,14 @@ class ReportErrorsController < ApplicationController
   include REXML
 
   def index
-    error_sql="select id,question_id from report_errors where status=0"
+    category_id = params[:category].nil? ? 2 : params[:category]
+    error_sql="select id,question_id from report_errors where status=0 and category_id=#{category_id}"
     unless params["error_type"].nil?|| params["error_type"]==""
       session[:error_type]=params["error_type"]
     else
       session[:error_type]=nil
     end
-    num_sql="status=0"
+    num_sql="status=0 and category_id=#{category_id}"
     unless session[:error_type].nil?
       error_sql += " and error_type=#{session[:error_type].to_i}"
       num_sql += " and error_type=#{session[:error_type].to_i}"
@@ -37,9 +38,9 @@ class ReportErrorsController < ApplicationController
       @last=0
     end
     begin
-      others=ReportError.count(:id,:conditions=>"question_id=#{error.question_id}")
+      others=ReportError.count(:id,:conditions=>"question_id=#{error.question_id} and category_id=#{category_id}")
       sql="select re.id,re.question_id,re.description r_desc,pe.id paper_id,pe.paper_url,u.name from
-       report_errors re inner join users u on u.id=re.user_id  inner join papers pe on pe.id=re.paper_id  where re.id=#{error.id}"
+       report_errors re inner join users u on u.id=re.user_id  inner join papers pe on pe.id=re.paper_id  where re.id=#{error.id} and re.category_id=#{category_id}"
       single_error=ReportError.find_by_sql(sql)
       url=Constant::PUBLIC_PATH+single_error[0].paper_url
       doc= open_file(url)
@@ -61,17 +62,15 @@ class ReportErrorsController < ApplicationController
 
 
   def modify_status
-    begin
+#    begin
       errors=ReportError.find_by_sql("select * from report_errors where question_id=#{params[:id].to_i} and status=#{ReportError::STATUS[:UNSOVLED]} order by created_at asc")
       errors.each_with_index  do |error,index|
-        if parmas[:status].to_i== ReportError::STATUS[:OVER]
+        if params[:status].to_i== ReportError::STATUS[:OVER]
           if index==0
             message="亲，你报告的试卷#{params[:title]}第#{params[:question_index]}题的错误已经修改完成，欢迎你监督检查"
-            category=Examination.find(ExamUser.find_by_paper_id_and_user_id(error.paper_id,error.user_id).examination_id).category_id
-            Order.create(:user_id=>error.user_id,:status=>Order::TYPES[:OTHER],
-              :pay_type=>Order::STATUS[:NOMAL],:category_id=>category) if
-            Order.first(:conditions=>"user_id=#{error.user_id} and status=#{Order::STATUS[:NOMAL]} and
-                types in (#{Order::TYPES[:CHARGE]},#{Order::TYPES[:OTHER]},#{Order::TYPES[:ACCREDIT]},#{Order::TYPES[:RENREN]}) and category_id=#{category}").nil?
+            Order.create(:user_id=>error.user_id,:types=>Order::TYPES[:OTHER],
+              :status=>Order::STATUS[:NOMAL],:category_id=>error.category_id) if
+            Order.first(:conditions=>"user_id=#{error.user_id} and status=#{Order::STATUS[:NOMAL]} and category_id=#{error.category_id} and types in (#{Order::TYPES[:CHARGE]},#{Order::TYPES[:OTHER]},#{Order::TYPES[:ACCREDIT]},#{Order::TYPES[:RENREN]},#{Order::TYPES[:SINA]})").nil?
           else
             message="亲，你报告的试卷#{params[:title]}第#{params[:question_index]}题的错误已经被人抢先报告了，感谢你的参与。"
           end
@@ -101,9 +100,9 @@ class ReportErrorsController < ApplicationController
         url=my_params.sort.map{|k,v|"#{k}=#{v}" unless (v.nil? or v.empty?)}.join("&")
       end
       redirect_to "/report_errors?#{url}"
-    rescue
-      render :text=>"系统繁忙，请您稍后再试"
-    end
+#    rescue
+#      render :text=>"系统繁忙，请您稍后再试"
+#    end
   end
 
   def other_users
