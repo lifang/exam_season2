@@ -68,15 +68,13 @@ class ReportErrorsController < ApplicationController
         and status=#{ReportError::STATUS[:UNSOVLED]} order by created_at asc")
       category_name=Category.find(errors[0].category_id).name
       errors.each_with_index  do |error,index|
-        if params[:status].to_i== ReportError::STATUS[:OVER]          
-          message="亲，你报告的#{category_name}的试卷#{params[:title]}第#{params[:question_index]}题的错误已经修改完成，欢迎你监督检查"
-          if index==0
-            if Order.first(:conditions=>"user_id=#{error.user_id} and status=#{Order::STATUS[:NOMAL]} and category_id=#{error.category_id}
+        if params[:status].to_i== ReportError::STATUS[:OVER]
+          message="亲，你报告的试卷#{params[:title]}第#{params[:question_index]}题的错误已经修改完成，欢迎你监督检查"
+          if index==0 and Order.first(:conditions=>"user_id=#{error.user_id} and status=#{Order::STATUS[:NOMAL]} and category_id=#{error.category_id}
               and types in (#{Order::TYPES[:CHARGE]},#{Order::TYPES[:OTHER]},#{Order::TYPES[:ACCREDIT]},#{Order::TYPES[:RENREN]},#{Order::TYPES[:SINA]})").nil?
-              message += "为了表示谢意，我们将您升级网站的正式用户，您将免费使用我们网站的功能。"
-              Order.create(:user_id=>error.user_id,:types=>Order::TYPES[:OTHER],
-                :status=>Order::STATUS[:NOMAL],:category_id=>error.category_id)
-            end
+            message += "为了表示谢意，我们将您升级网站的正式用户，您将免费使用我们网站的功能。"
+            Order.create(:user_id=>error.user_id,:types=>Order::TYPES[:OTHER],
+              :status=>Order::STATUS[:NOMAL],:category_id=>error.category_id)
           end
         else
           message="亲，你报告的试卷#{category_name}的#{parmas[:title]}第#{params[:question_index]}题的错误我们反复研究，仔细查看，觉得好像没什么不对,
