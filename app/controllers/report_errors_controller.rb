@@ -63,48 +63,49 @@ class ReportErrorsController < ApplicationController
 
 
   def modify_status
-#    begin
-      errors=ReportError.find_by_sql("select * from report_errors where question_id=#{params[:id].to_i}
+    #    begin
+    errors=ReportError.find_by_sql("select * from report_errors where question_id=#{params[:id].to_i}
         and status=#{ReportError::STATUS[:UNSOVLED]} order by created_at asc")
-      category_name = Category.find(errors[0].category_id).name
-      errors.each_with_index  do |error,index|
-        if params[:status].to_i== ReportError::STATUS[:OVER]
-          message="亲，你报告的试卷#{params[:title]}第#{params[:question_index]}题的错误已经修改完成，欢迎你监督检查。"
-          if index==0 and Order.first(:conditions=>"user_id=#{error.user_id} and status=#{Order::STATUS[:NOMAL]} and category_id=#{error.category_id}
+    errors.each_with_index  do |error,index|
+      if params[:status].to_i== ReportError::STATUS[:OVER]
+        message="亲，你报告的试卷#{params[:title]}第#{params[:question_index]}题的错误已经修改完成，欢迎你监督检查。"
+         category_id=error.category_id.nil? ? 2 : error.category_id
+        if index==0 and Order.first(:conditions=>"user_id=#{error.user_id} and status=#{Order::STATUS[:NOMAL]} and category_id=#{category_id}
               and types in (#{Order::TYPES[:CHARGE]},#{Order::TYPES[:OTHER]},#{Order::TYPES[:ACCREDIT]},#{Order::TYPES[:RENREN]},#{Order::TYPES[:SINA]})").nil?
-            message += "为了表示谢意，我们将您升级网站#{category_name}的正式用户，您将免费使用我们网站#{category_name}的功能。"
-            Order.create(:user_id=>error.user_id,:types=>Order::TYPES[:OTHER],
-              :status=>Order::STATUS[:NOMAL],:category_id=>error.category_id) 
-          end
-        else
-          message="亲，你报告的试卷#{parmas[:title]}第#{params[:question_index]}题的错误我们反复研究，仔细查看，觉得好像没什么不对,
-                      请核对问题，欢迎继续提交。当然，如果可以说明具体原因，那就更完美了。感谢你的支持。"
+                   category_name = Category.find(category_id).name
+          message += "为了表示谢意，我们将您升级网站#{category_name}的正式用户，您将免费使用我们网站#{category_name}的功能。"
+          Order.create(:user_id=>error.user_id,:types=>Order::TYPES[:OTHER],
+            :status=>Order::STATUS[:NOMAL],:category_id=>error.category_id)
         end
-        error.update_attributes(:status=>params[:status].to_i)
-        Notice.create(:send_types => Notice::SEND_TYPE[:SINGLE], :send_id => cookies[:user_id].to_i,
-          :target_id => error.user_id, :description =>message)
-      end
-      page=params[:page]
-      my_params = Hash.new
-      request.parameters.each {|key,value|my_params[key.to_s]=value}
-      my_params.delete("action")
-      my_params.delete("controller")
-      my_params.delete("id")
-      my_params.delete("status")
-      my_params.delete("authenticity_token")
-      my_params.delete("utf8")
-      my_params.delete("title")
-      my_params.delete("question_index")
-      unless page.nil? || page=="" ||page.to_i<1
-        url=my_params.sort.map{|k,v|"#{k}=#{v}" unless (v.nil? or v.empty?)}.join("&")
       else
-        my_params.delete("page")
-        url=my_params.sort.map{|k,v|"#{k}=#{v}" unless (v.nil? or v.empty?)}.join("&")
+        message="亲，你报告的试卷#{parmas[:title]}第#{params[:question_index]}题的错误我们反复研究，仔细查看，觉得好像没什么不对,
+                      请核对问题，欢迎继续提交。当然，如果可以说明具体原因，那就更完美了。感谢你的支持。"
       end
-      redirect_to "/report_errors?#{url}"
-#    rescue
-#      render :text=>"系统繁忙，请您稍后再试"
-#    end
+      error.update_attributes(:status=>params[:status].to_i)
+      Notice.create(:send_types => Notice::SEND_TYPE[:SINGLE], :send_id => cookies[:user_id].to_i,
+        :target_id => error.user_id, :description =>message)
+    end
+    page=params[:page]
+    my_params = Hash.new
+    request.parameters.each {|key,value|my_params[key.to_s]=value}
+    my_params.delete("action")
+    my_params.delete("controller")
+    my_params.delete("id")
+    my_params.delete("status")
+    my_params.delete("authenticity_token")
+    my_params.delete("utf8")
+    my_params.delete("title")
+    my_params.delete("question_index")
+    unless page.nil? || page=="" ||page.to_i<1
+      url=my_params.sort.map{|k,v|"#{k}=#{v}" unless (v.nil? or v.empty?)}.join("&")
+    else
+      my_params.delete("page")
+      url=my_params.sort.map{|k,v|"#{k}=#{v}" unless (v.nil? or v.empty?)}.join("&")
+    end
+    redirect_to "/report_errors?#{url}"
+    #    rescue
+    #      render :text=>"系统繁忙，请您稍后再试"
+    #    end
   end
 
   def other_users
