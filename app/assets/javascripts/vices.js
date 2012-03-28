@@ -9,12 +9,12 @@ function vice_form(){
 function vice_create(){
     var name=$('#vice_name').val();
     var phone=$('#vice_phone').val();
-    if (name==""||name.length==0||phone.length<11){
+    if (name==""||name.length==0){
         tishi_alert("请输入代理人姓名");
         return false;
     }
-    if (phone==""||phone.length==0){
-        tishi_alert("请输入11位手机号码");
+    if (phone==""||phone.length==0||phone.length!=11){
+        tishi_alert("请输入11位手机号码或固定电话(区号与号码无分隔)");
         return false;
     }
     $("#vice_form").submit();
@@ -37,7 +37,7 @@ function update_form(){
         return false;
     }
     if (phone==""||phone.length==0||phone.length<11){
-        tishi_alert("请输入11位手机号码");
+        tishi_alert("请输入11位手机号码或固定电话(区号与号码无分隔)");
         return false;
     }
     $("#update_vice").submit();
