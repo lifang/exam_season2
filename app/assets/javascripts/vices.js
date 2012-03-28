@@ -13,7 +13,7 @@ function vice_create(){
         tishi_alert("请输入代理人姓名");
         return false;
     }
-    if (phone==""||phone.length==0||phone.length!=11){
+    if (phone==""||phone.length==0||phone.length<11){
         tishi_alert("请输入11位手机号码或固定电话(区号与号码无分隔)");
         return false;
     }
