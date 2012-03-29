@@ -48,8 +48,8 @@ img { border: none;}
 .user_top { height: 24px; line-height: 24px;}
 .logo { padding: 10px 0 5px 10px; float: left;}
 .nav { height: 38px; position: absolute; bottom: -2px; left: 230px; z-index: 20;}
-.nav li { padding: 0 5px; float: left; display: inline;}
-.nav li a { width: 80px; height: 28px; line-height: 28px; text-align: center; color: #666; display: block; border: 1px #CCC solid; background: #f4f4f4;}
+.nav li { padding: 0 2px; float: left; display: inline;}
+.nav li a { width: 75px; height: 28px; line-height: 28px; text-align: center; color: #666; display: block; border: 1px #CCC solid; background: #f4f4f4;}
 .nav li a:hover {}
 .nav li a.hover {
     width: 116px;

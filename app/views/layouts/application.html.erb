@@ -31,11 +31,12 @@
             <li><a href="/categories" <% if controller.controller_name =="categories" %> class="hover" <% end %>>科&nbsp;&nbsp;目</a></li>
             <li><a href="/users" <% if controller.controller_name =="users" %> class="hover" <% end %>>用&nbsp;&nbsp;户</a></li>
             <li><a href="/statistics" <% if controller.controller_name =="statistics" %> class="hover" <% end %>>运营数据</a></li>
-            <li><a href="/notices" <% if controller.controller_name =="notices" %> class="hover" <% end %>>消息</a></li>
-            <% if is_admin? %>
+            <li><a href="/notices" <% if controller.controller_name =="notices" %> class="hover" <% end %>>消&nbsp;&nbsp;息</a></li>
+            <% if is_admin? or is_vicegerent? %>
               <li><a href="/licenses" <% if controller.controller_name =="licenses" %> class="hover" <% end %>>授权码</a></li>
               <li><a href="/vicegerents" <% if controller.controller_name =="vicegerents" %> class="hover" <% end %>>代理人</a></li>
             <% end %>
+             <li><a href="/adverts" <% if controller.controller_name =="adverts" %> class="hover" <% end %>>广&nbsp;&nbsp;告</a></li>
             <% if !params['category'].nil? %>
               <li><a href="#" class="hover"><%= Category.find(params['category']).name %></a></li>
             <% end %>

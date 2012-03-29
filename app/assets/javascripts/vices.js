@@ -9,12 +9,12 @@ function vice_form(){
 function vice_create(){
     var name=$('#vice_name').val();
     var phone=$('#vice_phone').val();
-    if (name==""||name.length==0||phone.length<11){
+    if (name==""||name.length==0){
         tishi_alert("请输入代理人姓名");
         return false;
     }
-    if (phone==""||phone.length==0){
-        tishi_alert("请输入11位手机号码");
+    if (phone==""||phone.length==0||phone.length<11){
+        tishi_alert("请输入11位手机号码或固定电话(区号与号码无分隔)");
         return false;
     }
     $("#vice_form").submit();
@@ -37,8 +37,72 @@ function update_form(){
         return false;
     }
     if (phone==""||phone.length==0||phone.length<11){
-        tishi_alert("请输入11位手机号码");
+        tishi_alert("请输入11位手机号码或固定电话(区号与号码无分隔)");
         return false;
     }
     $("#update_vice").submit();
+}
+
+function render_city(privin){
+    $.ajax({
+        async:true,
+        dataType:'script',
+        url:"/adverts/list_city",
+        data:{
+            region_id : privin
+        },
+        type:'post'
+    });
+    return false;
+}
+
+function advert_update(id,re_id,ad_id){
+    $("#region option:selected").attr("selected",false);
+    $("#region #"+id).attr("selected",true);
+    $("#text_content").html($("#advert_"+ad_id).val());
+    $("#tishi_div").css("display","none");
+    $("#region").trigger("onchange");
+    $("#advert_id").val(ad_id);
+    setTimeout(function(){
+        $("#city #"+re_id).attr("selected",true);
+    },1000);
+}
+
+function advert_check(){
+    if($("#city option:selected").length==0){
+        alert("选择合适的省市");
+        return false;
+    }
+    if ($("#text_content").val()==""||$("#text_content").val().length==0){
+        alert("请输入广告内容");
+        return false;
+    }
+    $('#advert_form').submit();
+
+}
+
+function advert_create(){
+    $('#tishi_div').css('display','');
+    $("#text_content").html("");
+    $('#advert_id').val("");
+}
+
+function city_search(privin){
+    $.ajax({
+        async:true,
+        dataType:'script',
+        url:"/adverts/search_city",
+        data:{
+            region_id : privin
+        },
+        type:'post'
+    });
+    return false;
+}
+
+function advert_delete(id){
+    if (confirm("确定删除这则广告吗？")){
+        $("#delete_ad_id").val(id);
+        $("#delete_form").submit();
+    }
 }
