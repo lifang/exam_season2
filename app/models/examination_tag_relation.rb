@@ -47,6 +47,7 @@ class ExaminationTagRelation < ActiveRecord::Base
             if special_problem.nil?
               special_problem = problem.clone
               special_problem.add_element(problem.elements["title"])
+              special_problem.add_attribute("paper_id", paper_doc.attributes["id"])
               special_problem.add_element(problem.elements["category"])
               special_problem.add_element(problem.elements["description"]) if problem.elements["description"]
               special_problem.add_element("questions")
