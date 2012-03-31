@@ -63,6 +63,7 @@ class ReportErrorsController < ApplicationController
 
 
   def modify_status
+    
     begin
       errors=ReportError.find_by_sql("select * from report_errors where question_id=#{params[:id].to_i}
         and status=#{ReportError::STATUS[:UNSOVLED]} order by created_at asc")
@@ -78,7 +79,7 @@ class ReportErrorsController < ApplicationController
               :status=>Order::STATUS[:NOMAL],:category_id=>error.category_id)
           end
         else
-          message="亲，你报告的试卷#{parmas[:title]}第#{params[:question_index]}题的错误我们反复研究，仔细查看，觉得好像没什么不对,
+          message="亲，你报告的试卷#{params[:title]}第#{params[:question_index]}题的错误我们反复研究，仔细查看，觉得好像没什么不对,
                       请核对问题，欢迎继续提交。当然，如果可以说明具体原因，那就更完美了。感谢你的支持。"
         end
         error.update_attributes(:status=>params[:status].to_i)
