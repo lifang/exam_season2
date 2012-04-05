@@ -13,13 +13,14 @@ class User < ActiveRecord::Base
   attr_accessor :password
   validates:password, :confirmation=>true,:length=>{:within=>6..20}, :allow_nil => true
 
-  FROM = {"sina" => "新浪微博", "renren" => "人人网", "qq" => "腾讯网"}
+  FROM = {"sina" => "新浪微博", "renren" => "人人网", "qq" => "腾讯网", "kaixin" => "开心网"}
   TIME_SORT = {:ASC => 0, :DESC => 1}   #用户列表按创建时间正序倒序排列
+  USER_FROM = {0 => "网站" , 1 => "应用"}
 
   #查询用户的操作记录统计
   def self.search_action_log(time_sort, search_text, page, search_flag)
     sql = "select u.id user_id, u.username, u.name, u.email, u.created_at, u.code_type,
-        al.total_num, al.last_update_time, al.week_num from users u
+        al.total_num, al.last_update_time, al.week_num, u.from from users u
         left join user_action_logs al on al.user_id = u.id "
     sql += " where u.id = ? or u.username like ? or u.email like ? " unless search_flag.nil? or search_text.strip.empty?
     if time_sort.nil?

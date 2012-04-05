@@ -14,10 +14,10 @@
   <div class="user_list">
     <table width="100%" border="0" cellpadding="0" cellspacing="1" class="user_tb">
       <tr class="tr_bg">
-        <td width="5%">编号</td>
-        <td width="10%">昵称</td>
-        <td width="20%">E-mail</td>
-        <td width="10%">来源</td>
+        <td width="6%">编号</td>
+        <td width="9%">昵称</td>
+        <td width="10%">E-mail</td>
+        <td width="20%">来源</td>
         <td width="20%">
           <% if params[:time_sort].nil? or params[:time_sort].to_i == User::TIME_SORT[:ASC] %>
             <a href="<%= request.path %>?time_sort=<%= User::TIME_SORT[:DESC] %>">创建时间&nbsp;<img src="/assets/tr_bg_a.png" /></a>
@@ -37,7 +37,10 @@
             </a>
           </td>
           <td><%= user.email %></td>
-          <td><%= User::FROM["#{user.code_type}"].nil? ? "注册用户" : User::FROM["#{user.code_type}"] %></td>
+          <td>
+            <%= User::FROM["#{user.code_type}"].nil? ? "注册用户" : User::FROM["#{user.code_type}"] %>
+            <% if user.from %>(<%= User::USER_FROM[user.from] %>)<% end %>
+          </td>
           <td><%= user.created_at.strftime("%Y-%m-%d %H:%M:%S") if user.created_at %></td>
           <td><%= user.total_num ? user.total_num.split(",")[0] : 0 %></td>
           <td><%= user.last_update_time ? user.last_update_time.strftime("%Y-%m-%d %H:%M:%S") : "--" %></td>
