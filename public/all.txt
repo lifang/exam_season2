@@ -1,3 +1,18 @@
+﻿a,an
+abandon
+administrate,administer
+administration
+bank1
+bank2
+May1
+may2
+worth one's salt
+work at/on
+without fail
+
+want
+bank
+think
 reservation
 officially
 mere
@@ -40,7 +55,6 @@ shuttle
 gravitational
 vision
 dozen
-co-funding
 Initially
 Luxurious
 conduct
