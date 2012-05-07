@@ -46,7 +46,9 @@
               <a href="javascript:void(0);" class="message_sl"
                  onclick="javascript:show_notice(<%= notice.id %>, this);"><%= notice.description %></a>
             </td>
-            <td><%= notice.started_at.strftime("%Y-%m-%d") %>到<%= notice.ended_at.strftime("%Y-%m-%d") %></td>
+            <td><%= notice.started_at.strftime("%Y-%m-%d") if notice.started_at %>到
+              <%= notice.ended_at.strftime("%Y-%m-%d") if notice.ended_at %>
+            </td>
           </tr>
         <% end %>
       <% else %>
