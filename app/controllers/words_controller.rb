@@ -121,9 +121,9 @@ class WordsController < ApplicationController
   def create_word
     types=0
     Word::TYPES.each do |k,v|
-     if params[:types].include?(v.gsub(".",""))
-       types=k
-     end
+      if params[:types].include?(v.gsub(".",""))
+        types=k
+      end
     end
     Word.transaction do
       type = 0
