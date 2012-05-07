@@ -9,12 +9,45 @@ require 'rubygems'
 namespace :dj_iciba do
   desc "get sentence"
   task(:get => :environment) do
-    words = ["worth one's salt","work at","work on","without fail"]
-	str = ""
-    file = File.new("c:/dj_aciba.txt", File::CREAT|File::TRUNC|File::RDWR, 0644)
+    match_file = File.open("#{Rails.root}/public/sentence.txt","rb")
+    words = match_file.readlines.join(";").gsub("\r\n", "").gsub(",", ";").gsub(".", ";").to_s.split(";")
+    match_file.close
+
+    #处理带'/'的词组
+    new_words = []
+    words.each do |word|
+      if word.include?("/")
+        r_index = []
+        r_arr = []
+        line_arr = word.split(" ")
+        line_arr.each_with_index do |l,index|
+          if l.include?("/")
+            r_index << index
+            r_arr = r_arr==[] ? l.split("/") : r_arr.product(l.split("/")).collect{|a|a.flatten}
+          end
+        end
+        r_arr.each do |a|
+          a = [a] if a.class==String
+          a.each_with_index do |w,index|
+            line_arr[r_index[index]] = w
+          end
+          new_words << line_arr.join(" ")
+        end
+      else
+        new_words << word
+      end
+    end
+
+    words = new_words
     words.each do |word|
       begin
-        puts " start catch  ---- #{word}"
+        puts "\n\n------------START- -------------------------- #{word}\n\n"
+        already_word = Word.first(:conditions=>"name like \"#{word}\" or name like \"#{word}_\"")
+        if already_word
+          puts "(ALREADY EXIST)"
+          puts "--------------------------------------------------------"
+          next
+        end
         exist = false
         #获取词组意思(如果词组存在)
         url = "http://www.iciba.com/"
@@ -24,7 +57,7 @@ namespace :dj_iciba do
         if source.search('div[@class=unfound_tips]').length==0
           exist = true
           meaning = source.search('div[@class=group_pos]').search('span[@class=label_list]').search('label').inner_html.gsub(/<[^{><}]*>/, "").gsub("  "," ").strip
-          puts " get meaning : #{meaning}         -----#{word}"
+          puts "--OK-- GOT TRANSLATION"
           # 下载音频
           audio_uri = source.search('div[@class=dictbar]').search('span[@class=eg]').search('a').attr('onclick')
           enunciate_url = ""
@@ -34,26 +67,27 @@ namespace :dj_iciba do
               file_type = audio_uri.split('.').reverse[0]
               all_dir = "#{Rails.root}/public/word_datas/#{Time.now.strftime("%Y%m%d")}/"
               FileUtils.makedirs all_dir    #建目录
-              puts "start download audio   ----#{word}"
-              File.open("#{all_dir}#{word}.#{file_type}", "wb+") do |fout|
+              File.open("#{all_dir}#{word.gsub(" ","").gsub("'","")}.#{file_type}", "wb+") do |fout|
                 while buf = fin.read(1024) do
                   fout.write buf
                   STDOUT.flush
                 end
               end
-              enunciate_url = "/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{file_type}"
-              puts "download audio over  ----#{word}"
+              enunciate_url = "/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word.gsub(" ","").gsub("'","")}.#{file_type}"
+              puts "--OK-- AUDIO DOWNLOADED"
             end
           end
           sleep 5
         else
-          puts " error ,  not exist   ----#{word}"
+          puts "(NOT FOUND)"
+          puts "--------------------------------------------------------"
         end
         #获取例句（如果词组存在）
         if exist
           url = "http://dj.iciba.com/"
           agent = Mechanize.new
-          page = agent.get(url + "#{word}")
+          dj_word = word.gsub("one's","")
+          page = agent.get(url + "#{dj_word}")
           source = Hpricot(page.body).search('div[@class=mContentW]').search('div[@class=mContentLi]')
           #例句
           sentence = []
@@ -65,34 +99,19 @@ namespace :dj_iciba do
             sentence << arr
           end
         end unless source.nil?
-        puts "catch #{sentence.length} sentences   ----#{word}"
+        puts "--OK-- GOT #{sentence.length} SENTENCES \n"
+        puts "\n------------ END - SUCCESS------------------- #{word}\n\n"
         sleep 5
-        puts "------------------------------------------------------------------------"
-        file.write(word)
-        file.write("\n-------------------------------------------------------------\n")
-        file.write(meaning)
-        file.write("\n-------------------------------------------------------------\n")
-        sentence.each do |s|
-             file.write(s.to_s)
-             file.write("\n-------------------------------------------------------------\n")
-         end
-         file.write("\n\n\n\n\n\n")
-		
-        
         #存取数据库
-        #        pram={:category_id => 2, :name => word, :types => pho,
-        #              :phonetic => yinbiao.strip, :enunciate_url => "/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{file_name}",
-        #              :en_mean => ds[0],
-        #              :ch_mean => ch, :level => Word::WORD_LEVEL[:THIRD]}
-        
-        #Word.create(:name=>word,:ch_mean=>meaning,:category_id =>2,:enunciate_url => enunciate_url,:level => 2)
-		
-      
+        new_word = Word.create(:name=>word,:ch_mean=>meaning,:category_id =>2,:enunciate_url => enunciate_url,:level => Word::WORD_LEVEL[:THIRD])
+        sentence.each do |s|
+            WordSentence.create(:word_id => new_word.id, :description =>s[0])
+        end
       rescue
-        puts "rescue  --- #{word}"
+        puts "\n------------ END - RESCUE ------------------- #{word}\n"
+        puts "--------------------------------------------------------"
       end
       
     end
-    file.close
   end
 end
