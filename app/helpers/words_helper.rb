@@ -88,7 +88,7 @@ module WordsHelper
       file_name=return_value[1]
       word_pronounce=eg.search("strong")[1].nil? ? "" : eg.search("strong")[1].inner_html.to_s   #音标
       load_sens=true
-      load_sens=false unless word.strip.match(" ").nil? || word.strip.match("-").nil?
+      load_sens=false unless word.strip.match(" ").nil? and word.strip.match("-").nil?
       unless word_sum==0
         (0..word_sum-1).each do |i|
           name=word
