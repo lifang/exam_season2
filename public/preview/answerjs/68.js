@@ -1,0 +1,1 @@
+answer = {"paper":{"id":"68","time":"33","total_num":"0","total_score":"0","problems":{"problem":{"question":{"correct_type":"0","flag":"0","id":"190","score":"1.0","answer":"3","analysis":"111"}}}}}
