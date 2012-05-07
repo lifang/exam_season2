@@ -136,7 +136,12 @@ module WordsHelper
     rescue
       puts "#{word} download error"
       begin
-        error = File.open("#{Rails.root}/public/error_word.txt","a+")
+        file_path="#{Rails.root}/public/error_word.txt"
+        if File.exists? file_path
+          error = File.open( file_path,"a+")
+        else
+          error= File.new(file_path, "w+")
+        end
         error.write "#{word}\r\n"
         error.close
       rescue
