@@ -38,6 +38,19 @@ class Word < ActiveRecord::Base
     return words
   end
 
+  def self.show_words(category_id, search_level, search_text, page)
+    sql = "select w.* from words w where w.category_id = ? "
+    sql += " and level = #{search_level}" unless search_level.nil? or search_level.strip.empty?
+    sql += " and name like ? " unless search_text.nil? or search_text.strip.empty? or search_text=="搜索词汇"
+    sql += " order by name "
+    unless search_text.nil? or search_text.strip.empty? or search_text=="搜索词汇"
+      words = Word.paginate_by_sql([sql, category_id, "%#{search_text.strip}%"], :per_page => 1, :page => page)
+    else
+      words = Word.paginate_by_sql([sql, category_id], :per_page => 1, :page => page)
+    end
+    return words
+  end
+
   #上传音频文件
   def self.upload_enunciate(url, file_path)
     dir = "#{Rails.root}/public"
