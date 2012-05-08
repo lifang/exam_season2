@@ -76,7 +76,9 @@
         <textarea name="description" id="description" cols="" rows=""><%= discriminate.description if discriminate %></textarea>
       </div>
       <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <button type="submit" class="t_btn">保 存</button></div>
+        <button type="submit" class="t_btn">保 存</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="t_btn" onclick="javascript:window.location.href='/phrases/search_list?category=<%= params[:category] %>&page=<%= params[:page] %>'">取 消</button>
+      </div>
     </div>
   </div>
 <% end %>
