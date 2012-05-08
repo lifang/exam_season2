@@ -112,6 +112,13 @@ RailsTest3::Application.routes.draw do
       get "invalid", "uninvalid"
     end
   end
+  
+  resources :phrases do
+    collection do
+      post :search, :list_similar,:download_word,:create_word, :new_word
+      get :search_list
+    end
+  end
 
   match '/signout'=> 'sessions#destroy'
   # The priority is based upon order of creation:

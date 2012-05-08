@@ -1,0 +1,9 @@
+<ul>
+  <% unless @words.blank? %>
+    <% @words.each do |word| %>
+      <li><a href="javascript:void(0);" onclick="javascript:choose_word(<%= word.id %>, '<%= word.name %>');"><%= word.name %></a></li>
+    <% end %>
+  <% else %>
+    <li>查询无结果</li>
+  <% end %>
+</ul>

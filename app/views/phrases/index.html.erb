@@ -1,0 +1,65 @@
+<div class="main_title">
+  <div class="m_t_btn">
+    <button onclick="javascript:window.location.href='/phrases/new?category=<%= params[:category] %>';">增加词汇</button>
+  </div>
+  <div class="word_search">
+    <%= form_for :words ,:url=>"/phrases/search?category=#{params[:category]}", :method => "post" do |f|%>
+      <select class="t_select" name="word_level"><option value="">请选择单词等级</option>
+        <% Word::LEVEL.each do |key,value| %>
+          <option <% if session[:word_level]=="#{key}" %>selected="selected" <% end %> value="<%= key %>"><%= value %></option>
+        <% end %>
+      </select>
+
+      <input name="word_text" id="word_text" type="text" class="t_se_input"
+             value="<%= session[:word_text].nil? ? "搜索词汇" : session[:word_text] %>" />
+      <button type="submit" class="t_search"></button>
+    <% end %>
+  </div>
+  <div class="m_t_h">词汇</div>
+</div>
+
+<div class="text_box">
+  <div class="word_xx">
+    <% unless @words.blank? %>
+      <% @words.each do |word| %>
+        <div class="word_xx_h"><h2><%= word.name %></h2><span><%= Word::TYPES[word.types] %></span>
+          <span><%= word.phonetic %></span>
+          <a href="javascript:void(0);" onclick="javascript:control_media();"><img src="/assets/icon_lb.png"/></a>
+          <input type="hidden" name="enunciate_url" id="enunciate_url" value="<%= word.enunciate_url %>" />
+          <div id="jquery_jplayer" class="jp-jplayer" style="width:0px;height:1px;"></div>
+        </div>
+        <div class="size_16"><%= word.en_mean %></div>
+        <div><%= word.ch_mean %></div>
+        <div class="word_liju">
+          <% word.word_sentences.each do |sentence| %>
+            <div><%= sentence.description %></div>
+          <% end unless word.word_sentences.blank? %>
+        </div>
+        <div class="word_xx_gl">
+          <% discriminate = word.discriminates[0] unless word.discriminates.blank? or word.discriminates[0].nil? %>
+          <% if discriminate %>
+            <p>关联词：
+              <%  unless discriminate.words.blank? or (discriminate.words.to_a - [word]).blank? %>
+                <% (discriminate.words.to_a - [word]).each do |word| %>
+                  <%= word.name %>
+                <% end %>
+              <% else %>
+                暂无关联词
+              <% end %>
+            </p>
+            <p><%= discriminate.description %></p>
+          <% end %>
+        </div>
+        <div class="word_xx_btn">
+          <button type="button" class="t_btn"
+                  onclick="javascript:window.location.href='/phrases/<%= word.id %>/edit?category=<%= params[:category] %><%= "&escape=false&page=#{params[:page].nil? ? 1 : params[:page]}" %>';" >
+            编辑
+          </button>
+        </div>
+      <% end %>
+    <% else %>
+      <li>未搜索到词汇</li>
+    <% end %>
+  </div>
+  <%=  will_paginate(@words ,:previous_label=>" &lt;", :next_label=>" &gt;") if @words %>
+</div>
