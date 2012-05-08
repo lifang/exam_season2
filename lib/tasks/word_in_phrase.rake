@@ -1,10 +1,10 @@
 # encoding: utf-8
 
-namespace :cet_word do
+namespace :word do
   desc "notice rater"
-  task(:ciba_word => :environment) do
+  task(:in_prase => :environment) do
     include WordsHelper
-    file_url="#{Rails.root}/public/all.txt"
+    file_url="#{Rails.root}/public/phrase_with_paraphrase.txt"
     if File.exist? file_url
       match_file = File.open(file_url,"rb")
       words = match_file.readlines.join(";").gsub("\r\n", "").gsub(",", ";").gsub(".", ";").to_s.split(";")
@@ -24,7 +24,9 @@ namespace :cet_word do
           end
         end
       end
+      p words
       words=words-delete_words
+      p words
       url = "http://www.iciba.com/"
       words.each do |word|
         word=word.gsub(/[0-9]*$/, "")
