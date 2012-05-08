@@ -37,12 +37,11 @@ namespace :dj_iciba do
         new_words << word
       end
     end
-
     words = new_words
     words.each do |word|
       begin
         puts "\n\n------------START- -------------------------- #{word}\n\n"
-        already_word = Word.first(:conditions=>"name like \"#{word}\" or name like \"#{word}_\"")
+        already_word = Word.first(:conditions=>"name = \"#{word.strip}\"")
         if already_word
           puts "(ALREADY EXIST)"
           puts "--------------------------------------------------------"
@@ -103,9 +102,9 @@ namespace :dj_iciba do
         puts "\n------------ END - SUCCESS------------------- #{word}\n\n"
         sleep 5
         #存取数据库
-        new_word = Word.create(:name=>word,:ch_mean=>meaning,:category_id =>2,:enunciate_url => enunciate_url,:level => Word::WORD_LEVEL[:THIRD])
+        new_word = Word.create(:name=>word.strip,:ch_mean=>meaning,:category_id =>2,:enunciate_url => enunciate_url,:level => Word::WORD_LEVEL[:THIRD])
         sentence.each do |s|
-            WordSentence.create(:word_id => new_word.id, :description =>s[0])
+          WordSentence.create(:word_id => new_word.id, :description =>s[0])
         end
       rescue
         puts "\n------------ END - RESCUE ------------------- #{word}\n"

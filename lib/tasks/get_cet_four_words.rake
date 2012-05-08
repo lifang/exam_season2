@@ -13,7 +13,7 @@ require 'spreadsheet'
 namespace :cet6_word do
   desc "notice rater"
   task(:get_word => :environment) do
-    match_file = File.open("#{Rails.root}/public/all.txt","rb")
+    match_file = File.open("#{Rails.root}/public/words_data/all.txt","rb")
     words = match_file.readlines.join(";").gsub("\r\n", "").to_s.split(";")
     match_file.close
     url = "http://oald8.oxfordlearnersdictionaries.com/dictionary/"

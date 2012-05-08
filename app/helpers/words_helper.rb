@@ -52,18 +52,18 @@ module WordsHelper
 
 
   #获取例句
-  def sen_detail(word,new_word)
+  def sen_detail(word)
     model_url = "http://dj.iciba.com/"
     model_agent = Mechanize.new
+    word=word.gsub("one's","").gsub("…"," ").gsub("sb's","").gsub(")", "").gsub("(", "")
     model_page = model_agent.get(model_url + "#{word}")
     model_doc= Hpricot(model_page.body)
+    sententces=[]
     if model_doc.search('div[@class=mainL]').search('div[@class=mContentNothing]').blank?
       sententces=model_doc.search('div[@class=mContentW]').search('div[@class=mContentLi]')
-      sententces.each do |sententce| #示例例句
-        WordSentence.create(:word_id => new_word.id, :description =>sententce.search('div[@class=mEn]').search("b").inner_html.gsub(/<[^{><}]*>/, "").strip.to_s)
-      end unless sententces.blank?
+      puts "#{sententces.length} sentences save end --success"
+      return sententces
     end
-    puts "#{word} and sentences save end"
   end
 
   #截取单词及相关内容
@@ -75,7 +75,7 @@ module WordsHelper
       #    contents =Iconv.conv("GB2312//IGNORE", "UTF-8", contents)
       #            puts "page aready"
       doc_utf = Hpricot(page.body)
-      puts "#{word} start"
+      puts "--#{word}-- start"
       part_main=doc_utf.search('div[@class=part_main]')
       rails_rake_error unless doc_utf.search('div[@class=question unfound_tips]').blank?
       word_sum=part_main.length
@@ -112,10 +112,14 @@ module WordsHelper
               WordSentence.create(:word_id => new_word.id, :description =>sententce.search("p")[0].inner_html.gsub(/<[^{><}]*>/, "").strip.to_s)
             end unless sin_word.search("li").blank?
           else
-            sen_detail(word,new_word)
+            sentences=sen_detail(word)
+            new_word = Word.create(pram)
+            sentences.each do |sententce| #示例例句
+              WordSentence.create(:word_id => new_word.id, :description =>sententce.search('div[@class=mEn]').search("b").inner_html.gsub(/<[^{><}]*>/, "").strip.to_s)
+            end unless sentences.blank?
           end
         end
-        puts "#{word} save end"
+        puts "--#{word}-- save end"
       else
         word_type=group_pos[0].search("strong").blank? ? "" : group_pos[0].search("strong").inner_html.to_s #词性
         types = word_types(word_type)
@@ -125,29 +129,77 @@ module WordsHelper
           :en_mean =>word_en,:ch_mean =>word_ch, :level => Word::WORD_LEVEL[:THIRD]
         }
         pram.merge!(:enunciate_url => "/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{file_name}") if sound_over
-        new_word = Word.create(pram)
         unless load_sens
-          sen_detail(word,new_word)
+          sentences=sen_detail(word)
+          new_word = Word.create(pram)
+          sentences.each do |sententce| #示例例句
+            WordSentence.create(:word_id => new_word.id, :description =>sententce.search('div[@class=mEn]').search("b").inner_html.gsub(/<[^{><}]*>/, "").strip.to_s)
+          end unless sentences.blank?
         else
-          puts "#{word} save end but no sentences"
+          puts "--#{word}-- save end but no sentences"
         end
       end
-      sleep 5
+      sleep 10
     rescue
-      puts "#{word} download error"
+      puts "--#{word}-- download error"
       begin
-        file_path="#{Rails.root}/public/error_word.txt"
-        if File.exists? file_path
-          error = File.open( file_path,"a+")
-        else
-          error= File.new(file_path, "w+")
-        end
-        error.write "#{word}\r\n"
-        error.close
+        write_error("error_word",word)
       rescue
       end
     end
   end
 
-  
+  #将错误的词或词组写入文件
+  def write_error(file_name,word)
+    file_path="#{Rails.root}/public/words_data/#{file_name}.txt"
+    if File.exists? file_path
+      error = File.open( file_path,"a+")
+    else
+      error= File.new(file_path, "w+")
+    end
+    error.write "#{word}\r\n"
+    error.close
+  end
+
+  #下载包含词义的词组
+  def phrase_detail(word,meaning)
+    begin
+      puts "--begin -- from--  #{word}\n"
+      exist = false
+      #获取词组意思(如果词组存在)
+      url = "http://www.iciba.com/"
+      agent = Mechanize.new
+      page = agent.get(url + "#{word}")
+      source = Hpricot(page.body)
+      if source.search('div[@class=unfound_tips]').length==0
+        exist = true
+        # 下载音频
+        audio_uri = source.search('div[@class=dictbar]').search('span[@class=eg]').search('a')
+        return_value=dowload_audio(audio_uri,word)
+      else
+        puts "--#{word}-- download error"
+        write_error("error_phrase",word)
+      end
+      #存取数据库
+      pram={:name=>word.strip ,:ch_mean=>meaning,:category_id =>2,:level => Word::WORD_LEVEL[:THIRD]}
+      pram.merge!(:enunciate_url => "/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{return_value[1]}") if return_value[0]
+      #获取例句（如果词组存在）
+      if exist
+        sentences=sen_detail(word)
+        new_word = Word.create(pram)
+        sentences.each do |sententce| #示例例句
+          WordSentence.create(:word_id => new_word.id, :description =>sententce.search('div[@class=mEn]').search("b").inner_html.gsub(/<[^{><}]*>/, "").strip.to_s)
+        end unless sentences.blank?
+      end unless source.nil?
+      sleep 5
+    rescue
+      puts "--#{word}-- download error"
+      begin
+        write_error("error_phrase",word)
+      rescue
+      end
+    end
+  end
+
+
 end
