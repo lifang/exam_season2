@@ -36,17 +36,24 @@ namespace :word do
           end
         end   
       end
-      words_phrase.keys.each do |word|
+      Spreadsheet.client_encoding = "UTF-8"
+      book = Spreadsheet::Workbook.new
+      sheet = book.create_worksheet
+      sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 音频 例句1 翻译1 例句2 翻译2 例句3 翻译3}
+      words_phrase.keys.each_with_index do |word,index|
         word=word.gsub(/[0-9]*$/, "").gsub("’","'")
         if word != nil and word.strip != ""
           word=word.downcase if word.length>1
           word_restore=WordsHelper.word_restore(word).strip
           already_word = Word.first(:conditions=>"name like \"#{word_restore}\"")
           if already_word.nil?
-            WordsHelper.phrase_detail(word.gsub(")", "").gsub("(", ""),words_phrase[word],word_restore)
+             content=WordsHelper.phrase_detail(word.gsub(")", "").gsub("(", ""),words_phrase[word],word_restore)
+            sheet.row(index+1).concat content unless content.nil?
           end
         end
       end
+      execl_url="#{Rails.root}/public/words_data/phrase/#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+      book.write execl_url
     end
   end
  

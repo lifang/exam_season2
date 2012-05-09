@@ -58,12 +58,31 @@ module WordsHelper
     word=word.gsub("one's","").gsub("…"," ").gsub("sb's","")
     model_page = model_agent.get(model_url + "#{word}")
     model_doc= Hpricot(model_page.body)
-    sententces=[]
+    sens=[]
     if model_doc.search('div[@class=mainL]').search('div[@class=mContentNothing]').blank?
-      sententces=model_doc.search('div[@class=mContentW]').search('div[@class=mContentLi]')
-      puts "#{sententces.length} sentences save end --success"
-      return sententces
+      sentences=model_doc.search('div[@class=mContentW]').search('div[@class=mContentLi]')
+      has_sentences=false
+      descriptions=[]
+      has_index=0
+      sentences.each do |sententce| #示例例句
+        description=sententce.search('div[@class=mEn]').search("b").inner_html.gsub(/<[^{><}]*>/, "").strip.to_s
+        cn_des = sententce.search('div[@class=mCn]').inner_html.gsub(/<span[^>]*?>.*?<\/span>/,"").gsub(/<[^{><}]*>/, "").gsub("  "," ").strip
+        descriptions << [description, cn_des]
+        if description!= nil  and description != "" and  description.split(" ").length>5
+          break if has_index >2
+          has_sentences=true
+          has_index += 1
+          sens << [description,cn_des]
+        end
+      end unless sentences.blank?
+      unless has_sentences
+        descriptions[0..2].each do |sentence|
+          sens << sentence
+        end
+      end
     end
+    puts "#{sens.length} sentences save end --success"
+    return sens
   end
 
   #截取单词及相关内容
@@ -89,6 +108,7 @@ module WordsHelper
       word_pronounce=eg.search("strong")[1].nil? ? "" : eg.search("strong")[1].inner_html.to_s   #音标
       load_sens=true
       load_sens=false unless word.strip.match(" ").nil? and word.strip.match("-").nil?
+      total_words=[]
       unless word_sum==0
         (0..word_sum-1).each do |i|
           name=word
@@ -96,46 +116,60 @@ module WordsHelper
           ch=group_pos[i].search('span[@class=label_list]').search('label')
           word_ch=ch.blank? ? "" : ch.inner_html.to_s #中文词义
           sin_word=part_main[i].search("div[@class=collins_en_cn]")[0]
-          caption=sin_word.search("div[@class=caption]")
-          caption.search("span").remove
-          caption.search("div").remove
-          word_en=caption.blank? ? "" : caption.inner_html.gsub(/<[^{><}]*>/, "").strip.to_s #英语词义
-          #                puts "download end, save db start"
           name="#{word}#{i+1}" if part_main.length>1
           types = word_types(word_type)
-          pram={:category_id => 3, :name =>name, :types =>types,:phonetic =>word_pronounce.strip,
-            :en_mean =>word_en,:ch_mean =>word_ch, :level => Word::WORD_LEVEL[:THIRD]}
-          pram.merge!(:enunciate_url => "/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{file_name}") if sound_over
-          new_word = Word.create(pram)
+          word_content=["#{name}","2","#{word_ch}","#{types}","#{word_pronounce.strip}","3"]
+          vedio_url=""
+          vedio_url="/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{file_name}" if sound_over
+          word_content <<  vedio_url
           if load_sens
+            has_sentences=false
+            descriptions=[]
+            has_index=0
             sin_word.search("li").each do |sententce| #示例例句
-              WordSentence.create(:word_id => new_word.id, :description =>sententce.search("p")[0].inner_html.gsub(/<[^{><}]*>/, "").strip.to_s)
+              description=sententce.search("p")[0].inner_html.gsub(/<[^{><}]*>/, "").strip.to_s
+              cn_des=sententce.search("p")[1].inner_html.gsub(/<[^{><}]*>/, "").strip.to_s
+              descriptions << [description, cn_des]
+              if description!= nil  and description != "" and  description.split(" ").length>5
+                break if has_index >2
+                has_sentences=true
+                has_index += 1
+                word_content << description << cn_des
+              end
             end unless sin_word.search("li").blank?
+            unless has_sentences
+              descriptions[0..2].each do |sentence|
+                sentence.collect{|a| word_content << a}
+              end
+            end
           else
             sentences=sen_detail(word)
-            new_word = Word.create(pram)
-            save_sens(sentences,new_word)
+            sentences.each do |sent|
+              sent.collect{|a| word_content << a}
+            end unless sentences.blank?
           end
+          total_words << word_content
         end
         puts "--#{word}-- save end"
       else
         word_type=group_pos[0].search("strong").blank? ? "" : group_pos[0].search("strong").inner_html.to_s #词性
         types = word_types(word_type)
         word_ch= group_pos[0].search('span[@class=label_list]').search('label').inner_html.to_s #中文词义
-        word_en=""
-        pram={:category_id => 3, :name =>word, :types =>types,:phonetic =>word_pronounce.strip,
-          :en_mean =>word_en,:ch_mean =>word_ch, :level => Word::WORD_LEVEL[:THIRD]
-        }
-        pram.merge!(:enunciate_url => "/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{file_name}") if sound_over
+        word_content=["#{word}","2","#{word_ch}","#{types}","#{word_pronounce.strip}","3"]
+        vedio_url=""
+        vedio_url="/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{file_name}" if sound_over
         unless load_sens
           sentences=sen_detail(word)
-          new_word = Word.create(pram)
-          save_sens(sentences,new_word)
+          sentences.each do |sent|
+            sent.collect{|a| word_content << a}
+          end unless sentences.blank?
         else
           puts "--#{word}-- save end but no sentences"
         end
+        total_words << word_content
       end
       sleep 10
+      return total_words
     rescue
       puts "--#{word}-- download error"
       begin
@@ -177,15 +211,19 @@ module WordsHelper
         write_error("error_phrase",word)
       end
       #存取数据库
-      pram={:name=>init_word ,:ch_mean=>meaning,:category_id =>2,:level => Word::WORD_LEVEL[:THIRD]}
-      pram.merge!(:enunciate_url => "/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{return_value[1]}") if return_value[0]
+      word_content=["#{init_word}","2","#{meaning}","","","3"]
+      vedio_url=""
+      vedio_url="/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{return_value[1]}" if return_value[0]
+      word_content <<  vedio_url
       #获取例句（如果词组存在）
       if exist
         sentences=sen_detail(word)
-        new_word = Word.create(pram)
-        save_sens(sentences,new_word)
+        sentences.each do |sent|
+          sent.collect{|a| word_content << a}
+        end unless sentences.blank?
       end unless source.nil?
       sleep 5
+      return word_content
     rescue
       puts "--#{word}-- download error"
       begin
@@ -195,25 +233,6 @@ module WordsHelper
     end
   end
 
-
-  def save_sens(sentences,new_word)
-    has_sentences=false
-    descriptions=[]
-    sentences.each do |sententce| #示例例句
-      description=sententce.search('div[@class=mEn]').search("b").inner_html.gsub(/<[^{><}]*>/, "").strip.to_s
-      descriptions << description
-      if description!= nil  and description != "" and  description.split(" ").length>5
-        has_sentences=true
-        WordSentence.create(:word_id => new_word.id, :description =>description)
-      end
-    end unless sentences.blank?
-    unless has_sentences
-      descriptions.each_with_index do |sentence,index|
-        WordSentence.create(:word_id => new_word.id, :description =>sentence)
-        break if index==2
-      end unless descriptions.blank
-    end
-  end
 
   def word_restore(init_word)
     init=init_word.split("(")
