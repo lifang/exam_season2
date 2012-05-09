@@ -55,7 +55,7 @@ module WordsHelper
   def sen_detail(word)
     model_url = "http://dj.iciba.com/"
     model_agent = Mechanize.new
-    word=word.gsub("one's","").gsub("…"," ").gsub("sb's","").gsub(")", "").gsub("(", "")
+    word=word.gsub("one's","").gsub("…"," ").gsub("sb's","")
     model_page = model_agent.get(model_url + "#{word}")
     model_doc= Hpricot(model_page.body)
     sententces=[]
@@ -114,9 +114,7 @@ module WordsHelper
           else
             sentences=sen_detail(word)
             new_word = Word.create(pram)
-            sentences.each do |sententce| #示例例句
-              WordSentence.create(:word_id => new_word.id, :description =>sententce.search('div[@class=mEn]').search("b").inner_html.gsub(/<[^{><}]*>/, "").strip.to_s)
-            end unless sentences.blank?
+            save_sens(sentences,new_word)
           end
         end
         puts "--#{word}-- save end"
@@ -132,9 +130,7 @@ module WordsHelper
         unless load_sens
           sentences=sen_detail(word)
           new_word = Word.create(pram)
-          sentences.each do |sententce| #示例例句
-            WordSentence.create(:word_id => new_word.id, :description =>sententce.search('div[@class=mEn]').search("b").inner_html.gsub(/<[^{><}]*>/, "").strip.to_s)
-          end unless sentences.blank?
+          save_sens(sentences,new_word)
         else
           puts "--#{word}-- save end but no sentences"
         end
@@ -162,7 +158,7 @@ module WordsHelper
   end
 
   #下载包含词义的词组
-  def phrase_detail(word,meaning)
+  def phrase_detail(word,meaning,init_word)
     begin
       puts "--begin -- from--  #{word}\n"
       exist = false
@@ -181,15 +177,13 @@ module WordsHelper
         write_error("error_phrase",word)
       end
       #存取数据库
-      pram={:name=>word.strip ,:ch_mean=>meaning,:category_id =>2,:level => Word::WORD_LEVEL[:THIRD]}
+      pram={:name=>init_word ,:ch_mean=>meaning,:category_id =>2,:level => Word::WORD_LEVEL[:THIRD]}
       pram.merge!(:enunciate_url => "/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{return_value[1]}") if return_value[0]
       #获取例句（如果词组存在）
       if exist
         sentences=sen_detail(word)
         new_word = Word.create(pram)
-        sentences.each do |sententce| #示例例句
-          WordSentence.create(:word_id => new_word.id, :description =>sententce.search('div[@class=mEn]').search("b").inner_html.gsub(/<[^{><}]*>/, "").strip.to_s)
-        end unless sentences.blank?
+        save_sens(sentences,new_word)
       end unless source.nil?
       sleep 5
     rescue
@@ -201,5 +195,55 @@ module WordsHelper
     end
   end
 
+
+  def save_sens(sentences,new_word)
+    has_sentences=false
+    descriptions=[]
+    sentences.each do |sententce| #示例例句
+      description=sententce.search('div[@class=mEn]').search("b").inner_html.gsub(/<[^{><}]*>/, "").strip.to_s
+      descriptions << description
+      if description!= nil  and description != "" and  description.split(" ").length>5
+        has_sentences=true
+        WordSentence.create(:word_id => new_word.id, :description =>description)
+      end
+    end unless sentences.blank?
+    unless has_sentences
+      descriptions.each_with_index do |sentence,index|
+        WordSentence.create(:word_id => new_word.id, :description =>sentence)
+        break if index==2
+      end unless descriptions.blank
+    end
+  end
+
+  def word_restore(init_word)
+    init=init_word.split("(")
+    q_w=init.delete_at(0)
+    init.each_with_index do |w,index|
+      inits=w.split(" ")
+      if w.include? ")"
+        init[index]="(#{w}"
+      else
+        inits[0] = "(#{inits[0]})"
+        init[index]=inits.join(" ")
+      end
+    end
+    init.insert(0,q_w)
+    init_word=init.join(" ")
+    init=init_word.split(")")
+    pos=init.length-1
+    q_w=init.delete_at(pos)
+    init.each_with_index do |w,index|
+      inits=w.split(" ")
+      if w.include? "("
+        init[index]="#{w})"
+      else
+        inits[inits.length-1] = "(#{inits[inits.length-1]})"
+        init[index]=inits.join(" ")
+      end
+    end
+    init.insert(pos,q_w)
+    init_word=init.join(" ")
+    return init_word
+  end
 
 end

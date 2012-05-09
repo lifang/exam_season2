@@ -7,7 +7,7 @@ namespace :get do
     file_url="#{Rails.root}/public/words_data/all.txt"
     if File.exist? file_url
       match_file = File.open(file_url,"rb")
-      words = match_file.readlines.join(";").gsub("\r\n", "").gsub(",", ";").gsub(".", ";").to_s.split(";")
+      words = match_file.readlines.join(";").gsub("\r\n", "").gsub(",", ";").gsub(".", ";").gsub(")", "").gsub("(", "").to_s.split(";")
       match_file.close
       delete_words=[]
       words.each do |word|

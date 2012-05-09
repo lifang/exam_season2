@@ -40,9 +40,10 @@ namespace :word do
         word=word.gsub(/[0-9]*$/, "").gsub("’","'")
         if word != nil and word.strip != ""
           word=word.downcase if word.length>1
-          already_word = Word.first(:conditions=>"name like \"#{word.strip}\"")
+          word_restore=WordsHelper.word_restore(word).strip
+          already_word = Word.first(:conditions=>"name like \"#{word_restore}\"")
           if already_word.nil?
-            WordsHelper.phrase_detail(word,words_phrase[word])
+            WordsHelper.phrase_detail(word.gsub(")", "").gsub("(", ""),words_phrase[word],word_restore)
           end
         end
       end
