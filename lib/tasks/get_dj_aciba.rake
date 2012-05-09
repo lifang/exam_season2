@@ -19,7 +19,7 @@ namespace :dj_iciba do
     Spreadsheet.client_encoding = "UTF-8"
     book = Spreadsheet::Workbook.new
     sheet = book.create_worksheet
-    sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 例句1 翻译1 例句2 翻译2 例句3 翻译3}
+    sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 音频 例句1 翻译1 例句2 翻译2 例句3 翻译3}
 
     #记录未抓取到的文件
     rescue_url="#{Rails.root}/public/words_data/rake_dj_iciba/rescue.txt"
@@ -80,13 +80,13 @@ namespace :dj_iciba do
               file_type = audio_uri.split('.').reverse[0]
               all_dir = "#{Rails.root}/public/word_datas/#{Time.now.strftime("%Y%m%d")}/"
               FileUtils.makedirs all_dir    #建目录
-              File.open("#{all_dir}#{word.gsub(" ","").gsub("'","")}.#{file_type}", "wb+") do |fout|
+              File.open("#{all_dir}#{word.gsub("  "," ").gsub("'","")}.#{file_type}", "wb+") do |fout|
                 while buf = fin.read(1024) do
                   fout.write buf
                   STDOUT.flush
                 end
               end
-              enunciate_url = "/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word.gsub(" ","").gsub("'","")}.#{file_type}"
+              enunciate_url = "/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word.gsub("  "," ").gsub("'","")}.#{file_type}"
               puts "--OK-- AUDIO DOWNLOADED"
             end
           end
@@ -128,7 +128,7 @@ namespace :dj_iciba do
       end
       excel_index = index%excel_sum
       sheet.delete_row(excel_index+1)
-      sheet.row(excel_index+1).concat ["#{word.strip}","2","#{meaning}","","","3", "#{sentence[0][0]}", "#{sentence[0][1]}","#{sentence[1][0]}","#{sentence[1][1]}","#{sentence[2][0]}","#{sentence[2][1]}"]
+      sheet.row(excel_index+1).concat ["#{word.strip}","2","#{meaning}","","","3", "#{enunciate_url}","#{sentence[0][0]}", "#{sentence[0][1]}","#{sentence[1][0]}","#{sentence[1][1]}","#{sentence[2][0]}","#{sentence[2][1]}"]
       rescue
         puts "\n------------ END - RESCUE ------------------- #{word}\n"
         puts "--------------------------------------------------------"
