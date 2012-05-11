@@ -34,7 +34,7 @@ namespace :get do
               words_phrase[new_word.join(" ")]=word.gsub(sin_word,"")
             end
           end
-        end   
+        end
       end
       Spreadsheet.client_encoding = "UTF-8"
       book = Spreadsheet::Workbook.new
@@ -47,7 +47,7 @@ namespace :get do
           word_restore=WordsHelper.word_restore(word).strip
           already_word = Word.first(:conditions=>"name like \"#{word_restore}\"")
           if already_word.nil?
-             content=WordsHelper.phrase_detail(word.gsub(")", "").gsub("(", ""),words_phrase[word],word_restore)
+            content=WordsHelper.phrase_detail(word.gsub(")", "").gsub("(", ""),words_phrase[word],word_restore)
             sheet.row(index+1).concat content unless content.nil?
           end
         end
