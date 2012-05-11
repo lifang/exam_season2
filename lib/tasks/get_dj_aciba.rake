@@ -7,9 +7,9 @@ require 'open-uri'
 require 'rubygems'
 require 'spreadsheet'
 
-namespace :dj_iciba do
+namespace :get do
   desc "get sentence"
-  task(:get => :environment) do
+  task(:dj_iciba => :environment) do
     match_file = File.open("#{Rails.root}/public/words_data/rake_dj_iciba/sentence.txt","rb")
     words = match_file.readlines.join(";").gsub("\r\n", "").gsub(",", ";").gsub(".", ";").to_s.split(";")
     match_file.close
@@ -136,7 +136,7 @@ namespace :dj_iciba do
       end
 
       if excel_index == excel_sum-1
-        execl_url="#{Rails.root}/public/words_data/rake_dj_iciba/#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+        execl_url="#{Rails.root}/public/words_data/xmls/#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
         book.write execl_url
       end
       

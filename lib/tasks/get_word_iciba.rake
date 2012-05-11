@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 namespace :get do
-  desc "notice rater"
+  desc "get word from iciba"
   task(:word_iciba => :environment) do
     include WordsHelper
     file_url="#{Rails.root}/public/words_data/all.txt"
@@ -58,7 +58,7 @@ namespace :get do
           end
         end
       end
-      execl_url="#{Rails.root}/public/words_data/words/#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+      execl_url="#{Rails.root}/public/words_data/xmls/#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
       book.write execl_url
     end
   end
