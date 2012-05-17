@@ -36,10 +36,9 @@ namespace :get do
           end
         end
       end
-      Spreadsheet.client_encoding = "UTF-8"
-      book = Spreadsheet::Workbook.new
-      sheet = book.create_worksheet
-      sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 音频 例句1 翻译1 例句2 翻译2 例句3 翻译3}
+      sheet,book=[]
+      excel_sum=100
+      phrase_row=0
       words_phrase.keys.each_with_index do |word,index|
         word=word.gsub(/[0-9]*$/, "").gsub("’","'")
         if word != nil and word.strip != ""
@@ -48,12 +47,24 @@ namespace :get do
           already_word = Word.first(:conditions=>"name like \"#{word_restore}\"")
           if already_word.nil?
             content=WordsHelper.phrase_detail(word.gsub(")", "").gsub("(", ""),words_phrase[word],word_restore)
-            sheet.row(index+1).concat content unless content.nil?
+            excel_index = phrase_row%excel_sum
+            if excel_index==0
+              Spreadsheet.client_encoding = "UTF-8"
+              book = Spreadsheet::Workbook.new
+              sheet = book.create_worksheet
+              sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 音频 例句1 翻译1 例句2 翻译2 例句3 翻译3}
+            end
+            unless content.nil?
+              sheet.row(excel_index+1).concat content
+              phrase_row +=1
+            end
+            if excel_index == excel_sum-1 || words_phrase.keys.length==index+1
+              execl_url="#{Rails.root}/public/words_data/xmls/#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+              book.write execl_url
+            end
           end
         end
       end
-      execl_url="#{Rails.root}/public/words_data/xmls/#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
-      book.write execl_url
     end
   end
  

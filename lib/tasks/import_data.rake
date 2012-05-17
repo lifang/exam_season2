@@ -14,7 +14,6 @@ task(:import_data=>:environment) do
       files << entry
     end
   }
-  p files
   if File.exist? dir_path and files !=[]
     files.each do |file|
       book = Spreadsheet.open File.join(dir_path,file)

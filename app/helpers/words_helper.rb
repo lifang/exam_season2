@@ -265,4 +265,5 @@ module WordsHelper
     return init_word
   end
 
+
 end

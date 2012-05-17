@@ -33,12 +33,10 @@ namespace :get do
       end
       words=words-delete_words
       url = "http://www.iciba.com/"
-      Spreadsheet.client_encoding = "UTF-8"
-      book = Spreadsheet::Workbook.new
-      sheet = book.create_worksheet
-      sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 音频 例句1 翻译1 例句2 翻译2 例句3 翻译3}
       word_row=0
-      words.each do |word|
+      excel_sum=100
+      sheet,book=[]
+      words.each_with_index do |word,index|
         word=word.force_encoding('UTF-8').gsub(/[0-9]*$/, "").gsub("’","'")
         if word != nil and word.strip != ""
           word=word.downcase if word.length>1
@@ -51,15 +49,35 @@ namespace :get do
             content=WordsHelper.word_detail(word,url)
             unless content.nil?
               content.each do |c|
-                sheet.row(word_row+1).concat c
+                excel_index=word_row%excel_sum
+                if excel_index==0
+                  Spreadsheet.client_encoding = "UTF-8"
+                  book = Spreadsheet::Workbook.new
+                  sheet = book.create_worksheet
+                  sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 音频 例句1 翻译1 例句2 翻译2 例句3 翻译3}
+                end
+                sheet.row(excel_index+1).concat c
+                if excel_index==excel_sum-1 || words.length==index+1
+                  execl_url="#{Rails.root}/public/words_data/xmls/#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+                  book.write execl_url
+                end
                 word_row += 1
+              end
+            else
+              if word_row%excel_sum==0
+                Spreadsheet.client_encoding = "UTF-8"
+                book = Spreadsheet::Workbook.new
+                sheet = book.create_worksheet
+                sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 音频 例句1 翻译1 例句2 翻译2 例句3 翻译3}
+              end
+              if  words.length==index+1
+                execl_url="#{Rails.root}/public/words_data/xmls/#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+                book.write execl_url
               end
             end
           end
         end
       end
-      execl_url="#{Rails.root}/public/words_data/xmls/#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
-      book.write execl_url
     end
   end
  

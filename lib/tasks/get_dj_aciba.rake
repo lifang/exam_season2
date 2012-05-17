@@ -10,7 +10,7 @@ require 'spreadsheet'
 namespace :get do
   desc "get sentence"
   task(:dj_iciba => :environment) do
-    match_file = File.open("#{Rails.root}/public/words_data/rake_dj_iciba/sentence.txt","rb")
+    match_file = File.open("#{Rails.root}/public/words_data/sentences.txt","rb")
     words = match_file.readlines.join(";").gsub("\r\n", "").gsub(",", ";").gsub(".", ";").to_s.split(";")
     match_file.close
 
@@ -22,7 +22,7 @@ namespace :get do
     sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 音频 例句1 翻译1 例句2 翻译2 例句3 翻译3}
 
     #记录未抓取到的文件
-    rescue_url="#{Rails.root}/public/words_data/rake_dj_iciba/rescue.txt"
+    rescue_url="#{Rails.root}/public/words_data/rescue.txt"
     rescue_file = File.new(rescue_url,"w+")
     
     #处理带'/'的词组
