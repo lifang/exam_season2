@@ -7,19 +7,19 @@ require 'open-uri'
 require 'rubygems'
 require 'spreadsheet'
 
-namespace :dj_iciba do
+namespace :get do
   desc "get sentence"
-  task(:get => :environment) do
-    match_file = File.open("#{Rails.root}/public/words_data/rake_dj_iciba/sentence.txt","rb")
+  task(:dj_iciba => :environment) do
+    match_file = File.open("#{Rails.root}/public/words_data/sentences.txt","rb")
     words = match_file.readlines.join(";").gsub("\r\n", "").gsub(",", ";").gsub(".", ";").to_s.split(";")
     match_file.close
 
-    excel_sum=2  #execl记录数
+    excel_sum=3  #execl记录数
     
   
 
     #记录未抓取到的文件
-    rescue_url="#{Rails.root}/public/words_data/rake_dj_iciba/rescue.txt"
+    rescue_url="#{Rails.root}/public/words_data/rescue.txt"
     rescue_file = File.new(rescue_url,"w+")
     
     #处理带'/'的词组
@@ -46,9 +46,12 @@ namespace :dj_iciba do
         new_words << word
       end
     end
+    sheet,book = ""
     words = new_words
+    success_index = 0
     words.each_with_index do |word,index|
       begin
+        next if word.strip==""
         puts "\n\n------------START- -------------------------- #{word}\n\n"
         
         #        already_word = Word.first(:conditions=>"name = \"#{word.strip}\"")
@@ -123,7 +126,7 @@ namespace :dj_iciba do
         (0..2).each do |i|
           sentence[i]=[] unless sentence[i]
         end
-        excel_index = index%excel_sum
+        excel_index = success_index%excel_sum
         if excel_index == 0
           Spreadsheet.client_encoding = "UTF-8"
           book = Spreadsheet::Workbook.new
@@ -131,6 +134,7 @@ namespace :dj_iciba do
           sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 音频 例句1 翻译1 例句2 翻译2 例句3 翻译3}
         end
         sheet.row(excel_index+1).concat ["#{word.strip}","2","#{meaning}","","","3", "#{enunciate_url}","#{sentence[0][0]}", "#{sentence[0][1]}","#{sentence[1][0]}","#{sentence[1][1]}","#{sentence[2][0]}","#{sentence[2][1]}"]
+        success_index += 1
       rescue
         puts "\n------------ END - RESCUE ------------------- #{word}\n"
         puts "--------------------------------------------------------"
@@ -138,7 +142,7 @@ namespace :dj_iciba do
       end
 
       if excel_index == excel_sum-1 || index == words.length-1
-        execl_url="#{Rails.root}/public/words_data/rake_dj_iciba/#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+        execl_url="#{Rails.root}/public/words_data/xmls/#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
         book.write execl_url
       end
       
