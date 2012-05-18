@@ -16,10 +16,7 @@ namespace :dj_iciba do
 
     excel_sum=2  #execl记录数
     
-    Spreadsheet.client_encoding = "UTF-8"
-    book = Spreadsheet::Workbook.new
-    sheet = book.create_worksheet
-    sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 音频 例句1 翻译1 例句2 翻译2 例句3 翻译3}
+  
 
     #记录未抓取到的文件
     rescue_url="#{Rails.root}/public/words_data/rake_dj_iciba/rescue.txt"
@@ -54,12 +51,12 @@ namespace :dj_iciba do
       begin
         puts "\n\n------------START- -------------------------- #{word}\n\n"
         
-#        already_word = Word.first(:conditions=>"name = \"#{word.strip}\"")
-#        if already_word
-#          puts "(ALREADY EXIST)"
-#          puts "--------------------------------------------------------"
-#          next
-#        end
+        #        already_word = Word.first(:conditions=>"name = \"#{word.strip}\"")
+        #        if already_word
+        #          puts "(ALREADY EXIST)"
+        #          puts "--------------------------------------------------------"
+        #          next
+        #        end
 
         exist = false
         #获取词组意思(如果词组存在)
@@ -116,26 +113,31 @@ namespace :dj_iciba do
         puts "--OK-- GOT #{sentence.length} SENTENCES \n"
         puts "\n------------ END - SUCCESS------------------- #{word}\n\n"
         sleep 5
-              #    存取数据库(弃用)
-      #        new_word = Word.create(:name=>word.strip,:ch_mean=>meaning,:category_id =>2,:enunciate_url => enunciate_url,:level => Word::WORD_LEVEL[:THIRD])
-      #        sentence.each do |s|
-      #          WordSentence.create(:word_id => new_word.id, :description =>s[0])
-      #        end
+        #    存取数据库(弃用)
+        #        new_word = Word.create(:name=>word.strip,:ch_mean=>meaning,:category_id =>2,:enunciate_url => enunciate_url,:level => Word::WORD_LEVEL[:THIRD])
+        #        sentence.each do |s|
+        #          WordSentence.create(:word_id => new_word.id, :description =>s[0])
+        #        end
 
-      #存取EXECL
-      (0..2).each do |i|
-        sentence[i]=[] unless sentence[i]
-      end
-      excel_index = index%excel_sum
-      sheet.delete_row(excel_index+1)
-      sheet.row(excel_index+1).concat ["#{word.strip}","2","#{meaning}","","","3", "#{enunciate_url}","#{sentence[0][0]}", "#{sentence[0][1]}","#{sentence[1][0]}","#{sentence[1][1]}","#{sentence[2][0]}","#{sentence[2][1]}"]
+        #存取EXECL
+        (0..2).each do |i|
+          sentence[i]=[] unless sentence[i]
+        end
+        excel_index = index%excel_sum
+        if excel_index == 0
+          Spreadsheet.client_encoding = "UTF-8"
+          book = Spreadsheet::Workbook.new
+          sheet = book.create_worksheet
+          sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 音频 例句1 翻译1 例句2 翻译2 例句3 翻译3}
+        end
+        sheet.row(excel_index+1).concat ["#{word.strip}","2","#{meaning}","","","3", "#{enunciate_url}","#{sentence[0][0]}", "#{sentence[0][1]}","#{sentence[1][0]}","#{sentence[1][1]}","#{sentence[2][0]}","#{sentence[2][1]}"]
       rescue
         puts "\n------------ END - RESCUE ------------------- #{word}\n"
         puts "--------------------------------------------------------"
         rescue_file.write("#{word}\n")
       end
 
-      if excel_index == excel_sum-1
+      if excel_index == excel_sum-1 || index == words.length-1
         execl_url="#{Rails.root}/public/words_data/rake_dj_iciba/#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
         book.write execl_url
       end
