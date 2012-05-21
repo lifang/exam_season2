@@ -3,6 +3,7 @@ class CategoriesController < ApplicationController
   before_filter :access?
   before_filter :is_category_in?
 
+
   #[get][collection]科目列表页面
   def index
     if is_admin? or is_vicegerent?
@@ -95,7 +96,7 @@ class CategoriesController < ApplicationController
   # 设置用户的身份 （用处：add_manage）
   def set_role(user_id,role)
     UserRoleRelation.create(:user_id=>user_id,:role_id=>role) if
-      UserRoleRelation.find_by_sql("select id from user_role_relations where user_id=#{user_id} and role_id=#{role}").blank?
+    UserRoleRelation.find_by_sql("select id from user_role_relations where user_id=#{user_id} and role_id=#{role}").blank?
   end
   
   #[get][member]删除科目管理员。

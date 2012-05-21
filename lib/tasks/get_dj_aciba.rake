@@ -10,16 +10,12 @@ require 'spreadsheet'
 namespace :get do
   desc "get sentence"
   task(:dj_iciba => :environment) do
+    include WordsHelper
     match_file = File.open("#{Rails.root}/public/words_data/sentences.txt","rb")
     words = match_file.readlines.join(";").gsub("\r\n", "").gsub(",", ";").gsub(".", ";").to_s.split(";")
     match_file.close
 
-    excel_sum=2  #execl记录数
-    
-    Spreadsheet.client_encoding = "UTF-8"
-    book = Spreadsheet::Workbook.new
-    sheet = book.create_worksheet
-    sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 音频 例句1 翻译1 例句2 翻译2 例句3 翻译3}
+    excel_sum=100  #execl记录数
 
     #记录未抓取到的文件
     rescue_url="#{Rails.root}/public/words_data/rescue.txt"
@@ -49,17 +45,14 @@ namespace :get do
         new_words << word
       end
     end
+    sheet,book = ""
     words = new_words
+    success_index = 0
     words.each_with_index do |word,index|
+      word=word.downcase if word.length>1
       begin
+        next if word.strip==""
         puts "\n\n------------START- -------------------------- #{word}\n\n"
-        
-#        already_word = Word.first(:conditions=>"name = \"#{word.strip}\"")
-#        if already_word
-#          puts "(ALREADY EXIST)"
-#          puts "--------------------------------------------------------"
-#          next
-#        end
 
         exist = false
         #获取词组意思(如果词组存在)
@@ -95,51 +88,31 @@ namespace :get do
           puts "(NOT FOUND)"
           puts "--------------------------------------------------------"
         end
-        #获取例句（如果词组存在）
+        dj_content=["#{word.strip}","2","#{meaning}","","","3", "#{enunciate_url}"]
+       
         if exist
-          url = "http://dj.iciba.com/"
-          agent = Mechanize.new
-          dj_word = word.gsub("one's","")
-          page = agent.get(url + "#{dj_word}")
-          source = Hpricot(page.body).search('div[@class=mContentW]').search('div[@class=mContentLi]')
-          #例句
-          sentence = []
-          source = source[-3,3]
-          source.each do |s|
-            arr = []
-            en = s.search('div[@class=mEn]').search('b').inner_html.gsub(/<[^{><}]*>/, "").strip
-            cn = s.search('div[@class=mCn]').inner_html.gsub(/<span[^>]*?>.*?<\/span>/,"").gsub(/<[^{><}]*>/, "").gsub("  "," ").strip
-            arr << en << cn
-            sentence << arr
-          end
+          dj_content=WordsHelper.dict_words(word,dj_content)  #获取例句（如果词组存在）
         end unless source.nil?
-        puts "--OK-- GOT #{sentence.length} SENTENCES \n"
         puts "\n------------ END - SUCCESS------------------- #{word}\n\n"
         sleep 5
-              #    存取数据库(弃用)
-      #        new_word = Word.create(:name=>word.strip,:ch_mean=>meaning,:category_id =>2,:enunciate_url => enunciate_url,:level => Word::WORD_LEVEL[:THIRD])
-      #        sentence.each do |s|
-      #          WordSentence.create(:word_id => new_word.id, :description =>s[0])
-      #        end
-
-      #存取EXECL
-      (0..2).each do |i|
-        sentence[i]=[] unless sentence[i]
-      end
-      excel_index = index%excel_sum
-      sheet.delete_row(excel_index+1)
-      sheet.row(excel_index+1).concat ["#{word.strip}","2","#{meaning}","","","3", "#{enunciate_url}","#{sentence[0][0]}", "#{sentence[0][1]}","#{sentence[1][0]}","#{sentence[1][1]}","#{sentence[2][0]}","#{sentence[2][1]}"]
+        excel_index = success_index%excel_sum
+        if excel_index == 0
+          Spreadsheet.client_encoding = "UTF-8"
+          book = Spreadsheet::Workbook.new
+          sheet = book.create_worksheet
+          sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 音频 例句1 翻译1 例句2 翻译2 例句3 翻译3}
+        end
+        sheet.row(excel_index+1).concat dj_content
+        success_index += 1
       rescue
         puts "\n------------ END - RESCUE ------------------- #{word}\n"
         puts "--------------------------------------------------------"
         rescue_file.write("#{word}\n")
       end
-
-      if excel_index == excel_sum-1
+      if excel_index == excel_sum-1 || index == words.length-1
         execl_url="#{Rails.root}/public/words_data/xmls/#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
         book.write execl_url
       end
-      
     end
     rescue_file.close
   end
