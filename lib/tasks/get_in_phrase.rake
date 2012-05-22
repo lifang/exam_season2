@@ -40,11 +40,12 @@ namespace :get do
       excel_sum=100
       phrase_row=0
       words_phrase.keys.each_with_index do |word,index|
+        word_phrase=word
         word=word.gsub(/[0-9]*$/, "").gsub("’","'").strip
         if word != nil and word != ""
           word=word.downcase if word.length>1
           word_restore=WordsHelper.word_restore(word).strip
-          content=WordsHelper.phrase_detail(word.gsub(")", "").gsub("(", ""),words_phrase[word],word_restore)
+          content=WordsHelper.phrase_detail(word.gsub(")", "").gsub("(", ""),words_phrase[word_phrase],word_restore)
           excel_index = phrase_row%excel_sum
           if excel_index==0
             Spreadsheet.client_encoding = "UTF-8"
