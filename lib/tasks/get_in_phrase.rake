@@ -11,41 +11,20 @@ namespace :get do
       match_file.close
       words_phrase={}
       words.each do |word|
-        all_words=word.force_encoding('UTF-8').split(/[\u4E00-\u9FA5\uF900-\uFA2D]+/)  if word != nil and word.strip != ""
-        unless all_words.nil?
-          sin_word=all_words[0]
-          words_phrase[sin_word]=word.gsub(sin_word,"")
-          unless  sin_word.match("/").nil?
-            words_phrase.delete("#{sin_word}")
-            new_word=sin_word.split(" ")
-            init_pos=[]
-            init_words=[]
-            new_word.each_with_index do |one_word,index|
-              if one_word.include?("/")
-                init_pos << index
-                init_words = init_words==[] ? one_word.split("/") :init_words.product(one_word.split("/")).collect{|a|a.flatten}
-              end
-            end
-            init_words.each do |a|
-              a = [a] if a.class==String
-              a.each_with_index do |ci,index|
-                new_word[init_pos[index]] = ci
-              end
-              words_phrase[new_word.join(" ")]=word.gsub(sin_word,"")
-            end
-          end
+        if word != nil and word.strip != ""
+          all_words=word.force_encoding('UTF-8').split(/[\u4E00-\u9FA5\uF900-\uFA2D]+/)
+          words_phrase[all_words[0]]=word.gsub(all_words[0],"")
         end
       end
       sheet,book=[]
       excel_sum=100
       phrase_row=0
-      words_phrase.keys.each_with_index do |word,index|
-        word_phrase=word
-        word=word.gsub(/[0-9]*$/, "").gsub("’","'").strip
+      words_phrase.keys.each_with_index do |word_ph,index|
+        word=word_ph.gsub(/[0-9]*$/, "").gsub("’","'").strip
         if word != nil and word != ""
           word=word.downcase if word.length>1
-          word_restore=WordsHelper.word_restore(word).strip
-          content=WordsHelper.phrase_detail(word.gsub(")", "").gsub("(", ""),words_phrase[word_phrase],word_restore)
+          word=WordsHelper.get_one(word)  unless  word.match("/").nil?
+          content=WordsHelper.phrase_detail(word.gsub("(","").gsub(")",""),words_phrase[word_ph],word_ph)
           excel_index = phrase_row%excel_sum
           if excel_index==0
             Spreadsheet.client_encoding = "UTF-8"

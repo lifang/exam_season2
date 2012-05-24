@@ -96,13 +96,10 @@ module WordsHelper
 
 
   #截取单词及相关内容
-  def word_detail(word,url)
+  def word_detail(word,url,init_word)
     begin
       agent = Mechanize.new
       page = agent.get(url + "#{word}")
-      #    contents =Iconv.conv("UTF-8//IGNORE", "GB2312",page.body )
-      #    contents =Iconv.conv("GB2312//IGNORE", "UTF-8", contents)
-      #            puts "page aready"
       doc_utf = Hpricot(page.body)
       puts "--#{word} START --"
       part_main=doc_utf.search('div[@class=part_main]')
@@ -114,51 +111,45 @@ module WordsHelper
       sound_over=return_value[0]
       file_name=return_value[1]
       word_pronounce=eg.search("strong")[1].nil? ? "" : eg.search("strong")[1].inner_html.to_s   #音标
-      load_sens=true
-      load_sens=false unless word.strip.match(" ").nil? and word.strip.match("-").nil?
       total_words=[]
       unless word_sum==0
         (0..word_sum-1).each do |i|
-          name=word
+          name=init_word
           word_type=group_pos[i].search("strong").blank? ? "" : group_pos[i].search("strong").inner_html.to_s #词性
-          ch=group_pos[i].search('span[@class=label_list]').search('label')
-          word_ch=ch.blank? ? "" : ch.inner_html.to_s #中文词义
           collins_en_cn=part_main[i].search("div[@class=collins_en_cn]")
           sin_word=collins_en_cn[0].search("div[@class=en_tip]").blank? ? collins_en_cn[0] : collins_en_cn[1]
-          name="#{word}#{i+1}" if part_main.length>1
-          types = word_types(word_type)
-          word_content=["#{name}","2","#{word_ch}","#{types}","#{word_pronounce.strip}","3"]
+          text_blue=sin_word.search("div[@class=caption]").search("span[@class=text_blue]").inner_html
+          text_blue=group_pos[i].search('span[@class=label_list]').search('label').inner_html.to_s  if text_blue.nil? or text_blue.length==0
+          text_blue="***#{text_blue}" if !text_blue.nil? and text_blue.length>=15
+          name="#{init_word}#{i+1}" if part_main.length>1
+          word_content=["#{name}","2","#{text_blue}","#{word_type}","#{word_pronounce.strip}","3"]
           vedio_url=""
           vedio_url="/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{file_name}" if sound_over
           word_content <<  vedio_url
-          if load_sens
+          unless sin_word.search("li").blank?
             word_content=get_limit(sin_word.search("li"),word_content)
           else
             word_content=dict_words(word,word_content)
           end
           total_words << word_content
         end
-        puts "--#{word} SAVE END --"
       else
         word_type=group_pos[0].search("strong").blank? ? "" : group_pos[0].search("strong").inner_html.to_s #词性
-        types = word_types(word_type)
         word_ch= group_pos[0].search('span[@class=label_list]').search('label').inner_html.to_s #中文词义
-        word_content=["#{word}","2","#{word_ch}","#{types}","#{word_pronounce.strip}","3"]
+        word_content=["#{init_word}","2","#{word_ch}","#{word_type}","#{word_pronounce.strip}","3"]
         vedio_url=""
         vedio_url="/word_datas/#{Time.now.strftime("%Y%m%d")}/#{word}.#{file_name}" if sound_over
         word_content <<  vedio_url
-        unless load_sens
-          word_content=dict_words(word,word_content)
-          puts "--#{word} SAVE END BUT NO SENTENCES --"
-        end
+        word_content=dict_words(word,word_content)
         total_words << word_content
       end
+      puts "--#{init_word} SAVE END --"
       sleep 5
       return total_words
     rescue
-      puts "--#{word}-- DOWNLOAD ERROR"
+      puts "--#{init_word}-- DOWNLOAD ERROR"
       begin
-        write_error("error_word",word)
+        write_error("error_word",init_word)
       rescue
       end
     end
@@ -176,6 +167,7 @@ module WordsHelper
     error.close
   end
 
+  
   #下载包含词义的词组
   def phrase_detail(word,meaning,init_word)
     begin
@@ -207,47 +199,34 @@ module WordsHelper
       sleep 5
       return word_content
     rescue
-      puts "--#{word}-- download error"
+      puts "--#{init_word}-- download error"
       begin
-        write_error("error_phrase",word)
+        write_error("error_phrase",init_word)
       rescue
       end
     end
   end
 
-
-  def word_restore(init_word)
-    init=init_word.split("(")
-    q_w=init.delete_at(0)
-    init.each_with_index do |w,index|
-      inits=w.split(" ")
-      if w.include? ")"
-        init[index]="(#{w}"
-      else
-        inits[0] = "(#{inits[0]})"
-        init[index]=inits.join(" ")
+  def get_one(word)
+    new_word=word.split(" ")
+    init_pos=[]
+    init_words=[]
+    new_word.each_with_index do |one_word,index|
+      if one_word.include?("/")
+        init_pos << index
+        init_words = init_words==[] ? one_word.split("/") :init_words.product(one_word.split("/")).collect{|a|a.flatten}
       end
     end
-    init.insert(0,q_w)
-    init_word=init.join(" ")
-    init=init_word.split(")")
-    pos=init.length-1
-    q_w=init.delete_at(pos)
-    init.each_with_index do |w,index|
-      inits=w.split(" ")
-      if w.include? "("
-        init[index]="#{w})"
-      else
-        inits[inits.length-1] = "(#{inits[inits.length-1]})"
-        init[index]=inits.join(" ")
+    new_sum=[]
+    init_words.each do |a|
+      a = [a] if a.class==String
+      a.each_with_index do |ci,index|
+        new_word[init_pos[index]] = ci
       end
+      new_sum << new_word.join(" ")
     end
-    init.insert(pos,q_w)
-    init_word=init.join(" ")
-    return init_word
+    return new_sum[0]
   end
-
-
   
 
  

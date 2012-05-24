@@ -21,18 +21,19 @@ task(:import_data=>:environment) do
       sheet.each_with_index do |row,index|
         ever=PhoneWord.first(:conditions=>"name like \"#{row[0]}\"")
         if index!=0  and !row[0].nil?
-          content={:name=>row[0],:category_id=>row[1],:ch_mean=>row[2],:types=>row[3],:phonetic=>row[4],:level=>row[5],:enunciate_url=>row[6]}
+          types=types.nil? ? nil : WordsHelper.word_types(row[3])
+          content={:name=>row[0].strip,:category_id=>row[1],:ch_mean=>row[2],:types=>types,:phonetic=>row[4],:level=>row[5],:enunciate_url=>row[6]}
           if  ever.nil?
             phone_word=PhoneWord.create(content)
             (0..2).each do |sen|
-              WordSentence.create(:word_id=>phone_word.id,:description=>row[7+2*sen],:ch_mean=>row[8+2*sen]) unless row[7+2*sen].nil? and row[7+2*sen]==""
+              WordSentence.create(:word_id=>phone_word.id,:description=>row[7+2*sen],:ch_mean=>row[8+2*sen]) unless row[7+2*sen].nil? || row[7+2*sen]==""
             end
             p "--#{row[0]} CREATED OVER  --"
           else
             ever.update_attributes(content)
             WordSentence.find_all_by_word_id(ever.id).each {|sen| sen.destroy}
             (0..2).each do |sen|
-              WordSentence.create(:word_id=>ever.id,:description=>row[7+2*sen],:ch_mean=>row[8+2*sen]) unless row[7+2*sen].nil? and row[7+2*sen]==""
+              WordSentence.create(:word_id=>ever.id,:description=>row[7+2*sen],:ch_mean=>row[8+2*sen]) unless row[7+2*sen].nil? || row[7+2*sen]==""
             end
             p "--#{row[0]} UPDATED OVER  --"
           end

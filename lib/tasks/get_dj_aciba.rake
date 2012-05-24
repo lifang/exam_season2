@@ -63,6 +63,7 @@ namespace :get do
         if source.search('div[@class=unfound_tips]').length==0
           exist = true
           meaning = source.search('div[@class=group_pos]').search('span[@class=label_list]').search('label').inner_html.gsub(/<[^{><}]*>/, "").gsub("  "," ").strip
+          meaning="***#{meaning}" if !meaning.nil? and meaning.length>=10
           puts "--OK-- GOT TRANSLATION"
           # 下载音频
           audio_uri = source.search('div[@class=dictbar]').search('span[@class=eg]').search('a').attr('onclick')

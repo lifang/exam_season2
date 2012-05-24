@@ -9,38 +9,16 @@ namespace :get do
       match_file = File.open(file_url,"rb")
       words = match_file.readlines.join(";").gsub("\r\n", "").gsub(",", ";").gsub(".", ";").gsub(")", "").gsub("(", "").to_s.split(";")
       match_file.close
-      delete_words=[]
-      words.each do |word|
-        unless  word.match("/").nil?
-          delete_words << word
-          new_word=word.split(" ")
-          init_pos=[]
-          init_words=[]
-          new_word.each_with_index do |one_word,index|
-            if one_word.include?("/")
-              init_pos << index
-              init_words = init_words==[] ? one_word.split("/") :init_words.product(one_word.split("/")).collect{|a|a.flatten}
-            end
-          end
-          init_words.each do |a|
-            a = [a] if a.class==String
-            a.each_with_index do |ci,index|
-              new_word[init_pos[index]] = ci
-            end
-            words << new_word.join(" ")
-          end
-        end
-      end
-      words=words-delete_words
       url = "http://www.iciba.com/"
       word_row=0
-      excel_sum=100
+      excel_sum=3
       sheet,book=[]
-      words.each_with_index do |word,index|
-        word=word.force_encoding('UTF-8').gsub(/[0-9]*$/, "").gsub("’","'")
+      words.each_with_index do |single_word,index|
+        word=single_word.force_encoding('UTF-8').gsub(/[0-9]*$/, "").gsub("’","'")
         if word != nil and word.strip != ""
           word=word.downcase if word.length>1
-          content=WordsHelper.word_detail(word,url)
+          word=WordsHelper.get_one(word)  unless  word.match("/").nil?
+          content=WordsHelper.word_detail(word.gsub("(","").gsub(")",""),url,single_word)
           unless content.nil?
             content.each do |c|
               excel_index=word_row%excel_sum
