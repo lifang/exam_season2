@@ -22,36 +22,39 @@ namespace :get do
     rescue_url="#{Rails.root}/public/words_data/rescue.txt"
     rescue_file = File.new(rescue_url,"w+")
     
-    #处理带'/'的词组
-    new_words = []
-    words.each do |word|
-      if word.include?("/")
-        r_index = []
-        r_arr = []
-        line_arr = word.split(" ")
-        line_arr.each_with_index do |l,index|
-          if l.include?("/")
-            r_index << index
-            r_arr = r_arr==[] ? l.split("/") : r_arr.product(l.split("/")).collect{|a|a.flatten}
-          end
-        end
-        r_arr.each do |a|
-          a = [a] if a.class==String
-          a.each_with_index do |w,index|
-            line_arr[r_index[index]] = w
-          end
-          new_words << line_arr.join(" ")
-        end
-      else
-        new_words << word
-      end
-    end
     sheet,book = ""
-    words = new_words
     success_index = 0
     words.each_with_index do |word,index|
       begin
         next if word.strip==""
+
+        s_mark = false
+        s_word = ""
+        if word.include?("/")
+          s_mark = true
+          s_word = word
+          new_words = []
+          r_index = []
+          r_arr = []
+          line_arr = word.split(" ")
+          line_arr.each_with_index do |l,index|
+            if l.include?("/")
+              r_index << index
+              r_arr = r_arr==[] ? l.split("/") : r_arr.product(l.split("/")).collect{|a|a.flatten}
+            end
+          end
+          r_arr.each do |a|
+            a = [a] if a.class==String
+            a.each_with_index do |w,index|
+              line_arr[r_index[index]] = w
+            end
+            new_words << line_arr.join(" ")
+          end
+          word = new_words[0]
+        end
+      
+
+
         puts "\n\n------------START- -------------------------- #{word}\n\n"
         
         #        already_word = Word.first(:conditions=>"name = \"#{word.strip}\"")
@@ -133,7 +136,7 @@ namespace :get do
           sheet = book.create_worksheet
           sheet.row(0).concat %w{单词 分类 中文翻译 词性 发音 等级 音频 例句1 翻译1 例句2 翻译2 例句3 翻译3}
         end
-        sheet.row(excel_index+1).concat ["#{word.strip}","2","#{meaning}","","","3", "#{enunciate_url}","#{sentence[0][0]}", "#{sentence[0][1]}","#{sentence[1][0]}","#{sentence[1][1]}","#{sentence[2][0]}","#{sentence[2][1]}"]
+        sheet.row(excel_index+1).concat ["#{s_mark==true ? s_word.strip : word.strip}","2","#{meaning}","","","3", "#{enunciate_url}","#{sentence[0][0]}", "#{sentence[0][1]}","#{sentence[1][0]}","#{sentence[1][1]}","#{sentence[2][0]}","#{sentence[2][1]}"]
         success_index += 1
       rescue
         puts "\n------------ END - RESCUE ------------------- #{word}\n"
