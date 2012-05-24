@@ -21,37 +21,40 @@ namespace :get do
     rescue_url="#{Rails.root}/public/words_data/rescue.txt"
     rescue_file = File.new(rescue_url,"w+")
     
-    #处理带'/'的词组
-    new_words = []
-    words.each do |word|
-      if word.include?("/")
-        r_index = []
-        r_arr = []
-        line_arr = word.split(" ")
-        line_arr.each_with_index do |l,index|
-          if l.include?("/")
-            r_index << index
-            r_arr = r_arr==[] ? l.split("/") : r_arr.product(l.split("/")).collect{|a|a.flatten}
-          end
-        end
-        r_arr.each do |a|
-          a = [a] if a.class==String
-          a.each_with_index do |w,index|
-            line_arr[r_index[index]] = w
-          end
-          new_words << line_arr.join(" ")
-        end
-      else
-        new_words << word
-      end
-    end
     sheet,book = ""
-    words = new_words
     success_index = 0
     words.each_with_index do |word,index|
       word=word.downcase if word.length>1
       begin
         next if word.strip==""
+
+        s_mark = false
+        s_word = ""
+        if word.include?("/")
+          s_mark = true
+          s_word = word
+          new_words = []
+          r_index = []
+          r_arr = []
+          line_arr = word.split(" ")
+          line_arr.each_with_index do |l,index|
+            if l.include?("/")
+              r_index << index
+              r_arr = r_arr==[] ? l.split("/") : r_arr.product(l.split("/")).collect{|a|a.flatten}
+            end
+          end
+          r_arr.each do |a|
+            a = [a] if a.class==String
+            a.each_with_index do |w,index|
+              line_arr[r_index[index]] = w
+            end
+            new_words << line_arr.join(" ")
+          end
+          word = new_words[0]
+        end
+      
+
+
         puts "\n\n------------START- -------------------------- #{word}\n\n"
 
         exist = false
@@ -89,7 +92,7 @@ namespace :get do
           puts "(NOT FOUND)"
           puts "--------------------------------------------------------"
         end
-        dj_content=["#{word.strip}","2","#{meaning}","","","3", "#{enunciate_url}"]
+        dj_content=["#{s_mark==true ? s_word.strip : word.strip}","2","#{meaning}","","","3", "#{enunciate_url}"]
        
         if exist
           dj_content=WordsHelper.dict_words(word,dj_content)  #获取例句（如果词组存在）
