@@ -120,7 +120,10 @@ module WordsHelper
           sin_word=collins_en_cn[0].search("div[@class=en_tip]").blank? ? collins_en_cn[0] : collins_en_cn[1]
           text_blue=sin_word.search("div[@class=caption]").search("span[@class=text_blue]").inner_html
           text_blue=group_pos[i].search('span[@class=label_list]').search('label').inner_html.to_s  if text_blue.nil? or text_blue.length==0
-          text_blue="***#{text_blue}" if !text_blue.nil? and text_blue.length>=15
+          if !text_blue.nil? and text_blue.length>=15
+            text_blue=text_blue.split("；")[0]
+            text_blue="$$$#{text_blue}" if text_blue.length>=15
+          end
           name="#{init_word}#{i+1}" if part_main.length>1
           word_content=["#{name}","2","#{text_blue}","#{word_type}","#{word_pronounce.strip}","3"]
           vedio_url=""
