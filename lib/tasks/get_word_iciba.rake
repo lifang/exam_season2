@@ -11,7 +11,7 @@ namespace :get do
       match_file.close
       url = "http://www.iciba.com/"
       word_row=0
-      excel_sum=3
+      excel_sum=100
       sheet,book=[]
       words.each_with_index do |single_word,index|
         word=single_word.force_encoding('UTF-8').gsub(/[0-9]*$/, "").gsub("’","'")
