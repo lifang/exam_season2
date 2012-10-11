@@ -521,3 +521,27 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
 
 
 .add_dailiTab {width: 400px; padding: 10px; border: 3px #999 solid; background: #FFF; position: fixed; overflow: hidden;display:none;}
+
+/* 答疑审核*/
+/*answer_tab答案*/
+.answer_tab {
+    width: 600px;
+    padding: 20px 10px;
+    border: 3px #999 solid;
+    background: #FFF;
+    overflow: hidden; 
+    position: fixed;
+    z-index: 560;
+}
+.answer_tab_box { height: 400px; overflow-y:auto; overflow-x: none;}
+.answer_tab_list { margin: 10px; padding: 10px; border: 1px #CCCCCC solid; box-shadow:1px 1px 2px #CCCCCC; overflow: hidden;}
+.answer_tab_list p { line-height: 24px;}
+.answer_tab_list a {
+    margin: 0 15px;
+    display: inline-block;
+    padding: 2px 5px;
+    border: 1px #CCCCCC solid;
+    color: #333;
+    background: #CCC;
+    float: right;
+}

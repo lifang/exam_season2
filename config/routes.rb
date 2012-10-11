@@ -1,4 +1,9 @@
 RailsTest3::Application.routes.draw do
+resources :check do
+  collection do
+    post :delete_question,:show_question,:delete_answer,:set_answer
+  end
+end
 
   resources :adverts do
     collection do

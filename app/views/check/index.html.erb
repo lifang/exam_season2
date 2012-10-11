@@ -1,0 +1,24 @@
+<%=  javascript_include_tag 'check'%>
+<div class="main_title">
+  <div class="m_t_h">答疑列表</div>
+</div>
+<div class="text_box">
+  <% @user_questions.each do |question| %>
+    <div class="t_list">
+      <div class="text_btn">
+        <button class="t_btn"
+                onclick="show_question('<%= question.id %>')">
+          查看
+        </button>
+        <button class="t_btn"
+                onclick="delete_question('<%= question.id %>',this)">
+          删除
+        </button>
+
+      </div>
+      <h2><%= question.description %></h2>
+    </div>
+  <% end %>
+  <%=will_paginate @user_questions ,:previous_label=>" &lt;", :next_label=>" &gt;", :inner_window => 1 %>
+</div>
+<div class="answer_tab" style="display:none"></div>
