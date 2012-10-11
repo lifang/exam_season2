@@ -50,3 +50,4 @@ function set_answer(answer_id,question_id,e){
     $(e).attr('onclick','');
     send_request("post",url,data,callback,"json")
 }
+

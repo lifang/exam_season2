@@ -532,6 +532,7 @@ div.word_xx { width: 800px; margin: 20px auto; line-height: 24px;}
     overflow: hidden; 
     position: fixed;
     z-index: 560;
+    height: 400px;
 }
 .answer_tab_box { height: 400px; overflow-y:auto; overflow-x: none;}
 .answer_tab_list { margin: 10px; padding: 10px; border: 1px #CCCCCC solid; box-shadow:1px 1px 2px #CCCCCC; overflow: hidden;}

@@ -5,7 +5,7 @@ class CheckController < ApplicationController
   def index
     @user_questions=UserQuestion.paginate_by_sql("select description,id from user_questions 
         where is_answer=#{UserQuestion::IS_ANSWERED[:NO]} and  category_id=#{params[:category].to_i}
-        order by created_at asc", :per_page =>10, :page => params[:page])
+        order by created_at asc", :per_page =>5, :page => params[:page])
   end
 
   #删除问题
