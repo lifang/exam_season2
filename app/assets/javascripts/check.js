@@ -31,13 +31,17 @@ function send_request(type,url,data,callback,data_type){
 }
 
 function delete_answer(answer_id,question_id,e){
-    var data={
-        answer_id:answer_id,
-        question_id:question_id
-    };
-    var url="/check/delete_answer";
-    $(e).attr('onclick','');
-    send_request("post",url,data,"","script");
+    if (confirm("确定要删除吗？")){
+        var data={
+            answer_id:answer_id,
+            question_id:question_id
+        };
+        var url="/check/delete_answer";
+        var callback="tishi_alert('删除成功');"
+        $(e).attr('onclick','');
+        send_request("post",url,data,callback,"script");
+    }
+   
 }
 
 function set_answer(answer_id,question_id,e){
