@@ -1,12 +1,14 @@
 //删除答疑问题
 function delete_question(question_id,e){
-    var data={
-        question_id:question_id
-    };
-    var url="/check/delete_question";
-    var callback="tishi_alert('删除成功');setTimeout(function(){window.location.reload();},1000)"
-    $(e).attr('onclick','');
-    send_request("post",url,data,callback,"json")
+    if (confirm("确定要删除这个提问吗？")){
+        var data={
+            question_id:question_id
+        };
+        var url="/check/delete_question";
+        var callback="tishi_alert('删除成功');setTimeout(function(){window.location.reload();},1000)"
+        $(e).attr('onclick','');
+        send_request("post",url,data,callback,"json")
+    }
 }
 
 //显示问题回答
@@ -31,7 +33,7 @@ function send_request(type,url,data,callback,data_type){
 }
 
 function delete_answer(answer_id,question_id,e){
-    if (confirm("确定要删除吗？")){
+    if (confirm("确定要删除这个回答吗？")){
         var data={
             answer_id:answer_id,
             question_id:question_id
@@ -45,13 +47,15 @@ function delete_answer(answer_id,question_id,e){
 }
 
 function set_answer(answer_id,question_id,e){
-    var data={
-        answer_id:answer_id,
-        question_id:question_id
-    };
-    var url="/check/set_answer";
-    var callback="window.location.reload();"
-    $(e).attr('onclick','');
-    send_request("post",url,data,callback,"json")
+    if (confirm("确定要将此回答设置为最佳答案吗？")){
+        var data={
+            answer_id:answer_id,
+            question_id:question_id
+        };
+        var url="/check/set_answer";
+        var callback="window.location.reload();"
+        $(e).attr('onclick','');
+        send_request("post",url,data,callback,"json")
+    }
 }
 

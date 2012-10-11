@@ -12,8 +12,8 @@
         <p>
           <%= answer.answer %>
         </p>
-        <p><a onclick="delete_answer(<%= answer.id %>,<%=  @question.id%>,this)">删除</a>
-          <a onclick="set_answer(<%= answer.id %>,<%=  @question.id%>,this)">设置为最佳答案</a></p>
+        <p><a style="cursor: pointer" onclick="delete_answer(<%= answer.id %>,<%=  @question.id%>,this)">删除</a>
+          <a style="cursor: pointer" onclick="set_answer(<%= answer.id %>,<%=  @question.id%>,this)">设置为最佳答案</a></p>
       </div>
     <% end %>
   <% end %>
