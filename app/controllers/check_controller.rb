@@ -45,4 +45,52 @@ class CheckController < ApplicationController
     end
   end
 
+  #技巧列表
+  def skill_index
+    @skills=UserQuestion.paginate_by_sql("select skill_title,id from skills
+        where status=#{Skill::PASS[:NOT]} and  category_id=#{params[:category].to_i}
+        order by created_at asc", :per_page =>5, :page => params[:page])
+  end
+
+  #删除技巧
+  def delete_skill
+    skill=Skill.find(params[:skill_id].to_i)
+    skill.destroy
+    file_path = File.join(Constant::FRONT_PUBLIC_PATH,skill.skill_url)
+    File.delete(file_path)  if File.exist?(file_path)
+    respond_to do |format|
+      format.json {
+        render :json=>{:category=>skill.category_id}
+      }
+    end
+  end
+
+  #设置问题答案
+  def set_skill
+    skill=Skill.find(params[:skill_id].to_i)
+    skill.update_attributes(:status=>Skill::PASS[:YES])
+    Sun.create(:category_id=>skill.category_id,:user_id=>skill.user_id,:types=>Sun::TYPES[:SKILL],:num=>Sun::TYPE_NUM[:SKILL])
+    respond_to do |format|
+      format.json {
+        render :json=>{:category=>skill.category_id}
+      }
+    end
+  end
+
+
+  def show
+    @skill=Skill.find(params[:id].to_i)
+    @cons=Skill.open_xml(@skill.skill_url).get_elements("/skill/next").inject(String.new) {|str,con| str+ con.text}
+  end
+  
+  def save_skill
+    skill=Skill.find(params[:skill_id].to_i)
+    skill.update_attributes(:skill_title=>params[:title])
+    Skill.write_xml(skill.skill_url,CGI.escapeHTML(params[:con].strip))
+     respond_to do |format|
+      format.json {
+        render :json=>{:category=>skill.category_id}
+      }
+    end
+  end
 end

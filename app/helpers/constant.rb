@@ -27,7 +27,7 @@ module Constant
   PUBLIC_PATH = "#{Rails.root}/public"
   PAPER_XML_PATH = "#{Rails.root}/public"
   #前台项目文件目录
-  FRONT_PUBLIC_PATH = "e:/gankao_season2/public"
+  FRONT_PUBLIC_PATH = "e:/gankao_season3/public"
   #运营数据目录
   DIR_ROOT="/data"
   #模考统计

@@ -1,0 +1,28 @@
+<%=  javascript_include_tag 'check'%>
+<div class="main_title">
+  <div class="m_t_h">答疑列表</div>
+</div>
+<div class="text_box">
+  <% @skills.each do |skill| %>
+    <div class="t_list">
+      <div class="text_btn">
+          <button class="t_btn"
+                onclick="window.location.href='/check/<%= skill.id %>?category=<%= params[:category] %>'">
+          查看
+        </button>
+        <button class="t_btn"
+                onclick="set_skill('<%= skill.id %>',this)">
+          审核通过
+        </button>
+        <button class="t_btn"
+                onclick="delete_skill('<%= skill.id %>',this)">
+          删除
+        </button>
+      </div>
+      <h2><%= skill.skill_title %></h2>
+    </div>
+  <% end %>
+  <%=will_paginate @skills ,:previous_label=>" &lt;", :next_label=>" &gt;", :inner_window => 1 %>
+</div>
+<div class="answer_tab" style="display:none"></div>
+

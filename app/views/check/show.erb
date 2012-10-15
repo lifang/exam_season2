@@ -1,0 +1,27 @@
+<%=  javascript_include_tag 'check'%>
+<%= javascript_include_tag 'kindeditor/kindeditor-min.js'  %>
+<div class="main_title">
+  <div class="m_t_h">编辑技巧</div>
+</div>
+<div class="text_box">
+  <div class="bianji_ny"  id="edit_con" style="display: none;">
+    <div class="blog_title"><input type="text" value="<%=  @skill.skill_title%>" id="skill_title" /></div>
+    <div class="blog_text" id="area_con">
+      <%= @cons.html_safe %>
+    </div>
+    <div><button class="t_btn" onclick="save_skill(<%= @skill.id %>,this)">保存</button></div>
+  </div>
+  <div class="bianji_ny" id="show_con" >
+    <div class="blog_title"><h1><%=  @skill.skill_title%></h1></div>
+    <div class="blog_func"><a href="#" onclick="edit_skill()">编辑</a>
+      <a href="#" onclick="set_skill('<%= params[:id] %>',this)">审核通过</a>
+      <a href="#" onclick="delete_skill('<%= params[:id] %>',this)">删除</a>
+    </div>
+    <div class="blog_text">
+      <div class="blog_box">
+        <%= @cons.html_safe %>
+      </div>
+    </div>
+  </div>
+</div>
+
